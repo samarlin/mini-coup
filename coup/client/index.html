@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Coup</title>
+        <script src="client.js" defer></script>
+    </head>
+
+    <body>
+        <header>
+            <h1>Coup</h1>
+        </header>
+        <main> 
+            <input type="button" id="start_game" value="start_game">
+            
+            <p>This is a test webpage for an implementation of Coup.</p>
+            <span>You are player: </span> <span id="player"></span>
+
+            <p>You have the following cards:</p>
+            <div id="cards">
+                <span id="card1">Default</span>
+                <span id="card2">Default</span>
+            </div>
+
+            <fieldset id="primary_actions">
+                <input type="button" id="foreign_aid" value="foreign_aid">
+                <input type="button" id="take_income" value="take_income">
+                <input type="button" id="coup_player" value="coup_player">
+                <input type="button" id="assassinate" value="assassinate">
+                <input type="button" id="take_tax" value="take_tax">
+                <input type="button" id="steal" value="steal">
+                <input type="button" id="draw_cards" value="draw_cards">
+            </fieldset>
+
+            <fieldset id="secondary_actions">
+                <input type="button" id="call_bluff" value="call_bluff">
+                <input type="button" id="block_aid" value="block_aid">
+                <input type="button" id="block_steal" value="block_steal">
+                <input type="button" id="block_assassinate" value="block_assassinate">
+            </fieldset>
+
+            <fieldset id="players">
+                <input type="button" id="p1" value="p1">
+                <label for="p1" id="p1_coins">Coins</label><br/>
+
+                <input type="button" id="p2" value="p2">
+                <label for="p2" id="p2_coins">Coins</label><br/>
+
+                <input type="button" id="p3" value="p3">
+                <label for="p3" id="p3_coins">Coins</label><br/>
+            </fieldset>
+        </main>
+    </body>
+</html>

@@ -1,3 +1,4 @@
+  // Objects containing messages which the player class can send
   // actions taken at the beginning of a user's turn
   const PRIMARY_ACTIONS = {
     TAKE_FOREIGN_AID: { // no CALL_BLUFF
@@ -89,6 +90,9 @@
     }
   }
 
+  // Messages which the game object sends:
+
+
   // takes arr and picks num elements randomly, removes them from arr
   function pickRand(arr, num) { 
     let cards = [];
@@ -103,20 +107,25 @@
 
   class EventEmitter {
     constructor() {
+      this.eventsLog = [];
     }
 
-    postAction(action) {
-      this.onAction(action)
+    // used to recieve a message from another object 
+    //    (other object calls)
+    postMessage(message) {
+      this.eventsLog.push(message);
+      this.onMessage(message);
     }
 
-    onAction(action) {
+    // used for the object itself to listen to the received messages and do something about them
+    onMessage(message) {
 
     }
   }
 
   class Game extends EventEmitter  {
-    constructor(playerNames) {
-      super()
+    constructor(playerNames, methods) {
+      super();
       // construct number of players in playerNames array
       this.deck = ['contessa', 'duke', 'assassin', 'captain', 'ambassador',
                       'contessa', 'duke', 'assassin', 'captain', 'ambassador',
@@ -127,11 +136,14 @@
       });
       this.treasury = 10000;
       this.currentPlayer = this.players[0];
-      this.actionLog = [];
+
+      for (method in methods) {
+        this[method] = methods[method]
+      }
     }
 
-    onAction(action) {
-
+    onMessage(message) {
+      
     }
 
     turn() { // 
@@ -144,8 +156,10 @@
 
       // if current player's coins >= 10 must coup
       if(this.currentPlayer.coins >= 10) {
-        this.currentPlayer.postAction({type: "PICK_TARGET"}); // 
+        this.pickPlayerForCoup();
+        // this.currentPlayer.postMessage({type: "PICK_TARGET_COUP"}); // 
       }
+
       // query player for PRIMARY_ACTION 
       // validate PRIMARY_ACTION
       // query all other players for valid SECONDARY_ACTION
@@ -160,20 +174,25 @@
       this.cards = [];
       this.coins = 2;
       this.game = game;
+
+      // public methods
+      this.pickPlayerForCoup = pickPlayerForCoup;
     }
 
     receiveCards(cards) {
       this.cards = cards;
     }
 
-    onAction(action) {
-      if (action.type === "PICK_TARGET") {
-        this.game.postAction({action: PRIMARY_ACTIONS.COUP_PLAYER, payload: 'Kevin'})
+    onMessage(message) {
+      if (message.type === "PICK_TARGET_COUP") {
+        this.game.postMessage({type: PRIMARY_ACTIONS.COUP_PLAYER, payload: pickedPlayerName})
       }
     }
   }
 
-  let newGame = new Game(['Sam', 'Kevin']);
+  let newGame = new Game(['Sam', 'Kevin'], {
+    pickPlayerForCoup: () => {}
+  });
   console.log(JSON.stringify(newGame, null, 2));
   
   // gameState = {
