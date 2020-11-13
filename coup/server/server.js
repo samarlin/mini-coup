@@ -1,4 +1,5 @@
 const express = require("express");
+const coup = require("./game.js");
 
 const app = express();
 const WebSocket = require("ws");
@@ -8,18 +9,10 @@ const body_parser = require("body-parser");
 const http = require("http").createServer(app);
 const wss = new WebSocket.Server({ server: http, port: 9000 });
 
-wss.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("message", (message) => {
-    //log the received message and send it back to the client
-    console.log("received: %s", message);
-    socket.send(`Hello, you sent -> ${message}`);
-  });
-});
-
 const port = 3000;
 app.use(cors());
 app.use(body_parser.json());
+let game;
 
 let state = {
   players: {},
@@ -50,6 +43,8 @@ app.post("/join-game", (req, res) => {
 app.post("/start-game", (req, res) => {
   // start game,
   // send message to all clients w/ game init info
+  let playernames = Object.keys(state.players);
+  game = new coup.Game(playernames, wss);
 });
 
 http.listen(port, () => {

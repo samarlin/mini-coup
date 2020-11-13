@@ -122,9 +122,10 @@ class EventEmitter {
 }
 
 class Game extends EventEmitter {
-  constructor(playerNames, methods) {
+  constructor(players, ws) {
     super();
     // construct number of players in playerNames array
+    console.log(ws);
     this.deck = [
       "contessa",
       "duke",
@@ -142,16 +143,13 @@ class Game extends EventEmitter {
       "captain",
       "ambassador",
     ]; // todo: make less ugly
-    this.players = playerNames.map((x) => new Player(x, this));
+    this.players = players;
     this.players.forEach((player) => {
-      player.receiveCards(pickRand(this.deck, 2));
+      ws.send(JSON.stringify({'type': 'DEAL_CARDS', 'player': player, 'cards': pickRand(this.deck, 2)}));
     });
     this.treasury = 10000;
     this.currentPlayer = this.players[0];
-
-    for (method in methods) {
-      this[method] = methods[method];
-    }
+    this.socket = ws;
   }
 
   onMessage(message) {}
@@ -178,49 +176,10 @@ class Game extends EventEmitter {
   }
 }
 
-class Player extends EventEmitter {
-  constructor(name, game) {
-    super();
-    this.name = name;
-    this.cards = [];
-    this.coins = 2;
-    this.game = game;
-
-    // public methods
-    this.pickPlayerForCoup = pickPlayerForCoup;
-  }
-
-  receiveCards(cards) {
-    this.cards = cards;
-  }
-
-  onMessage(message) {
-    if (message.type === "PICK_TARGET_COUP") {
-      this.game.postMessage({
-        type: PRIMARY_ACTIONS.COUP_PLAYER,
-        payload: pickedPlayerName,
-      });
-    }
-  }
-}
-
-let newGame = new Game(["Sam", "Kevin"], {
-  pickPlayerForCoup: () => {},
-});
-console.log(JSON.stringify(newGame, null, 2));
-
-// gameState = {
-//   players: [],
-//   turnCursor: 0,
-//   deck: [],
-//   treasuryCoins: 10000,
-//   eventLog: []
-// }
-
-// Start
-//gameState.players[gameState.turnCursor].sendEvent('TAKE_ACTION');
 
 // player1: TAKE_TAX (no one takes a secondary action),
 // player2: TAKE_FOREIGN_AID, player3: BLOCK_AID, player1: CALL_BLUFF->player3
 //              if CALL_BLUFF was correct: player3 loses a card, TAKE_FOREIGN_AID successfully resolves, turn ends
 //              if CALL_BLUFF was incorrect: player3 reveals their card, draws a new one, player1 loses a card, TAKE_FOREIGN_AID fails
+
+exports.Game = Game;
