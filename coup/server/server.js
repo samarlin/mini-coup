@@ -1,43 +1,57 @@
-const express = require('express');
+const express = require("express");
 
-const app = express()
+const app = express();
+const WebSocket = require("ws");
 
-const cors = require('cors');
-const web_socket = require('ws');
-const body_parser = require('body-parser');
-app.io = require('socket.io')();
+const cors = require("cors");
+const body_parser = require("body-parser");
+const http = require("http").createServer(app);
+const wss = new WebSocket.Server({ server: http, port: 9000 });
 
-const port = 3000
+wss.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("message", (message) => {
+    //log the received message and send it back to the client
+    console.log("received: %s", message);
+    socket.send(`Hello, you sent -> ${message}`);
+  });
+});
+
+const port = 3000;
 app.use(cors());
 app.use(body_parser.json());
 
-app.io.on('connection', function() { console.log("connection for player made"); });
-
 let state = {
-  "players": [],
-  "connections": {}
+  players: {},
 };
+const defaultState = JSON.parse(JSON.stringify(state));
 
-app.post('/join-game', (req, res) => {
+app.get("/reset", (_, res) => {
+  state = defaultState;
+  res.send("Done!");
+});
+
+app.get("/stats", (_, res) => {
+  res.json(state);
+});
+
+app.post("/join-game", (req, res) => {
   let body = req.body;
   let admin = false;
-  if (state.players.length == 0) {
+  if (Object.keys(state.players).length == 0) {
     admin = true;
   }
 
-  state.players.push(body.name); 
+  state.players[body.name] = { admin, name: body.name };
 
-  //state.connections[body.name] = ws;
+  res.json({ admin });
+});
 
-  res.json({admin});
-})
-
-app.post('/start-game', (req, res) => {
+app.post("/start-game", (req, res) => {
   // start game,
   // send message to all clients w/ game init info
-  
-})
+});
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+http.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
