@@ -1,11 +1,10 @@
 let $start = document.getElementById("start_game");
 let $id = document.getElementById("player");
 
-let us; 
-
 let state = {};
 let socket;
 joinGame().then(() => {
+  console.log(state);
   if (state.admin == true) {
     // show the start game button if admin
     $start.style.display = "block";
@@ -19,22 +18,20 @@ joinGame().then(() => {
   socket = new WebSocket("ws://localhost:9000");
 
   socket.onopen = () => {
-    socket.send("Hello Server!");
+    let msg = {type: "associate", id: state.name};
+    socket.send(JSON.stringify(msg));
   };
   
   // Listen for messages
   socket.onmessage = function (event) {
-    console.log("Message from server ", event.data);
     let message = JSON.parse(event.data);
     if(message.player === state.name) {
       if(message.type === 'DEAL_CARDS') {
         state.cards = message.cards;
-        console.log(state.cards);
       }
     }
   };
-  
-  // Listen for messages
+
   socket.onclose = function (event) {
     console.log("closed ", event.data);
   };

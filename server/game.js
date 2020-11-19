@@ -122,10 +122,9 @@ class EventEmitter {
 }
 
 class Game extends EventEmitter {
-  constructor(players, ws) {
+  constructor(players) {
     super();
-    // construct number of players in playerNames array
-    console.log(ws);
+
     this.deck = [
       "contessa",
       "duke",
@@ -144,12 +143,11 @@ class Game extends EventEmitter {
       "ambassador",
     ]; // todo: make less ugly
     this.players = players;
-    this.players.forEach((player) => {
-      ws.send(JSON.stringify({'type': 'DEAL_CARDS', 'player': player, 'cards': pickRand(this.deck, 2)}));
+    Object.keys(this.players).forEach((player) => {
+      this.players[player].connection.send(JSON.stringify({'type': 'DEAL_CARDS', 'player': player, 'cards': pickRand(this.deck, 2)}));
     });
     this.treasury = 10000;
     this.currentPlayer = this.players[0];
-    this.socket = ws;
   }
 
   onMessage(message) {}

@@ -12,12 +12,21 @@ const wss = new WebSocket.Server({ server: http, port: 9000 });
 const port = 3000;
 app.use(cors());
 app.use(body_parser.json());
-let game;
 
+let game;
 let state = {
   players: {},
 };
 const defaultState = JSON.parse(JSON.stringify(state));
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(msg) {
+    let message = JSON.parse(msg);
+    if (message.type === "associate") {
+      state.players[message.id].connection = ws;
+    }
+  });
+});
 
 app.get("/reset", (_, res) => {
   state = defaultState;
@@ -35,7 +44,7 @@ app.post("/join-game", (req, res) => {
     admin = true;
   }
 
-  state.players[body.name] = { admin, name: body.name };
+  state.players[body.name] = { admin: admin, name: body.name };
 
   res.json({ admin });
 });
@@ -43,8 +52,7 @@ app.post("/join-game", (req, res) => {
 app.post("/start-game", (req, res) => {
   // start game,
   // send message to all clients w/ game init info
-  let playernames = Object.keys(state.players);
-  game = new coup.Game(playernames, wss);
+  game = new coup.Game(state.players);
 });
 
 http.listen(port, () => {
