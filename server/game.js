@@ -40,7 +40,7 @@ const PRIMARY_ACTIONS = {
     require_response: true,
     require_target: true,
   },
-  DRAW_CARD: {
+  DRAW_CARDS: {
     type: "DRAW_CARDS",
     valid_responses: ["CALL_BLUFF"],
     require_response: true,
@@ -55,7 +55,7 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
   ASSASSINATE_PLAYER: ({ playerState }) => playerState.coinsCount >= 3,
   TAKE_TAX: () => true,
   STEAL_FROM_PLAYER: () => true,
-  DRAW_CARD: ({ gameState }) => gameState.deck.length >= 2,
+  DRAW_CARDS: ({ gameState }) => gameState.deck.length >= 2,
 };
 
 // the target for all of these will always be the user who took the
@@ -144,30 +144,50 @@ class Game extends EventEmitter {
     ]; // todo: make less ugly
     this.players = players;
     Object.keys(this.players).forEach((player) => {
-      this.players[player].connection.send(JSON.stringify({'type': 'DEAL_CARDS', 'player': player, 'cards': pickRand(this.deck, 2)}));
+      this.players[player].cards = pickRand(this.deck, 2);
+      this.players[player].connection.send(JSON.stringify({'type': 'DEAL_CARDS', 'cards': this.players[player].cards}));
+      this.players[player].coins = 2;
+      this.players[player].connection.send(JSON.stringify({'type': 'RECEIVE_MONEY', 'coins': this.players[player].coins}));
     });
-    this.treasury = 10000;
-    this.currentPlayer = this.players[0];
+    this.currentPlayer = Object.values(this.players)[0];
+
+    setTimeout(() => {this.turn();}, 2000);
   }
 
-  onMessage(message) {}
+  onMessage(message) {
+    let is_primary = message.type in PRIMARY_ACTIONS;
+    let valid_responses = PRIMARY_ACTIONS[message.type].valid_responses;
+    let other_players = Object.values(this.players).filter(player => player.name != this.currentPlayer.name);
+
+    if (is_primary)
+      if (valid_responses.length > 0) {
+        other_players.forEach(player => {
+          player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses})); 
+        });
+      }
+
+    // if it's time for a new turn, onMessage calls turn();
+  }
 
   turn() {
     //
     // if current player has 0 cards, skip turn
+    /*
     this.players.forEach((player, index) => {
       if (player.cards.length === 0) {
         this.players.splice(index, 1);
       }
     });
+    */
 
     // if current player's coins >= 10 must coup
     if (this.currentPlayer.coins >= 10) {
-      this.pickPlayerForCoup();
-      // this.currentPlayer.postMessage({type: "PICK_TARGET_COUP"}); //
+      //this.currentPlayer.connection.send(...)
     }
 
     // query player for PRIMARY_ACTION
+    this.currentPlayer.connection.send(JSON.stringify({type: 'TAKE_PRIMARY_ACTION'}));
+
     // validate PRIMARY_ACTION
     // query all other players for valid SECONDARY_ACTION
     // process first recieved SECONDARY_ACTION
