@@ -67,6 +67,10 @@ joinGame().then(() => {
         // player has been couped, and must select a card to lose
         // OR player has called bluff incorrectly, and must select a card to lose
         break;
+      case 'CHOOSE_PLAYER':
+        // player must choose a target to coup as a result of having
+        // 10 or more coins at the start of their turn
+        break;
       case 'GAME_OVER':
         // the game is over, update interface accordingly
         break;
@@ -90,7 +94,8 @@ function take_primary_action() {
       socket.send(JSON.stringify(message));
       break;
     case 'TAKE_INCOME':
-
+      message = {type: 'TAKE_INCOME', player: state.name};
+      socket.send(JSON.stringify(message));
       break;
     case 'COUP_PLAYER':
       break;
@@ -108,6 +113,7 @@ function take_primary_action() {
 function take_secondary_action(primary_action, valid_actions) {
   alert('Valid secondary actions: ' + valid_actions.join());
   let action = prompt('Enter secondary action in response to ' + primary_action);
+  
   while(!valid_actions.includes(action)) {
     alert('Not a valid secondary action, try again');
     action = prompt('Enter secondary action in response to ' + primary_action);
