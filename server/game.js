@@ -1,10 +1,13 @@
 // Objects containing the different actions players can take
+
+const e = require("express");
+
 // actions taken at the beginning of a user's turn
 const PRIMARY_ACTIONS = {
   TAKE_FOREIGN_AID: {
     // no CALL_BLUFF
     type: "TAKE_FOREIGN_AID",
-    valid_responses: ["BLOCK_AID"],
+    valid_responses: ["BLOCK_AID", "APPROVE_MOVE"],
     require_response: true,
     require_target: false,
   },
@@ -24,38 +27,62 @@ const PRIMARY_ACTIONS = {
   },
   ASSASSINATE_PLAYER: {
     type: "ASSASSINATE_PLAYER",
-    valid_responses: ["CALL_BLUFF", "BLOCK_ASSASSINATE"],
+    valid_responses: ["CALL_BLUFF", "BLOCK_ASSASSINATE", "APPROVE_MOVE"],
     require_response: true,
     require_target: true,
   },
   TAKE_TAX: {
     type: "TAKE_TAX",
-    valid_responses: ["CALL_BLUFF"],
+    valid_responses: ["CALL_BLUFF", "APPROVE_MOVE"],
     require_response: true,
     require_target: false,
   },
   STEAL_FROM_PLAYER: {
     type: "STEAL_FROM_PLAYER",
-    valid_responses: ["CALL_BLUFF", "BLOCK_STEAL"],
+    valid_responses: ["CALL_BLUFF", "BLOCK_STEAL", "APPROVE_MOVE"],
     require_response: true,
     require_target: true,
   },
   DRAW_CARDS: {
     type: "DRAW_CARDS",
-    valid_responses: ["CALL_BLUFF"],
+    valid_responses: ["CALL_BLUFF", "APPROVE_MOVE"],
     require_response: true,
     require_target: false,
   },
 };
 
 const PRIMARY_ACTIONS_VALIDATIONS = {
-  TAKE_FOREIGN_AID: () => true,
-  TAKE_INCOME: () => true,
-  COUP_PLAYER: ({ playerState }) => playerState.coinsCount >= 7, // game forces coup if current player has >=10 coins
-  ASSASSINATE_PLAYER: ({ playerState }) => playerState.coinsCount >= 3,
-  TAKE_TAX: () => true,
-  STEAL_FROM_PLAYER: () => true,
-  DRAW_CARDS: ({ gameState }) => gameState.deck.length >= 2,
+  TAKE_FOREIGN_AID: () => "pass",
+  TAKE_INCOME: () => "pass",
+  COUP_PLAYER: ({ gameState, playerState, target }) => {
+    let found = gameState.players.find(player => {return player.name === target});
+    if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
+    if(!playerState.coins >= 7) { return "insufficient coins"; }
+    if(!found) {
+      return "invalid target";
+    }
+    return "pass"
+  }, // game forces coup if current player has >=10 coins
+  ASSASSINATE_PLAYER: ({ gameState, playerState, target }) => {
+    let found = gameState.players.find(player => {return player.name === target});
+    if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
+    if(!playerState.coins >= 7) { return "Insufficient coins"; }
+    if(!found) {
+      return "invalid target";
+    }
+    return "pass"
+  },
+  TAKE_TAX: () => "pass",
+  STEAL_FROM_PLAYER: ({gameState, playerState, target}) => {
+    if(!gameState.players.find(player => {return player.name === target})) {
+      return "invalid target";
+    }
+    return "pass"
+  },
+  DRAW_CARDS: ({ gameState }) => {
+    if(!gameState.deck.length >= 2) { return "insufficient cards in deck"}
+    return "pass"
+  }
 };
 
 // The target for all of these will always be the user who took the
@@ -69,26 +96,31 @@ const SECONDARY_ACTIONS = {
     // available to any player after a primary action (except coup) or any other secondary action is taken
     type: "CALL_BLUFF",
     require_response: true,
-    require_target: true,
+    require_target: true
   },
   BLOCK_AID: {
     // available to any player after a primary action of TAKE_FOREIGN_AID is taken
     type: "BLOCK_AID",
     require_response: true,
-    require_target: true,
+    require_target: true
   },
   BLOCK_STEAL: {
     // only available to target of primary action STEAL_FROM_PLAYER
     type: "BLOCK_STEAL",
     require_response: true,
-    require_target: true,
+    require_target: true
   },
   BLOCK_ASSASSINATE: {
     // only available to target of primary action ASSASSINATE_PLAYER
     type: "BLOCK_ASSASSINATE",
     require_response: true,
-    require_target: true,
+    require_target: true
   },
+  APPROVE_MOVE: {
+    type: "APPROVE_MOVE",
+    require_response: false,
+    require_target: false
+  }
 };
 
 // takes arr and picks num elements randomly, removes them from arr
@@ -127,9 +159,9 @@ class Game {
     this.players = players;
     Object.keys(this.players).forEach((player) => {
       this.players[player].cards = pickRand(this.deck, 2);
-      this.players[player].connection.send(JSON.stringify({'type': 'DEAL_CARDS', 'cards': this.players[player].cards}));
+      this.players[player].connection.send(JSON.stringify({type: 'DEAL_CARDS', cards: this.players[player].cards}));
       this.players[player].coins = 2;
-      this.players[player].connection.send(JSON.stringify({'type': 'RECEIVE_MONEY', 'coins': this.players[player].coins}));
+      this.players[player].connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.players[player].coins}));
     });
     this.current_player = Object.values(this.players)[0];
     
@@ -148,6 +180,10 @@ class Game {
 
     if (is_primary) {
       // validate PRIMARY_ACTION
+      let validation = PRIMARY_ACTIONS_VALIDATIONS[message.type]({gameState: {deck: this.deck, players: this.players}, playerState: this.current_player, target: message.target});
+      if(validation !== "pass") {
+        this.current_player.connection.send(JSON.stringify({type: 'INVALID_MOVE', error: validation}));
+      } 
 
       // query all other players for valid SECONDARY_ACTION
       if (valid_responses.length > 0) {
@@ -155,12 +191,38 @@ class Game {
         other_players.forEach(player => {
           player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses})); 
         });
+      } else {
+        // TAKE_INCOME & COUP_PLAYER
+        if(message.type === 'TAKE_INCOME') {
+          this.current_player.coins += 2;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}))
+        } else if(message.type === 'COUP_PLAYER') {
+          // send message to message.target to pick a card to lose
+          this.players[message.target].connection.send(JSON.stringify({type: 'LOSE_CARD'}));
+        }
+        this.awaiting_secondary = false;
+      }
+    } else if(message.type in SECONDARY_ACTIONS) {
+      // process SECONDARY_ACTION
+      if(this.awaiting_secondary === true) {
+        if(message.type === "APPROVE_MOVE") {
+          ++this.response_tally;
+        } else {
+          // process non-"APPROVE_MOVE" secondary action
+          // we no longer need to check for "APPROVE_MOVE"
+          // The first non-"APPROVE_MOVE" secondary action received is the one which evaluates
+          this.awaiting_secondary = false;
+        
+        }
       }
     }
 
-    // process first recieved SECONDARY_ACTION
-
     // if it's time for a new turn, onMessage updates current_player and calls this.turn();
+    if(this.response_tally === Object.values(this.players).length - 1 || this.awaiting_secondary === false) {
+      // move to next turn
+      this.response_tally = 0;
+      this.awaiting_secondary = true;
+    }
   }
 
   turn() {

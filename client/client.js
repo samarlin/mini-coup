@@ -41,7 +41,7 @@ joinGame().then(() => {
         break;
       case 'INVALID_MOVE':
         // game found primary action to be invalid, player must chose another one
-        alert('Invalid move chosen, try again.');
+        alert('Invalid move chosen, try again. Reason: ' + message.error);
         take_primary_action();
         break;
       case 'TAKE_SECONDARY_ACTION':
@@ -87,7 +87,7 @@ function take_primary_action() {
   let move = prompt('Enter move.');
   // TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
   // ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS
-  let message;
+  let message, target;
   switch(move){
     case 'TAKE_FOREIGN_AID':
       message = {type: 'TAKE_FOREIGN_AID', player: state.name};
@@ -98,14 +98,27 @@ function take_primary_action() {
       socket.send(JSON.stringify(message));
       break;
     case 'COUP_PLAYER':
+      target = prompt('Enter player name to coup.');
+      message = {type: 'COUP_PLAYER', target: target, player: state.name};
+      socket.send(JSON.stringify(message));
       break;
     case 'ASSASSINATE_PLAYER':
+      target = prompt('Enter player name to assassinate.');
+      message = {type: 'ASSASSINATE_PLAYER ', target: target, player: state.name};
+      socket.send(JSON.stringify(message));
       break;
     case 'TAKE_TAX':
+      message = {type: 'TAKE_TAX', player: state.name};
+      socket.send(JSON.stringify(message));
       break;
     case 'STEAL_FROM_PLAYER':
+      target = prompt('Enter player name to steal from.');
+      message = {type: 'STEAL_FROM_PLAYER', target: target, player: state.name};
+      socket.send(JSON.stringify(message));
       break;
     case 'DRAW_CARDS':
+      message = {type: 'DRAW_CARDS', player: state.name};
+      socket.send(JSON.stringify(message));
       break;
   }
 }
