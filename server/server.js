@@ -40,6 +40,10 @@ app.get("/stats", (_, res) => {
   res.json(state);
 });
 
+app.get("/events", (_, res) => {
+  res.json(game.event_log);
+});
+
 app.post("/join-game", (req, res) => {
   let body = req.body;
   let admin = false;

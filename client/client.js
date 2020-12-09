@@ -53,6 +53,8 @@ joinGame().then(() => {
         // player's bluff has been called, player must select a card to reveal
         // revealed card will either be lost or replaced, depending on
         //    whether the revealed card matches the attempted action
+        let choice = prompt('Choose a card to lose: ' + state.cards[0] + ' ' + state.cards[1]);
+        socket.send(JSON.stringify({type: 'REVEALED_CARD', card: choice, player: state.name, reason: message.reason}));
         break;
       case 'RECEIVE_MONEY':
         // response from TAKE_FOREIGN_AID, TAKE_INCOME, STEAL_FROM_PLAYER
@@ -63,9 +65,10 @@ joinGame().then(() => {
         // a number of cards equal to their current total to keep from the set of cards
         // received and already had cards
         break;
-      case 'LOSE_CARD': 
-        // player has been couped, and must select a card to lose
+      case 'CHANGE_CARDS': 
+        // player has been couped/assassinated, and must select a card to lose
         // OR player has called bluff incorrectly, and must select a card to lose
+        state.cards = message.cards;
         break;
       case 'CHOOSE_PLAYER':
         // player must choose a target to coup as a result of having
@@ -131,7 +134,7 @@ function take_secondary_action(primary_action, valid_actions) {
     alert('Not a valid secondary action, try again');
     action = prompt('Enter secondary action in response to ' + primary_action);
   }
-  socket.send({type: action, player: state.name});
+  socket.send(JSON.stringify({type: action, player: state.name}));
 }
 
 function joinGame() {

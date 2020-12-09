@@ -55,7 +55,7 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
   TAKE_FOREIGN_AID: () => "pass",
   TAKE_INCOME: () => "pass",
   COUP_PLAYER: ({ gameState, playerState, target }) => {
-    let found = gameState.players.find(player => {return player.name === target});
+    let found = Object.keys(gameState.players).includes(target);
     if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
     if(!playerState.coins >= 7) { return "insufficient coins"; }
     if(!found) {
@@ -64,9 +64,9 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
     return "pass"
   }, // game forces coup if current player has >=10 coins
   ASSASSINATE_PLAYER: ({ gameState, playerState, target }) => {
-    let found = gameState.players.find(player => {return player.name === target});
+    let found = Object.keys(gameState.players).includes(target);
     if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
-    if(!playerState.coins >= 7) { return "Insufficient coins"; }
+    if(!playerState.coins >= 7) { return "insufficient coins"; }
     if(!found) {
       return "invalid target";
     }
@@ -74,8 +74,10 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
   },
   TAKE_TAX: () => "pass",
   STEAL_FROM_PLAYER: ({gameState, playerState, target}) => {
-    if(!gameState.players.find(player => {return player.name === target})) {
+    if(!Object.keys(gameState.players).includes(target)) {
       return "invalid target";
+    } else if (2 > gameState.players[target].coins) {
+      return "target has insufficient coins";
     }
     return "pass"
   },
@@ -118,6 +120,11 @@ const SECONDARY_ACTIONS = {
   },
   APPROVE_MOVE: {
     type: "APPROVE_MOVE",
+    require_response: false,
+    require_target: false
+  },
+  REVEALED_CARD: {
+    type: "REVEALED_CARD",
     require_response: false,
     require_target: false
   }
@@ -165,21 +172,26 @@ class Game {
     });
     this.current_player = Object.values(this.players)[0];
     
+    this.current_primary = "";
     this.awaiting_secondary = false;
     this.response_tally = 0;
+    this.primary_success = false;
+    this.current_turn_moves = []
 
     setTimeout(() => {this.turn();}, 2000);
   }
 
   onMessage(message) {
     this.event_log.push(message);
+    this.current_turn_moves.unshift(message);
 
     let is_primary = message.type in PRIMARY_ACTIONS;
-    let valid_responses = PRIMARY_ACTIONS[message.type].valid_responses;
     let other_players = Object.values(this.players).filter(player => player.name != this.current_player.name);
 
     if (is_primary) {
       // validate PRIMARY_ACTION
+      this.current_primary = message;
+      let valid_responses = PRIMARY_ACTIONS[message.type].valid_responses;
       let validation = PRIMARY_ACTIONS_VALIDATIONS[message.type]({gameState: {deck: this.deck, players: this.players}, playerState: this.current_player, target: message.target});
       if(validation !== "pass") {
         this.current_player.connection.send(JSON.stringify({type: 'INVALID_MOVE', error: validation}));
@@ -194,11 +206,11 @@ class Game {
       } else {
         // TAKE_INCOME & COUP_PLAYER
         if(message.type === 'TAKE_INCOME') {
-          this.current_player.coins += 2;
-          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}))
+          this.current_player.coins += 1;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
         } else if(message.type === 'COUP_PLAYER') {
           // send message to message.target to pick a card to lose
-          this.players[message.target].connection.send(JSON.stringify({type: 'LOSE_CARD'}));
+          this.players[message.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'COUP'}));
         }
         this.awaiting_secondary = false;
       }
@@ -207,21 +219,110 @@ class Game {
       if(this.awaiting_secondary === true) {
         if(message.type === "APPROVE_MOVE") {
           ++this.response_tally;
+          if(this.response_tally === Object.values(this.players).length - 1) {
+            this.primary_success = true;
+            this.awaiting_secondary = false;
+          }
         } else {
           // process non-"APPROVE_MOVE" secondary action
-          // we no longer need to check for "APPROVE_MOVE"
-          // The first non-"APPROVE_MOVE" secondary action received is the one which evaluates
-          this.awaiting_secondary = false;
-        
+          // We no longer need to check for "APPROVE_MOVE" as
+          // the first non-"APPROVE_MOVE" secondary action received is the one which resolves
+
+          switch(message.type) { // CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE
+            case 'CALL_BLUFF':
+              // can either be current player or current player's target
+              let target, type;
+              for (let i = 1; i < this.current_turn_moves.length; ++i) {
+                if (this.current_turn_moves[i].type !== 'APPROVE_MOVE') {
+                  target = this.current_turn_moves[i].player;
+                  type = this.current_turn_moves[i].type;
+                  break;
+                }
+              }
+              this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF'}));
+              break;
+            case 'BLOCK_AID':
+              // give other user an opportunity to 
+              break;
+            case 'BLOCK_STEAL':
+              //
+              break;
+            case 'BLOCK_ASSASSINATE':
+              //
+              break;
+            case 'REVEALED_CARD':
+              if(this.players[message.player].cards.includes(message.card) && message.reason === 'BLUFF') {
+                // They have the card -- are issued a new card to replace the one they revealed
+                // Shoot, there's a bug here -- need to fix comparing card to appropriate card rather than player cards :P
+                let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
+                this.players[message.player].cards.splice(idx, 1);
+
+                let new_card = pickRand(this.deck, 1); // not sure what is supposed to happen if player needs a new card but deck is empty
+                this.players[message.player].cards.push(new_card);
+
+                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                
+                this.primary_success = true;
+                this.awaiting_secondary = false;
+              } else {
+                // They don't have the card -- they just lose a card
+                // or, they've been assassinated/couped
+                let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
+                this.players[message.player].cards.splice(idx, 1);
+                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                
+                this.primary_success = false;
+                this.awaiting_secondary = false;
+              }
+              break;
+          }
         }
       }
     }
 
-    // if it's time for a new turn, onMessage updates current_player and calls this.turn();
-    if(this.response_tally === Object.values(this.players).length - 1 || this.awaiting_secondary === false) {
+    // if it's time for a new turn, we resolve the current primary, update current_player and call this.turn();
+    if(this.primary_success === true) {
+      // resolve current primary
+      switch(this.current_primary.type) {
+        case 'TAKE_FOREIGN_AID':
+          this.current_player.coins += 2;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.awaiting_secondary = false;
+          break;
+        case 'ASSASSINATE_PLAYER':
+          this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'LOSE_CARD'}));
+          break;
+        case 'TAKE_TAX':
+          this.current_player.coins += 3;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.awaiting_secondary = false;
+          break;
+        case 'STEAL_FROM_PLAYER':
+          this.current_player.coins += 2;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.players[this.current_primary.target].coins -= 2;
+          this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.players[this.current_primary.target].coins}));
+          this.awaiting_secondary = false;
+          break;
+        case 'DRAW_CARDS':
+          let local_pick = pickRand(this.deck, 2);
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
+          break;
+      }
+    }
+
+    if (this.awaiting_secondary === false) {
       // move to next turn
       this.response_tally = 0;
+      this.current_turn_moves = [];
       this.awaiting_secondary = true;
+      this.primary_success = false;
+
+      let curr_ind = Object.values(this.players).indexOf(this.current_player);
+      curr_ind = (curr_ind === (Object.keys(this.players).length - 1)) ? 0 : curr_ind + 1;
+      this.current_player = Object.values(this.players)[curr_ind];
+
+      this.turn();
     }
   }
 
