@@ -37,7 +37,13 @@ app.get("/reset", (_, res) => {
 });
 
 app.get("/stats", (_, res) => {
-  res.json(state);
+  let sanitized = {
+    ...state,
+    players: Object.entries(state.players).map(([name, player]) => {
+    const {connection, ...rest} = player;
+    return rest;
+    })};
+  res.json(sanitized);
 });
 
 app.get("/events", (_, res) => {

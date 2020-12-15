@@ -1,9 +1,9 @@
 let $start = document.getElementById("start_game");
 let $id = document.getElementById("player");
-let $card1 = document.getElementById('card1');
-let $card2 = document.getElementById('card2');
+let $cards = document.getElementById('cards');
+let $coins = document.getElementById('coins');
 
-let state = {};
+var state = {};
 let socket;
 joinGame().then(() => {
   console.log(state);
@@ -26,13 +26,14 @@ joinGame().then(() => {
   
   // Listen for messages
   socket.onmessage = function (event) {
+    console.log(event);
     let message = JSON.parse(event.data);
+    let choice;
     
     switch(message.type) {
       case 'DEAL_CARDS': // initial dealing of cards
         state.cards = message.cards;
-        $card1.innerHTML = state.cards[0];
-        $card2.innerHTML = state.cards[1];
+        $cards.innerHTML = message.cards;
         break;
       case 'TAKE_PRIMARY_ACTION':
         // TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
@@ -53,32 +54,43 @@ joinGame().then(() => {
         // player's bluff has been called, player must select a card to reveal
         // revealed card will either be lost or replaced, depending on
         //    whether the revealed card matches the attempted action
-        let choice = prompt('Choose a card to lose: ' + state.cards[0] + ' ' + state.cards[1]);
-        socket.send(JSON.stringify({type: 'REVEALED_CARD', card: choice, player: state.name, reason: message.reason}));
+        choice = prompt('Choose a card to reveal: ' + state.cards);
+        socket.send(JSON.stringify({type: 'REVEALED_CARD', card: choice, player: state.name, reason: message.reason, prev_type: message.prev_type}));
         break;
       case 'RECEIVE_MONEY':
         // response from TAKE_FOREIGN_AID, TAKE_INCOME, STEAL_FROM_PLAYER
         state.coins = message.coins;
+        $coins.innerHTML = message.coins;
         break;
       case 'RECEIVE_CARDS':
         // response from DRAW_CARDS; player receives two cards and needs to pick
         // a number of cards equal to their current total to keep from the set of cards
         // received and already had cards
+        choice = prompt('Choose ' + state.cards.length + ' cards to keep: ' + state.cards + "," + message.cards);
+        
+        // todo: validate
+        state.cards = choice.split(',').map(card => card.trim());
+        $cards.innerHTML = state.cards;
+        socket.send(JSON.stringify({type: 'CARDS_CHOSEN', cards: state.cards, player: state.name}));
+        // need to add retry later; hook in socket onError
         break;
       case 'CHANGE_CARDS': 
         // player has been couped/assassinated, and must select a card to lose
         // OR player has called bluff incorrectly, and must select a card to lose
         state.cards = message.cards;
+        $cards.innerHTML = message.cards;
         break;
       case 'CHOOSE_PLAYER':
         // player must choose a target to coup as a result of having
         // 10 or more coins at the start of their turn
+        choice = prompt('Enter player name to coup');
+        message = {type: 'COUP_PLAYER', target: target, player: state.name};
+        socket.send(JSON.stringify(message));
         break;
       case 'GAME_OVER':
         // the game is over, update interface accordingly
         break;
     }
-  
   };
 
   socket.onclose = function (event) {
@@ -107,7 +119,7 @@ function take_primary_action() {
       break;
     case 'ASSASSINATE_PLAYER':
       target = prompt('Enter player name to assassinate.');
-      message = {type: 'ASSASSINATE_PLAYER ', target: target, player: state.name};
+      message = {type: 'ASSASSINATE_PLAYER', target: target, player: state.name};
       socket.send(JSON.stringify(message));
       break;
     case 'TAKE_TAX':
@@ -136,6 +148,8 @@ function take_secondary_action(primary_action, valid_actions) {
   }
   socket.send(JSON.stringify({type: action, player: state.name}));
 }
+
+
 
 function joinGame() {
   // sent post request to server,
