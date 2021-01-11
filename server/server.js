@@ -23,7 +23,6 @@ wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(msg) {
     let message = JSON.parse(msg);
     if (message.type === "ASSOCIATE") {
-      console.log(message);
       state.players[message.id].connection = ws;
     } else {
       game.onMessage(message);
