@@ -1,27 +1,38 @@
 <script>
-    export let message = '';
-    export let validation = () => {return true};
-    export let display = 0;
-    export let onSubmit = () => {};
-    let text = '';
-    let error = false;
+    export let attr = {
+        message: '',
+        display: 0,
+        items: [],
+        onSubmit: () => {}
+    };
+
+    let selection = '';
 </script>
 
-<div id="popup" style="display: {display ? 'block' : 'none'}">
-<span class:error>{message}</span>
-<br><br>
-<input type="text" bind:value={text}>
-<button on:click={() => {
-    if(validation(text)) {
-        onSubmit(text); 
-        text='';
-        error = false;
-        display = 0;
-    } else {
-        error = true;
-    }
-    }}>Submit</button>
-</div>
+{#if attr.display}
+    <div id="popup">
+        <span>{attr.message}</span>
+        <br><br>
+        {#if attr.items.length !== 0}
+            {#each attr.items as item}
+                <button on:click={() => {
+                    attr.onSubmit(item);
+                    attr.message = '';
+                    attr.items = [];
+                    attr.display = 0;
+                }}>{item}</button>
+            {/each}
+        {:else}
+            <input type="text" bind:value={selection}>
+            <button on:click={() => {
+                attr.onSubmit(selection);
+                attr.message='';
+                attr.display = 0;
+                attr.items = [];
+            }}>Submit</button>
+        {/if}
+    </div>
+{/if}
 
 <style>
     #popup {
@@ -34,9 +45,5 @@
 
         padding: 2em;
         border: thin solid darkslateblue;
-    }
-
-    span.error {
-        color: red;
     }
 </style>

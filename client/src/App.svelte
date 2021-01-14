@@ -6,10 +6,12 @@
 
 	import {player} from './player.store.js';
 
-	let display_popup = 0;
-	let onSubmit_popup = () => {};
-	let validation_popup = () => {};
-	let message_popup = '';
+	let popup_attr = {
+		message: '',
+        display: 0,
+        items: [],
+        onSubmit: () => {}
+	}
 	
 	let player_name = '';
 	let primary_action = '';
@@ -17,10 +19,10 @@
 	let target_name = '';
 
 	if($connections.connectionState === 'NotJoined') {
-		message_popup = "Enter your name:";
-		onSubmit_popup = (name) => {player_name = name;};
-		validation_popup = () => {return true;};
-		display_popup = 1;
+		popup_attr.items = [];
+		popup_attr.message = "Enter your name:";
+		popup_attr.onSubmit = (name) => {player_name = name;};
+		popup_attr.display = 1;
 	}
 
 	$: if (player_name) {
@@ -115,10 +117,10 @@
 	};
 
 	function take_primary_action() {
-		message_popup = "Enter move:";
-		onSubmit_popup = (input_move) => {primary_action = input_move;};
-		validation_popup = () => {return true;};
-		display_popup = 1;
+		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
+		popup_attr.message = "Enter move:";
+		popup_attr.onSubmit = (input_move) => {primary_action = input_move;};
+		popup_attr.display = 1;
 	}
 
 	$: if(primary_action) {
@@ -165,11 +167,10 @@
 	}
 
 	function take_secondary_action(primary_action, valid_actions) {
-		message_popup = 'Enter secondary action in response to ' + primary_action +
-								' (Valid secondary actions: ' + valid_actions.join() + ')';
-		onSubmit_popup = (input_move) => {secondary_action = input_move;};
-		validation_popup = (input_move) => {return valid_actions.includes(input_move);};
-		display_popup = 1;
+		popup_attr.message = 'Select secondary action in response to ' + primary_action;
+		popup_attr.items = valid_actions;
+		popup_attr.onSubmit = (input_move) => {secondary_action = input_move;};
+		popup_attr.display = 1;
 	}
 
 	$: if(secondary_action) {
@@ -182,14 +183,11 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
-<Popup message={message_popup} display={display_popup} onSubmit={onSubmit_popup} validation={validation_popup}/>
+<svelte:component this={Popup} attr={popup_attr}/>
 
 <main>
 	<h1>Hello {$player.name}!</h1>
 	<h2>Your cards are {$player.cards.join(' & ')}, and you have {$player.coins} coins.</h2>
-	<p>Valid action names:</p>
-	<p>TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS</p>
-	<p>CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE, APPROVE_MOVE</p>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
 	{/if}
