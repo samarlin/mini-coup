@@ -199,9 +199,7 @@ class Game {
     this.event_log.push(message);
     this.current_turn_moves.unshift(message);
 
-    console.log(message.type);
     let is_primary = message.type in PRIMARY_ACTIONS;
-    console.log(is_primary);
 
     let other_players = Object.values(this.players).filter(player => player.name != message.player);
 
@@ -210,7 +208,6 @@ class Game {
       this.current_primary = message;
       let valid_responses = PRIMARY_ACTIONS[message.type].valid_responses;
       let validation = PRIMARY_ACTIONS_VALIDATIONS[message.type]({gameState: {deck: this.deck, players: this.players}, playerState: this.current_player, target: message.target});
-      console.log(validation);
       if(validation !== "pass") {
         this.current_player.connection.send(JSON.stringify({type: 'INVALID_MOVE', error: validation}));
       } 
@@ -305,7 +302,7 @@ class Game {
                 this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
                 
                 this.primary_success = true;
-                this.awaiting_secondary = true;
+                this.awaiting_secondary = false;
               } else {
                 // They don't have the card -- they just lose a card
                 // or, they've been assassinated/couped

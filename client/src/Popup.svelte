@@ -28,6 +28,7 @@
             {#each attr.items as item}
                 <button on:click={() => {
                     attr.onSubmit(item);
+                    selection = '';
                     attr = def;
                 }}>{item}</button>
             {/each}
@@ -40,6 +41,7 @@
             {#if selection.length === 2}
                 <button on:click={() => {
                     attr.onSubmit(selection);
+                    selection = '';
                     attr = def;
                 }}>Submit</button>
             {/if}
@@ -47,6 +49,7 @@
             <input type="text" bind:value={selection}>
             <button on:click={() => {
                 attr.onSubmit(selection);
+                selection = '';
                 attr = def;
             }}>Submit</button>
         {:else}

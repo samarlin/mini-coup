@@ -54,6 +54,11 @@
 		console.log("closed ", event.data);
 	}
 	function onMessage(event) {
+		console.log(event);
+		primary_action = '';
+		secondary_action = '';
+		target_name = '';
+		selected_cards = '';
 		let message = JSON.parse(event.data);
 		
 		switch(message.type) {
@@ -118,7 +123,7 @@
 	}
 
 	$: if(primary_action) {
-		process_primary_action(primary_action);
+		process_primary_action(primary_action); 
 	}
 
 	function process_primary_action(move) {
