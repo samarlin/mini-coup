@@ -264,7 +264,7 @@ class Game {
                   break;
                 }
               }
-              this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: type}));
+              this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: type, instigator: message.player}));
               break;
             case 'BLOCK_AID':
               // give other user an opportunity to CALL_BLUFF
@@ -300,9 +300,12 @@ class Game {
                 this.players[message.player].cards.push(new_card);
 
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+
+                // the challenging player now loses a card:
+                this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
                 
                 this.primary_success = true;
-                this.awaiting_secondary = false;
+                this.awaiting_secondary = true;
               } else {
                 // They don't have the card -- they just lose a card
                 // or, they've been assassinated/couped
@@ -315,7 +318,6 @@ class Game {
               }
               break;
             case 'CARDS_CHOSEN':
-              // todo: validate
               this.players[message.player].cards = message.cards;
             break;
           }
@@ -335,7 +337,7 @@ class Game {
         case 'ASSASSINATE_PLAYER':
           this.current_player.coins -= 3;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
-          this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'LOSE_CARD'}));
+          this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
           break;
         case 'TAKE_TAX':
           this.current_player.coins += 3;
@@ -384,7 +386,7 @@ class Game {
 
     // if current player's coins >= 10 must coup
     if (this.current_player.coins >= 10) {
-      this.current_player.connection.send(JSON.stringify({type: 'CHOOSE_PLAYER', for: 'FORCED_COUP'}));
+      this.current_player.connection.send(JSON.stringify({type: 'CHOOSE_PLAYER'}));
     }
 
     // query player for PRIMARY_ACTION

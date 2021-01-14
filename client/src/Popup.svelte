@@ -1,8 +1,19 @@
 <script>
     export let attr = {
         message: '',
-        display: 0,
+        display: false,
         items: [],
+        multi: false,
+        alert: false,
+        onSubmit: () => {}
+    };
+
+    let def = {
+        message: '',
+        display: false,
+        items: [],
+        multi: false,
+        alert: false,
         onSubmit: () => {}
     };
 
@@ -13,23 +24,36 @@
     <div id="popup">
         <span>{attr.message}</span>
         <br><br>
-        {#if attr.items.length !== 0}
+        {#if attr.items.length !== 0 && !attr.multi}
             {#each attr.items as item}
                 <button on:click={() => {
                     attr.onSubmit(item);
-                    attr.message = '';
-                    attr.items = [];
-                    attr.display = 0;
+                    attr = def;
                 }}>{item}</button>
             {/each}
-        {:else}
+        {:else if attr.multi}
+            <select multiple bind:value={selection}>
+                {#each attr.items as item}
+                    <option value={item}>{item}</option>
+                {/each}
+            </select>
+            {#if selection.length === 2}
+                <button on:click={() => {
+                    attr.onSubmit(selection);
+                    attr = def;
+                }}>Submit</button>
+            {/if}
+        {:else if !attr.alert}
             <input type="text" bind:value={selection}>
             <button on:click={() => {
                 attr.onSubmit(selection);
-                attr.message='';
-                attr.display = 0;
-                attr.items = [];
+                attr = def;
             }}>Submit</button>
+        {:else}
+            <button on:click={() => {
+                attr.onSubmit(selection);
+                attr = def;
+            }}>OK</button>
         {/if}
     </div>
 {/if}

@@ -8,8 +8,10 @@
 
 	let popup_attr = {
 		message: '',
-        display: 0,
-        items: [],
+		display: false,
+		items: [],
+		multi: false,
+		alert: false,
         onSubmit: () => {}
 	}
 	
@@ -17,12 +19,14 @@
 	let primary_action = '';
 	let secondary_action = '';
 	let target_name = '';
+	let reveal = {};
+	let selected_cards = '';
 
 	if($connections.connectionState === 'NotJoined') {
 		popup_attr.items = [];
 		popup_attr.message = "Enter your name:";
 		popup_attr.onSubmit = (name) => {player_name = name;};
-		popup_attr.display = 1;
+		popup_attr.display = true;
 	}
 
 	$: if (player_name) {
@@ -51,7 +55,6 @@
 	}
 	function onMessage(event) {
 		let message = JSON.parse(event.data);
-		let choice, current_message;
 		
 		switch(message.type) {
 			case 'DEAL_CARDS': // initial dealing of cards
@@ -65,8 +68,7 @@
 				break;
 			case 'INVALID_MOVE':
 				// game found primary action to be invalid, player must chose another one
-				alert('Invalid move chosen, try again. Reason: ' + message.error);
-				take_primary_action();
+				trigger_alert('Invalid move chosen, try again. Reason: ' + message.error, take_primary_action);
 				break;
 			case 'TAKE_SECONDARY_ACTION':
 				// CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE
@@ -77,8 +79,8 @@
 				// player's bluff has been called, player must select a card to reveal
 				// revealed card will either be lost or replaced, depending on
 				//    whether the revealed card matches the attempted action
-				choice = prompt('Choose a card to reveal: ' + $player.cards);
-				current_message = {type: 'REVEALED_CARD', player: $player.name, reason: message.reason, prev_type: message.prev_type, card: choice}; 
+				reveal = {revealing: true, reason: message.reason, prev_type: message.prev_type, instigator: message.instigator};
+				choose_cards($player.cards, false); 
 				break;
 			case 'RECEIVE_MONEY':
 				// response from TAKE_FOREIGN_AID, TAKE_INCOME, STEAL_FROM_PLAYER
@@ -88,31 +90,23 @@
 				// response from DRAW_CARDS; player receives two cards and needs to pick
 				// a number of cards equal to their current total to keep from the set of cards
 				// received and already had cards
-				choice = prompt('Choose ' + $player.cards.length + ' cards to keep: ' + $player.cards + "," + message.cards);
-				
-				// todo: validate
-				$player.cards = choice.split(',').map(card => card.trim());
-				current_message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards};
+				reveal = {revealing: false};
+				choose_cards($player.cards.concat(message.cards), ($player.cards.length > 1));
 				// need to add retry later; hook in socket onError
 				break;
 			case 'CHANGE_CARDS': 
-				// player has been couped/assassinated, and must select a card to lose
-				// OR player has called bluff incorrectly, and must select a card to lose
+				// player has been couped/assassinated, and selected a card to lose
+				// OR player has called bluff incorrectly, and selected a card to lose
 				$player.cards = message.cards;
 				break;
 			case 'CHOOSE_PLAYER':
 				// player must choose a target to coup as a result of having
 				// 10 or more coins at the start of their turn
-				choice = prompt('Enter player name to coup');
-				current_message = {type: 'COUP_PLAYER', player: $player.name, target: choice}; 
+				primary_action = 'COUP_PLAYER';
 				break;
 			case 'GAME_OVER':
 				// the game is over, update interface accordingly
 				break;
-		}
-
-		if(current_message) {
-			$connections.connection.send(JSON.stringify(current_message));
 		}
 	};
 
@@ -120,7 +114,7 @@
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Enter move:";
 		popup_attr.onSubmit = (input_move) => {primary_action = input_move;};
-		popup_attr.display = 1;
+		popup_attr.display = true;
 	}
 
 	$: if(primary_action) {
@@ -130,7 +124,7 @@
 	function process_primary_action(move) {
 		// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
 		// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS
-		let message, target;
+		let message;
 		switch(move) {
 			case 'TAKE_FOREIGN_AID':
 				message = {type: 'TAKE_FOREIGN_AID', player: $player.name};
@@ -141,23 +135,17 @@
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'COUP_PLAYER':
-				target = prompt('Enter player name to coup.');
-				message = {type: 'COUP_PLAYER', target: target, player: $player.name};
-				$connections.connection.send(JSON.stringify(message));
+				choose_player('coup');
 				break;
 			case 'ASSASSINATE_PLAYER':
-				target = prompt('Enter player name to assassinate.');
-				message = {type: 'ASSASSINATE_PLAYER', target: target, player: $player.name};
-				$connections.connection.send(JSON.stringify(message));
+				choose_player('assassinate');
 				break;
 			case 'TAKE_TAX':
 				message = {type: 'TAKE_TAX', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'STEAL_FROM_PLAYER':
-				target = prompt('Enter player name to steal from.');
-				message = {type: 'STEAL_FROM_PLAYER', target: target, player: $player.name};
-				$connections.connection.send(JSON.stringify(message));
+				choose_player('steal from');
 				break;
 			case 'DRAW_CARDS':
 				message = {type: 'DRAW_CARDS', player: $player.name};
@@ -170,7 +158,7 @@
 		popup_attr.message = 'Select secondary action in response to ' + primary_action;
 		popup_attr.items = valid_actions;
 		popup_attr.onSubmit = (input_move) => {secondary_action = input_move;};
-		popup_attr.display = 1;
+		popup_attr.display = true;
 	}
 
 	$: if(secondary_action) {
@@ -179,6 +167,72 @@
 
 	function process_secondary_action() {
 		$connections.connection.send(JSON.stringify({type: secondary_action, player: $player.name}));
+	}
+
+	function choose_player(text) {
+		popup_attr.message = 'Enter player name to ' + text;
+		popup_attr.items = [];
+		popup_attr.onSubmit = (input_name) => {target_name = input_name;};
+		popup_attr.display = true;
+	}
+
+	$: if(target_name) {
+		process_choose_player();
+	}
+
+	function process_choose_player() {
+		let message;
+		switch(primary_action) {
+			case 'COUP_PLAYER':
+				message = {type: 'COUP_PLAYER', target: target_name, player: $player.name};
+				$connections.connection.send(JSON.stringify(message));
+				break;
+			case 'ASSASSINATE_PLAYER':
+				message = {type: 'ASSASSINATE_PLAYER', target: target_name, player: $player.name};
+				$connections.connection.send(JSON.stringify(message));
+				break;
+			case 'STEAL_FROM_PLAYER':
+				message = {type: 'STEAL_FROM_PLAYER', target: target_name, player: $player.name};
+				$connections.connection.send(JSON.stringify(message));
+				break;
+		}
+	}
+
+	function choose_cards(cards, multi) {
+		if (multi) {
+			popup_attr.message = 'Select two cards from below to keep';
+			popup_attr.items = cards;
+			popup_attr.multi = multi;
+			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.display = true;
+		} else {
+			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal' : 'to keep');
+			popup_attr.items = cards;
+			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.display = true;
+		}
+	}
+
+	$: if(selected_cards) {
+		process_card_selection();
+	}
+
+	function process_card_selection() {
+		let message;
+		if(reveal.revealing) {
+			message = {type: 'REVEALED_CARD', player: $player.name, reason: reveal.reason, prev_type: reveal.prev_type, instigator: reveal.instigator, card: selected_cards};
+		} else {
+			$player.cards = String(selected_cards).split(',').map(card => card.trim());
+			message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards};
+		}
+		$connections.connection.send(JSON.stringify(message));
+	}
+
+	function trigger_alert(message, next_action) {
+		popup_attr.message = message;
+		popup_attr.alert = true;
+		popup_attr.onSubmit = () => {next_action();};
+		popup_attr.display = true;
 	}
 </script>
 
