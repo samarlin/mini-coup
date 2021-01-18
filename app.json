@@ -5,5 +5,12 @@
       {
         "url": "heroku/nodejs"
       }
-    ]
-  }
+    ],
+    "environments": {
+        "test": {
+            "predeploy": "cd server"
+        }
+    }
+}
+
+
