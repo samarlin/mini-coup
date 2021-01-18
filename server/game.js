@@ -188,11 +188,12 @@ class Game {
     this.current_primary = {};
     this.active_secondary = {};
     this.awaiting_secondary = false;
+    this.awaiting_response = false;
     this.response_tally = 0;
     this.primary_success = false;
     this.current_turn_moves = []
 
-    setTimeout(() => {this.turn();}, 2000);
+    setTimeout(() => {this.turn();}, 500);
   }
 
   onMessage(message) {
@@ -302,15 +303,16 @@ class Game {
                 this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
                 
                 this.primary_success = true;
-                this.awaiting_secondary = false;
+                this.awaiting_secondary = true;
               } else {
                 // They don't have the card -- they just lose a card
                 // or, they've been assassinated/couped
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
-                
-                this.primary_success = false;
+                if (message.player === this.current_player.name) {
+                  this.primary_success = false;
+                }
                 this.awaiting_secondary = false;
               }
               break;
@@ -323,7 +325,7 @@ class Game {
     }
 
     // if it's time for a new turn, we resolve the current primary, update current_player and call this.turn();
-    if(this.primary_success === true) {
+    if(this.primary_success && !this.awaiting_secondary) {
       // resolve current primary
       switch(this.current_primary.type) {
         case 'TAKE_FOREIGN_AID':
@@ -335,6 +337,9 @@ class Game {
           this.current_player.coins -= 3;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
           this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
+
+          // send message to all players informing them that we're awaiting a response
+          this.awaiting_secondary = true;
           break;
         case 'TAKE_TAX':
           this.current_player.coins += 3;
@@ -353,9 +358,10 @@ class Game {
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
           break;
       }
+      this.primary_success = false;
     }
 
-    if (this.awaiting_secondary === false) {
+    if (!this.awaiting_secondary) {
       // move to next turn
       this.response_tally = 0;
       this.current_turn_moves = [];
