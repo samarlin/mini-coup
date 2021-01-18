@@ -1,0 +1,9 @@
+{
+    "name": "mini-coup",
+    "image": "heroku/nodejs",
+    "buildpacks": [
+      {
+        "url": "heroku/nodejs"
+      }
+    ]
+  }
