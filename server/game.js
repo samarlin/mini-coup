@@ -177,6 +177,7 @@ class Game {
       "ambassador",
     ]; // todo: make less ugly
     this.players = players;
+    this.dead_players = {};
     Object.keys(this.players).forEach((player) => {
       this.players[player].cards = pickRand(this.deck, 2);
       this.players[player].connection.send(JSON.stringify({type: 'DEAL_CARDS', cards: this.players[player].cards}));
@@ -188,7 +189,6 @@ class Game {
     this.current_primary = {};
     this.active_secondary = {};
     this.awaiting_secondary = false;
-    this.awaiting_response = false;
     this.response_tally = 0;
     this.primary_success = false;
     this.current_turn_moves = []
@@ -378,13 +378,26 @@ class Game {
   }
 
   turn() {
-    // if current player has 0 cards, skip turn
+    // if current player has 0 cards, add them to dead_players and skip turn
     if (this.current_player.cards.length === 0) {
+      let name = this.current_player.name;
+      this.dead_players[name] = this.current_player;
+
       let curr_ind = Object.values(this.players).indexOf(this.current_player);
       curr_ind = (curr_ind === (Object.keys(this.players).length - 1)) ? 0 : curr_ind + 1;
       this.current_player = Object.values(this.players)[curr_ind];
 
-      this.turn();
+      delete this.players[name];
+
+      if(Object.keys(this.players).length <= 1) {
+        this.current_player.connection.send(JSON.stringify({type: "GAME_OVER", win: true}));
+        Object.keys(this.dead_players).forEach((name) => {
+          this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
+        });
+        // take other server-side game-over actions
+      } else {
+        this.turn();
+      }
     }
 
     // if current player's coins >= 10 must coup

@@ -111,6 +111,7 @@
 				break;
 			case 'GAME_OVER':
 				// the game is over, update interface accordingly
+				trigger_alert('Game over! You ' + (message.win ? 'won!' : 'lost :('), game_over);
 				break;
 		}
 	};
@@ -238,6 +239,10 @@
 		popup_attr.alert = true;
 		popup_attr.onSubmit = () => {next_action();};
 		popup_attr.display = true;
+	}
+
+	function game_over() {
+		console.log('game over~');
 	}
 </script>
 
