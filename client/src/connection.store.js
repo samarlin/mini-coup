@@ -8,7 +8,7 @@ export const connections = writable({
 });
 
 export const joinGame = (name) => {
-    return fetch("http://localhost:3000/join-game", {
+    return fetch("https://mini-coup.herokuapp.com/join-game", {
         method: "POST",
         headers: {
         "Content-Type": "application/json",

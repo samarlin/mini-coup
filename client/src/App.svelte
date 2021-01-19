@@ -6,6 +6,8 @@
 
 	import {player} from './player.store.js';
 
+	let HOST = location.origin.replace(/^http/, 'ws');
+
 	let popup_attr = {
 		message: '',
 		display: false,
@@ -38,10 +40,10 @@
 	}
 
 	function startGame() {
-		fetch("http://localhost:3000/start-game", { method: "POST" });
+		fetch("https://mini-coup.herokuapp.com/start-game", { method: "POST" });
 	}
 	function establishConnection() {
-		$connections.connection = new WebSocket("ws://localhost:9000");
+		$connections.connection = new WebSocket(HOST);
 		$connections.connection.onopen = onOpen;
 		$connections.connection.onclose = onClose;
 		$connections.connection.onmessage = onMessage;
