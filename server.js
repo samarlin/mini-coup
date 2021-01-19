@@ -70,6 +70,7 @@ app.post("/start-game", (req, res) => {
   // start game,
   // send message to all clients w/ game init info
   game = new coup.Game(state.players);
+  res.send("Game started!");
 });
 
 http.listen(port, () => {
