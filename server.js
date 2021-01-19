@@ -32,9 +32,8 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(index, {root: __dirname});
-});
+let clientDir = __dirname + "/client/public/";
+app.use(express.static(clientDir));
 
 app.get("/reset", (_, res) => {
   state = defaultState;
