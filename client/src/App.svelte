@@ -16,6 +16,8 @@
 		alert: false,
         onSubmit: () => {}
 	}
+
+	let popup_def = JSON.parse(JSON.stringify(popup_attr)); 
 	
 	let player_name = '';
 	let primary_action = '';
@@ -27,7 +29,7 @@
 	if($connections.connectionState === 'NotJoined') {
 		popup_attr.items = [];
 		popup_attr.message = "Enter your name:";
-		popup_attr.onSubmit = (name) => {player_name = name;};
+		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup_def;};
 		popup_attr.display = true;
 	}
 
@@ -121,7 +123,7 @@
 	function take_primary_action() {
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Enter move:";
-		popup_attr.onSubmit = (input_move) => {primary_action = input_move;};
+		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup_def;};
 		popup_attr.display = true;
 	}
 
@@ -165,7 +167,7 @@
 	function take_secondary_action(primary_action, valid_actions) {
 		popup_attr.message = 'Select secondary action in response to ' + primary_action;
 		popup_attr.items = valid_actions;
-		popup_attr.onSubmit = (input_move) => {secondary_action = input_move;};
+		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup_def;};
 		popup_attr.display = true;
 	}
 
@@ -180,7 +182,7 @@
 	function choose_player(text) {
 		popup_attr.message = 'Enter player name to ' + text;
 		popup_attr.items = [];
-		popup_attr.onSubmit = (input_name) => {target_name = input_name;};
+		popup_attr.onSubmit = (input_name) => {target_name = input_name; popup_attr = popup_def;};
 		popup_attr.display = true;
 	}
 
@@ -211,12 +213,12 @@
 			popup_attr.message = 'Select two cards from below to keep';
 			popup_attr.items = cards;
 			popup_attr.multi = multi;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup_def;};
 			popup_attr.display = true;
 		} else {
 			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal' : 'to keep');
 			popup_attr.items = cards;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup_def;};
 			popup_attr.display = true;
 		}
 	}
@@ -239,7 +241,7 @@
 	function trigger_alert(message, next_action) {
 		popup_attr.message = message;
 		popup_attr.alert = true;
-		popup_attr.onSubmit = () => {next_action();};
+		popup_attr.onSubmit = () => {next_action(); popup_attr = popup_def;};
 		popup_attr.display = true;
 	}
 

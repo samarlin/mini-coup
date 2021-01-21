@@ -1,5 +1,10 @@
 // Objects containing the different actions players can take
-
+/*
+TODOs:
+* Return Ambassador discards to the deck
+* Revealed card (after unsuccessful challenge is made & before new card is drawn) goes back into deck
+* Shuffle deck, obviously
+*/
 const e = require("express");
 
 // actions taken at the beginning of a user's turn
@@ -217,6 +222,10 @@ class Game {
       // query all other players for valid SECONDARY_ACTION
       if (valid_responses.length > 0) {
         this.awaiting_secondary = true;
+        if(message.type === 'ASSASSINATE_PLAYER') { // assassin spends 3 coins regardless of success
+          this.current_player.coins -= 3;
+          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+        }
         other_players.forEach(player => {
           player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses})); 
         });
@@ -335,8 +344,6 @@ class Game {
           this.awaiting_secondary = false;
           break;
         case 'ASSASSINATE_PLAYER':
-          this.current_player.coins -= 3;
-          this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
           this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
 
           // send message to all players informing them that we're awaiting a response
@@ -396,6 +403,7 @@ class Game {
           this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
         });
         // take other server-side game-over actions
+        return;
       } else {
         this.turn();
       }
@@ -404,6 +412,7 @@ class Game {
     // if current player's coins >= 10 must coup
     if (this.current_player.coins >= 10) {
       this.current_player.connection.send(JSON.stringify({type: 'CHOOSE_PLAYER'}));
+      return;
     }
 
     // query player for PRIMARY_ACTION
