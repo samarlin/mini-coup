@@ -25,6 +25,12 @@
 		alert: false,
         onSubmit: () => {}
 	}
+
+	function default_popup() {
+		Object.keys(popup_attr).forEach(attr => {
+			popup_attr[attr] = popup_def[attr];
+		});
+	}
 	
 	let player_name = '';
 	let primary_action = '';
@@ -139,7 +145,7 @@
 	}
 
 	function process_primary_action(move) {
-		popup_attr = popup_def;
+		default_popup();
 		// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
 		// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS
 		let message;
@@ -184,7 +190,7 @@
 	}
 
 	function process_secondary_action() {
-		popup_attr = popup_def;
+		default_popup();
 		$connections.connection.send(JSON.stringify({type: secondary_action, player: $player.name}));
 	}
 
@@ -200,7 +206,7 @@
 	}
 
 	function process_choose_player() {
-		popup_attr = popup_def;
+		default_popup();
 		let message;
 		switch(primary_action) {
 			case 'COUP_PLAYER':
@@ -238,7 +244,7 @@
 	}
 
 	function process_card_selection() {
-		popup_attr = popup_def;
+		default_popup();
 		let message;
 		if(reveal.revealing) {
 			message = {type: 'REVEALED_CARD', player: $player.name, reason: reveal.reason, prev_type: reveal.prev_type, instigator: reveal.instigator, card: selected_cards};
