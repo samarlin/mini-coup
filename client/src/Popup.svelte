@@ -8,15 +8,6 @@
         onSubmit: () => {}
     };
 
-    let def = {
-        message: '',
-        display: false,
-        items: [],
-        multi: false,
-        alert: false,
-        onSubmit: () => {}
-    };
-
     let selection = '';
 </script>
 
@@ -29,7 +20,6 @@
                 <button on:click={() => {
                     attr.onSubmit(item);
                     selection = '';
-                    attr = def;
                 }}>{item}</button>
             {/each}
         {:else if attr.multi}
@@ -42,7 +32,6 @@
                 <button on:click={() => {
                     attr.onSubmit(selection);
                     selection = '';
-                    attr = def;
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
@@ -50,12 +39,10 @@
             <button on:click={() => {
                 attr.onSubmit(selection);
                 selection = '';
-                attr = def;
             }}>Submit</button>
         {:else}
             <button on:click={() => {
                 attr.onSubmit(selection);
-                attr = def;
             }}>OK</button>
         {/if}
     </div>
