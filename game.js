@@ -1,10 +1,4 @@
 // Objects containing the different actions players can take
-/*
-TODOs:
-* Return Ambassador discards to the deck
-* Revealed card (after unsuccessful challenge is made & before new card is drawn) goes back into deck
-* Shuffle deck, obviously
-*/
 const e = require("express");
 
 // actions taken at the beginning of a user's turn
@@ -160,6 +154,16 @@ function pickRand(arr, num) {
   return cards;
 }
 
+class Deck {
+  // deck needs to be fleshed out:
+  /*
+  TODOs:
+  * Return Ambassador discards to the deck
+  * Revealed card (after unsuccessful challenge is made & before new card is drawn) goes back into deck
+  * Shuffle deck, obviously
+  */
+}
+
 class Game {
   constructor(players) {
     this.event_log = [];
@@ -180,7 +184,7 @@ class Game {
       "assassin",
       "captain",
       "ambassador",
-    ]; // todo: make less ugly
+    ]; 
     this.players = players;
     this.dead_players = {};
     Object.keys(this.players).forEach((player) => {
@@ -190,6 +194,8 @@ class Game {
       this.players[player].connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.players[player].coins}));
     });
     this.current_player = Object.values(this.players)[0];
+
+    this.sendUpdate("", {type: 'UPDATE', msg: {type: 'INIT_GAME', players: Object.keys(this.players)}});
     
     this.current_primary = {};
     this.active_secondary = {};
@@ -201,13 +207,24 @@ class Game {
     setTimeout(() => {this.turn();}, 500);
   }
 
+  // pass in name of player to exclude and message to update all other players
+  sendUpdate(excluded_player, message) {
+    let other_players = Object.values(this.players).filter(player => player.name !== excluded_player);
+    other_players.forEach(player => {
+      player.connection.send(JSON.stringify(message)); 
+    });
+    Object.keys(this.dead_players).forEach(dead_player => {
+      dead_player.connection.send(JSON.stringify(message));
+    })
+  }
+
   onMessage(message) {
     this.event_log.push(message);
     this.current_turn_moves.unshift(message);
 
     let is_primary = message.type in PRIMARY_ACTIONS;
 
-    let other_players = Object.values(this.players).filter(player => player.name != message.player);
+    let other_players = Object.values(this.players).filter(player => player.name !== message.player);
 
     if (is_primary) {
       // validate PRIMARY_ACTION
@@ -225,6 +242,7 @@ class Game {
         if(message.type === 'ASSASSINATE_PLAYER') { // assassin spends 3 coins regardless of success
           this.current_player.coins -= 3;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
         }
         other_players.forEach(player => {
           player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses})); 
@@ -234,11 +252,15 @@ class Game {
         if(message.type === 'TAKE_INCOME') {
           this.current_player.coins += 1;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
         } else if(message.type === 'COUP_PLAYER') {
           // send message to message.target to pick a card to lose
           this.players[message.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'COUP'}));
+          this.sendUpdate(message.target, {type: 'UPDATE', msg: {player: message.target, type: 'REVEAL_CARD', reason: 'COUP'}});
+
           this.current_player.coins -= 7;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
         }
         this.awaiting_secondary = false;
       }
@@ -247,6 +269,7 @@ class Game {
       if(this.awaiting_secondary === true) {
         if(message.type === "APPROVE_MOVE") {
           ++this.response_tally;
+          this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'APPROVED_MOVE'}});
           if(this.response_tally === Object.values(this.players).length - 1) {
             if(Object.keys(this.active_secondary).length === 0) {
               this.primary_success = true;
@@ -264,18 +287,19 @@ class Game {
           switch(message.type) { // CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE
             case 'CALL_BLUFF':
               // can either be current player or player who blocked steal/assassinate/aid
-              let target, type;
+              let target, local_type;
               for (let i = 1; i < this.current_turn_moves.length; ++i) {
                 if (this.current_turn_moves[i].type !== 'APPROVE_MOVE') {
                   target = this.current_turn_moves[i].player;
-                  type = this.current_turn_moves[i].type;
+                  local_type = this.current_turn_moves[i].type;
                   break;
                 }
               }
-              this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: type, instigator: message.player}));
+              this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}));
+              this.sendUpdate(target, {type: 'UPDATE', msg: {player: target, type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}});
               break;
             case 'BLOCK_AID':
-              // give other user an opportunity to CALL_BLUFF
+              // give other users an opportunity to CALL_BLUFF
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
@@ -283,7 +307,6 @@ class Game {
               });
               break;
             case 'BLOCK_STEAL':
-              //
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
@@ -291,7 +314,6 @@ class Game {
               });
               break;
             case 'BLOCK_ASSASSINATE':
-              //
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
@@ -304,13 +326,15 @@ class Game {
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
 
-                let new_card = pickRand(this.deck, 1); // not sure what is supposed to happen if player needs a new card but deck is empty
+                let new_card = pickRand(this.deck, 1); 
                 this.players[message.player].cards.push(new_card);
 
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
 
                 // the challenging player now loses a card:
                 this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
+                this.sendUpdate(message.instigator, {type: 'UPDATE', msg: {player: message.instigator, type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}});
                 
                 this.primary_success = true;
                 this.awaiting_secondary = true;
@@ -320,6 +344,8 @@ class Game {
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
+                
                 if (message.player === this.current_player.name) {
                   this.primary_success = false;
                 }
@@ -328,6 +354,7 @@ class Game {
               break;
             case 'CARDS_CHOSEN':
               this.players[message.player].cards = message.cards;
+              this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CARDS_CHOSEN', cards: message.cards.length}});
             break;
           }
         }
@@ -341,29 +368,38 @@ class Game {
         case 'TAKE_FOREIGN_AID':
           this.current_player.coins += 2;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
+          
           this.awaiting_secondary = false;
           break;
         case 'ASSASSINATE_PLAYER':
           this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
-
-          // send message to all players informing them that we're awaiting a response
+          this.sendUpdate(this.current_primary.target, {type: 'UPDATE', msg: {player: this.current_primary.target, type: 'REVEAL_CARD', reason: 'ASSASSINATION'}});
+          
           this.awaiting_secondary = true;
           break;
         case 'TAKE_TAX':
           this.current_player.coins += 3;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
+          
           this.awaiting_secondary = false;
           break;
         case 'STEAL_FROM_PLAYER':
           this.current_player.coins += 2;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
+          
           this.players[this.current_primary.target].coins -= 2;
           this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.players[this.current_primary.target].coins}));
+          this.sendUpdate(this.current_primary.target, {type: 'UPDATE', msg: {player: this.current_primary.target, type: 'RECEIVE_MONEY', coins: this.players[this.current_primary.target].coins}});
+          
           this.awaiting_secondary = false;
           break;
         case 'DRAW_CARDS':
           let local_pick = pickRand(this.deck, 2);
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
+          this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_CARDS'}});
           break;
       }
       this.primary_success = false;
@@ -402,7 +438,7 @@ class Game {
         Object.keys(this.dead_players).forEach((name) => {
           this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
         });
-        // take other server-side game-over actions
+        // take other server-side game-over actions (TODO: eg close room, reset game state)
         return;
       } else {
         this.turn();
@@ -412,11 +448,13 @@ class Game {
     // if current player's coins >= 10 must coup
     if (this.current_player.coins >= 10) {
       this.current_player.connection.send(JSON.stringify({type: 'CHOOSE_PLAYER'}));
+      this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'CHOOSE_PLAYER'}});
       return;
     }
 
     // query player for PRIMARY_ACTION
     this.current_player.connection.send(JSON.stringify({type: 'TAKE_PRIMARY_ACTION'}));
+    this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'TAKE_PRIMARY_ACTION'}});
   }
 }
 

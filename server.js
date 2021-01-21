@@ -2,7 +2,6 @@ const express = require("express");
 const coup = require("./game.js");
 
 const port = process.env.PORT || 3000;
-const index = '/client/public/index.html';
 
 const app = express();
 const WebSocket = require("ws");
