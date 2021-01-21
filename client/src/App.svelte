@@ -17,7 +17,14 @@
         onSubmit: () => {}
 	}
 
-	let popup_def = JSON.parse(JSON.stringify(popup_attr)); 
+	let popup_def = {
+		message: '',
+		display: false,
+		items: [],
+		multi: false,
+		alert: false,
+        onSubmit: () => {}
+	}
 	
 	let player_name = '';
 	let primary_action = '';

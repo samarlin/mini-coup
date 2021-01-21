@@ -8,7 +8,14 @@
         onSubmit: () => {}
     };
 
-    let def = JSON.parse(JSON.stringify(attr));
+    let def = {
+        message: '',
+        display: false,
+        items: [],
+        multi: false,
+        alert: false,
+        onSubmit: () => {}
+    };
 
     let selection = '';
 </script>
