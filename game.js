@@ -56,8 +56,8 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
   TAKE_INCOME: () => "pass",
   COUP_PLAYER: ({ gameState, playerState, target }) => {
     let found = Object.keys(gameState.players).includes(target);
-    if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
-    if(!playerState.coins >= 7) { return "insufficient coins"; }
+    if(!(playerState.coins >= 7) && !found) { return "insufficient coins & wrong player"}
+    if(!(playerState.coins >= 7)) { return "insufficient coins"; }
     if(!found) {
       return "invalid target";
     }
@@ -65,8 +65,8 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
   }, // game forces coup if current player has >=10 coins
   ASSASSINATE_PLAYER: ({ gameState, playerState, target }) => {
     let found = Object.keys(gameState.players).includes(target);
-    if(!playerState.coins >= 7 && !found) { return "insufficient coins & wrong player"}
-    if(!playerState.coins >= 7) { return "insufficient coins"; }
+    if(!(playerState.coins >= 3) && !found) { return "insufficient coins & wrong player"}
+    if(!(playerState.coins >= 3)) { return "insufficient coins"; }
     if(!found) {
       return "invalid target";
     }
@@ -211,6 +211,7 @@ class Game {
       let validation = PRIMARY_ACTIONS_VALIDATIONS[message.type]({gameState: {deck: this.deck, players: this.players}, playerState: this.current_player, target: message.target});
       if(validation !== "pass") {
         this.current_player.connection.send(JSON.stringify({type: 'INVALID_MOVE', error: validation}));
+        return;
       } 
 
       // query all other players for valid SECONDARY_ACTION

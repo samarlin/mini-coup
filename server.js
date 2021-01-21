@@ -36,7 +36,9 @@ let clientDir = __dirname + "/client/public/";
 app.use(express.static(clientDir));
 
 app.get("/reset", (_, res) => {
-  state = defaultState;
+  state = {
+    players: {},
+  };
   res.send("Done!");
 });
 
@@ -57,7 +59,7 @@ app.get("/events", (_, res) => {
 app.post("/join-game", (req, res) => {
   let body = req.body;
   let admin = false;
-  if (Object.keys(state.players).length == 0) {
+  if (Object.keys(state.players).length === 0) {
     admin = true;
   }
 
