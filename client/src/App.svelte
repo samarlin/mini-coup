@@ -253,7 +253,11 @@
 
 <main>
 	<h1>Hello {$player.name}!</h1>
-	<h2>Your cards are {$player.cards.join(' & ')}, and you have {$player.coins} coins.</h2>
+	<h2>Your cards are:</h2>
+	{#each $player.cards as card} 
+		<img src="assets/cards/{card}.png" alt="{card}" width="300">
+	{/each}
+	<h2>and you have {$player.coins} coins.</h2>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
 	{/if}
