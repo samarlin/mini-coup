@@ -70,6 +70,7 @@
 		switch(message.type) {
 			case 'UPDATE':
 				process_update(message.msg);
+				break;
 			case 'DEAL_CARDS': // initial dealing of cards
 				$player.cards = message.cards;
 				$connections.connectionState = 'Joined';
@@ -272,7 +273,8 @@
 		switch (msg.type) {
 			case 'INIT_GAME':
 				msg.players.forEach(opponent => {
-					$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, pending_action: {}, last_action: {}};
+					if(opponent !== $player.name)
+						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, pending_action: {}, last_action: {}};
 				});
 				break;
 			case 'RECEIVE_MONEY': 
@@ -319,6 +321,7 @@
 				break;
 			case 'TAKE_SECONDARY_ACTION':
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
+				break;
 		}
 	}
 
