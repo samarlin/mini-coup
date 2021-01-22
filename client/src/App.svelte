@@ -349,10 +349,10 @@
 	<h2>and you have {$player.coins} coins.</h2>
 
 	<h2>Your opponents are:</h2>
-	{#each $opponents as opponent}
-		<svelte:component this={Opponent} name={opponent.name}/>
+	{#each $opponents as op}
+		<span>{op.name}</span>
+		<Opponent name={op.name}/>
 	{/each}
-	<h2>{JSON.stringify($opponents)}</h2>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
 	{/if}
