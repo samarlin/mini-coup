@@ -355,6 +355,7 @@ class Game {
             case 'CARDS_CHOSEN':
               this.players[message.player].cards = message.cards;
               this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CARDS_CHOSEN', cards: message.cards.length}});
+              this.awaiting_secondary = false;
             break;
           }
         }
@@ -400,6 +401,7 @@ class Game {
           let local_pick = pickRand(this.deck, 2);
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_CARDS'}});
+          this.awaiting_secondary = true;
           break;
       }
       this.primary_success = false;

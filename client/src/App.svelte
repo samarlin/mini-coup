@@ -36,7 +36,7 @@
 	if($connections.connectionState === 'NotJoined') {
 		popup_attr.items = [];
 		popup_attr.message = "Enter your name:";
-		popup_attr.onSubmit = (name) => {player_name = name;};
+		popup_attr.onSubmit = (name) => {player_name = name; default_popup();};
 		popup_attr.display = true;
 	}
 
@@ -105,8 +105,8 @@
 				// response from DRAW_CARDS; player receives two cards and needs to pick
 				// a number of cards equal to their current total to keep from the set of cards
 				// received and already had cards
-				reveal = {revealing: false};
-				choose_cards($player.cards.concat(message.cards), ($player.cards.length > 1));
+				reveal = {revealing: false, cards: $player.cards.concat(message.cards)};
+				choose_cards(reveal.cards, ($player.cards.length > 1));
 				// need to add retry later; hook in socket onError
 				break;
 			case 'CHANGE_CARDS': 
@@ -129,7 +129,7 @@
 	function take_primary_action() {
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Enter move:";
-		popup_attr.onSubmit = (input_move) => {primary_action = input_move;};
+		popup_attr.onSubmit = (input_move) => {primary_action = input_move; default_popup();};
 		popup_attr.display = true;
 	}
 
@@ -138,7 +138,6 @@
 	}
 
 	function process_primary_action(move) {
-		default_popup();
 		// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
 		// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS
 		let message;
@@ -174,7 +173,7 @@
 	function take_secondary_action(primary_action, valid_actions) {
 		popup_attr.message = 'Select secondary action in response to ' + primary_action;
 		popup_attr.items = valid_actions;
-		popup_attr.onSubmit = (input_move) => {secondary_action = input_move;};
+		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; default_popup();};
 		popup_attr.display = true;
 	}
 
@@ -183,14 +182,13 @@
 	}
 
 	function process_secondary_action() {
-		default_popup();
 		$connections.connection.send(JSON.stringify({type: secondary_action, player: $player.name}));
 	}
 
 	function choose_player(text) {
 		popup_attr.message = 'Enter player name to ' + text;
 		popup_attr.items = [];
-		popup_attr.onSubmit = (input_name) => {target_name = input_name;};
+		popup_attr.onSubmit = (input_name) => {target_name = input_name; default_popup();};
 		popup_attr.display = true;
 	}
 
@@ -199,7 +197,6 @@
 	}
 
 	function process_choose_player() {
-		default_popup();
 		let message;
 		switch(primary_action) {
 			case 'COUP_PLAYER':
@@ -222,12 +219,12 @@
 			popup_attr.message = 'Select two cards from below to keep';
 			popup_attr.items = cards;
 			popup_attr.multi = multi;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; default_popup();};
 			popup_attr.display = true;
 		} else {
 			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal' : 'to keep');
 			popup_attr.items = cards;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards;};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; default_popup();};
 			popup_attr.display = true;
 		}
 	}
@@ -237,13 +234,23 @@
 	}
 
 	function process_card_selection() {
-		default_popup();
 		let message;
 		if(reveal.revealing) {
 			message = {type: 'REVEALED_CARD', player: $player.name, reason: reveal.reason, prev_type: reveal.prev_type, instigator: reveal.instigator, card: selected_cards};
 		} else {
-			$player.cards = String(selected_cards).split(',').map(card => card.trim());
-			message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards};
+			if(selected_cards.length === 2) {
+				console.log(selected_cards);
+				$player.cards = [reveal.cards[selected_cards[0]], reveal.cards[selected_cards[1]]];
+				reveal.cards.splice(selected_cards[1], 1); reveal.cards.splice(selected_cards[0], 1); 
+			} else {
+				$player.cards = selected_cards;
+				const idx = reveal.cards.indexOf(selected_cards);
+				if(idx > -1) {
+					reveal.cards.splice(idx, 1);
+				}
+			}
+			message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards, discards: reveal.cards};
+			console.log(message);
 		}
 		$connections.connection.send(JSON.stringify(message));
 	}
@@ -251,7 +258,7 @@
 	function trigger_alert(message, next_action) {
 		popup_attr.message = message;
 		popup_attr.alert = true;
-		popup_attr.onSubmit = () => {next_action();};
+		popup_attr.onSubmit = () => {next_action(); default_popup();};
 		popup_attr.display = true;
 	}
 

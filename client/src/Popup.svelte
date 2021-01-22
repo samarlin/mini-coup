@@ -24,8 +24,8 @@
             {/each}
         {:else if attr.multi}
             <select multiple bind:value={selection}>
-                {#each attr.items as item}
-                    <option value={item}>{item}</option>
+                {#each attr.items as item, i}
+                    <option value={i}>{item}</option>
                 {/each}
             </select>
             {#if selection.length === 2}
