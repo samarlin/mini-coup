@@ -4,7 +4,7 @@
 	import {connections} from './connection.store.js';
 	import {joinGame} from './connection.store.js';
 
-	import {player} from './player.store.js';
+	import {player, opponents} from './player.store.js';
 
 	let HOST = location.origin.replace(/^http/, 'ws');
 
@@ -65,13 +65,11 @@
 		console.log("closed ", event.data);
 	}
 	function onMessage(event) {
-		primary_action = '';
-		secondary_action = '';
-		target_name = '';
-		selected_cards = '';
 		let message = JSON.parse(event.data);
 		
 		switch(message.type) {
+			case 'UPDATE':
+				process_update(message.msg);
 			case 'DEAL_CARDS': // initial dealing of cards
 				$player.cards = message.cards;
 				$connections.connectionState = 'Joined';
@@ -79,6 +77,7 @@
 			case 'TAKE_PRIMARY_ACTION':
 				// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
 				// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS 
+				primary_action = '';
 				take_primary_action();
 				break;
 			case 'INVALID_MOVE':
@@ -88,6 +87,8 @@
 			case 'TAKE_SECONDARY_ACTION':
 				// CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE
 				// if a player's primary action is blocked, they have the option to CALL_BLUFF
+				secondary_action = '';
+				process_update(message);
 				take_secondary_action(message.primary, message.actions); 
 				break;
 			case 'REVEAL_CARD': 
@@ -151,9 +152,11 @@
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'COUP_PLAYER':
+				target_name = '';
 				choose_player('coup');
 				break;
 			case 'ASSASSINATE_PLAYER':
+				target_name = '';
 				choose_player('assassinate');
 				break;
 			case 'TAKE_TAX':
@@ -161,6 +164,7 @@
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'STEAL_FROM_PLAYER':
+				target_name = '';
 				choose_player('steal from');
 				break;
 			case 'DRAW_CARDS':
@@ -215,6 +219,7 @@
 	}
 
 	function choose_cards(cards, multi) {
+		selected_cards = '';
 		if (multi) {
 			popup_attr.message = 'Select two cards from below to keep';
 			popup_attr.items = cards;
@@ -239,7 +244,6 @@
 			message = {type: 'REVEALED_CARD', player: $player.name, reason: reveal.reason, prev_type: reveal.prev_type, instigator: reveal.instigator, card: selected_cards};
 		} else {
 			if(selected_cards.length === 2) {
-				console.log(selected_cards);
 				$player.cards = [reveal.cards[selected_cards[0]], reveal.cards[selected_cards[1]]];
 				reveal.cards.splice(selected_cards[1], 1); reveal.cards.splice(selected_cards[0], 1); 
 			} else {
@@ -250,7 +254,6 @@
 				}
 			}
 			message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards, discards: reveal.cards};
-			console.log(message);
 		}
 		$connections.connection.send(JSON.stringify(message));
 	}
@@ -262,7 +265,64 @@
 		popup_attr.display = true;
 	}
 
+	function process_update(msg) {
+		// messages to 'TAKE_SECONDARY_ACTION' should also be processed in here
+		// 		so that objects which modify interface can be updated appropriately
+		switch (msg.type) {
+			case 'INIT_GAME':
+				msg.players.array.forEach(opponent => {
+					$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, pending_action: {}, last_action: {}};
+				});
+				break;
+			case 'RECEIVE_MONEY': 
+				// should I differentiate between the different RECEIVE_MONEY cases?
+				// eg: income, foreign aid, coup, forced coup, assassination, theft... probably
+				$opponents[msg.player].coins = msg.coins;
+				break;
+			case 'REVEAL_CARD':
+				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
+				$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
+				if(msg.reason === "BLUFF") {
+					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
+				}
+				break;
+			case 'APPROVED_MOVE':
+				$opponents[msg.player].last_action = {type: 'APPROVED_MOVE'};
+				$opponents[msg.player].pending_action = {};
+				break;
+			case 'CHANGE_CARDS':
+				$opponents[msg.player].cards = msg.cards;
+				$opponents[msg.player].pending_action = {};
+				if($opponents[msg.player].cards === 0) {
+					$opponents[msg.player].alive = false;
+				}
+				break;
+			case 'CARDS_CHOSEN':
+				$opponents[msg.player].cards = msg.cards;
+				$opponents[msg.player].last_action = {type: 'CARDS_CHOSEN'};
+				$opponents[msg.player].pending_action = {};
+				break;
+			case 'RECEIVE_CARDS':
+				$opponents[msg.player].pending_action = {type: 'CHOOSE_CARDS'};
+				$opponents[msg.player].cards += 2;
+				break;
+			case 'CHOOSE_PLAYER':
+				$opponents[msg.player].last_action = {type: 'COUP_PLAYER'};
+				$opponents[msg.player].pending_action = {type: 'CHOOSE_PLAYER'}
+				break;
+			case 'TAKE_PRIMARY_ACTION':
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {};
+				});
+				$opponents[msg.player].pending_action = {type: 'TAKE_PRIMARY_ACTION'};
+				break;
+			case 'TAKE_SECONDARY_ACTION':
+				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
+		}
+	}
+
 	function game_over() {
+		// TODO: stuff...
 		console.log('game over~');
 	}
 </script>
@@ -277,6 +337,9 @@
 		<img src="assets/cards/{card}.png" alt="{card}" width="300">
 	{/each}
 	<h2>and you have {$player.coins} coins.</h2>
+
+	<h2>Your opponents are:</h2>
+	<h2>{$opponents}</h2>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
 	{/if}

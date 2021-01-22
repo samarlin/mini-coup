@@ -239,14 +239,14 @@ class Game {
       // query all other players for valid SECONDARY_ACTION
       if (valid_responses.length > 0) {
         this.awaiting_secondary = true;
+        other_players.forEach(player => {
+          player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses, involved_players: {origin: this.current_player.name, target: message.target}})); 
+        });
         if(message.type === 'ASSASSINATE_PLAYER') { // assassin spends 3 coins regardless of success
           this.current_player.coins -= 3;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
         }
-        other_players.forEach(player => {
-          player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: valid_responses})); 
-        });
       } else {
         // TAKE_INCOME & COUP_PLAYER
         if(message.type === 'TAKE_INCOME') {
@@ -303,21 +303,21 @@ class Game {
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
-                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"]})); 
+                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"], involved_players: {origin: message.player, target: this.current_player.name}})); 
               });
               break;
             case 'BLOCK_STEAL':
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
-                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"]})); 
+                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"], involved_players: {origin: message.player, target: this.current_player.name}})); 
               });
               break;
             case 'BLOCK_ASSASSINATE':
               this.response_tally = 0;
               this.active_secondary = message;
               other_players.forEach(player => {
-                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"]})); 
+                player.connection.send(JSON.stringify({type: 'TAKE_SECONDARY_ACTION', primary: message.type, actions: ["CALL_BLUFF", "APPROVE_MOVE"], involved_players: {origin: message.player, target: this.current_player.name}})); 
               });
               break;
             case 'REVEALED_CARD':
@@ -356,7 +356,7 @@ class Game {
               this.players[message.player].cards = message.cards;
               this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CARDS_CHOSEN', cards: message.cards.length}});
               this.awaiting_secondary = false;
-            break;
+              break;
           }
         }
       }
@@ -401,6 +401,7 @@ class Game {
           let local_pick = pickRand(this.deck, 2);
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_CARDS'}});
+          
           this.awaiting_secondary = true;
           break;
       }
