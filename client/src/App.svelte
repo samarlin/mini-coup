@@ -339,7 +339,7 @@
 	<h2>and you have {$player.coins} coins.</h2>
 
 	<h2>Your opponents are:</h2>
-	<h2>{$opponents}</h2>
+	<h2>{JSON.stringify($opponents)}</h2>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
 	{/if}
