@@ -153,7 +153,6 @@ class Deck {
       let j = Math.floor(Math.random() * (i + 1));
       [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
     }
-    console.log(this.cards);
   }
 
   drawCards(num) {

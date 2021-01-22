@@ -96,7 +96,7 @@
 				// if a player's primary action is blocked, they have the option to CALL_BLUFF
 				secondary_action = '';
 				process_update(message);
-				take_secondary_action(message.primary, message.actions); 
+				take_secondary_action(message.primary, message.involved_players, message.actions); 
 				break;
 			case 'REVEAL_CARD': 
 				// player's bluff has been called, player must select a card to reveal
@@ -181,8 +181,8 @@
 		}
 	}
 
-	function take_secondary_action(primary_action, valid_actions) {
-		popup_attr.message = 'Select secondary action in response to ' + primary_action;
+	function take_secondary_action(primary_action, involved_players, valid_actions) {
+		popup_attr.message = 'Select secondary action in response to ' + primary_action + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
 		popup_attr.items = valid_actions;
 		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; default_popup();};
 		popup_attr.display = true;
@@ -275,7 +275,6 @@
 	function process_update(msg) {
 		// messages to 'TAKE_SECONDARY_ACTION' should also be processed in here
 		// 		so that objects which modify interface can be updated appropriately
-		console.log(msg);
 		switch (msg.type) {
 			case 'INIT_GAME':
 				msg.players.forEach(opponent => {
