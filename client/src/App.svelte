@@ -17,17 +17,13 @@
         onSubmit: () => {}
 	}
 
-	let popup_def = {
-		message: '',
-		display: false,
-		items: [],
-		multi: false,
-		alert: false,
-        onSubmit: () => {}
-	}
-
 	function default_popup() {
-		popup_attr = [...popup_def];
+		popup_attr.message = '';
+		popup_attr.display = false;
+		popup_attr.items = [];
+		popup_attr.multi = false;
+		popup_attr.alert = false;
+		popup_attr.onSubmit = () => {};
 	}
 	
 	let player_name = '';
