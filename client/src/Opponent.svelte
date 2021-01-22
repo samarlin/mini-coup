@@ -9,14 +9,13 @@
 </script>
 
 <div id="opp_info">
-    <h3>{name}</h3>
+    <h2>{name}</h2>
     {#each Array($opponents[name].cards) as _, i}
-        <img src="assets/cards/back.png" alt="card back" width="75">
+        <img src="assets/cards/back.png" alt="card back" width="100">
     {/each}
     <h4>{$opponents[name].coins} coins</h4>
 
     {#if Object.keys($opponents[name].pending_action).length !== 0}
-        <br>
         <span>Awaiting resolution of {$opponents[name].pending_action.type} </span>
         {#if $opponents[name].pending_action.reason}
             <span>(reason: {$opponents[name].pending_action.reason})</span>
@@ -37,9 +36,13 @@
         text-align: center;
         padding: 1em;
         margin: auto;
-        width: fit-content;
+        width: 300px;
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
         display: inline-block;
+    }
+
+    img {
+        padding: .5em;
     }
 </style>
