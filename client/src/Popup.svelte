@@ -8,8 +8,6 @@
         onSubmit: () => {}
     };
 
-    let def = JSON.parse(JSON.stringify(attr));
-
     let selection = '';
 </script>
 
@@ -22,20 +20,18 @@
                 <button on:click={() => {
                     attr.onSubmit(item);
                     selection = '';
-                    attr = def;
                 }}>{item}</button>
             {/each}
         {:else if attr.multi}
             <select multiple bind:value={selection}>
-                {#each attr.items as item}
-                    <option value={item}>{item}</option>
+                {#each attr.items as item, i}
+                    <option value={i}>{item}</option>
                 {/each}
             </select>
             {#if selection.length === 2}
                 <button on:click={() => {
                     attr.onSubmit(selection);
                     selection = '';
-                    attr = def;
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
@@ -43,12 +39,10 @@
             <button on:click={() => {
                 attr.onSubmit(selection);
                 selection = '';
-                attr = def;
             }}>Submit</button>
         {:else}
             <button on:click={() => {
                 attr.onSubmit(selection);
-                attr = def;
             }}>OK</button>
         {/if}
     </div>
