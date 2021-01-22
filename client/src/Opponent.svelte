@@ -10,20 +10,21 @@
 
 <div id="opp_info">
     <h3>{name}</h3>
-    <br><br>
     {#each Array($opponents[name].cards) as _, i}
         <img src="assets/cards/back.png" alt="card back" width="75">
     {/each}
     <h4>{$opponents[name].coins} coins</h4>
-    <br>
+
     {#if Object.keys($opponents[name].pending_action).length !== 0}
+        <br>
         <span>Awaiting resolution of {$opponents[name].pending_action.type} </span>
         {#if $opponents[name].pending_action.reason}
             <span>(reason: {$opponents[name].pending_action.reason})</span>
         {/if}
     {/if}
-    <br>
+    
     {#if Object.keys($opponents[name].last_action).length !== 0}
+        <br>
         <span>Most recent action: {$opponents[name].last_action.type} </span>
         {#if $opponents[name].last_action.target}
             <span>against {$opponents[name].last_action.target}</span>
@@ -34,8 +35,11 @@
 <style>
     #opp_info {
         text-align: center;
-        padding: 2em;
+        padding: 1em;
+        margin: auto;
+        width: fit-content;
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
+        display: inline-block;
     }
 </style>

@@ -372,6 +372,10 @@
 		font-weight: 100;
 	}
 
+	img {
+		padding: 1em;
+	}
+
 	@media (min-width: 640px) {
 		main {
 			max-width: none;
