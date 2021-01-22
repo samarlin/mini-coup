@@ -268,9 +268,10 @@
 	function process_update(msg) {
 		// messages to 'TAKE_SECONDARY_ACTION' should also be processed in here
 		// 		so that objects which modify interface can be updated appropriately
+		console.log(msg);
 		switch (msg.type) {
 			case 'INIT_GAME':
-				msg.players.array.forEach(opponent => {
+				msg.players.forEach(opponent => {
 					$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, pending_action: {}, last_action: {}};
 				});
 				break;
