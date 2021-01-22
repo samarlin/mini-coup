@@ -27,9 +27,7 @@
 	}
 
 	function default_popup() {
-		Object.keys(popup_attr).forEach(attr => {
-			popup_attr[attr] = popup_def[attr];
-		});
+		popup_attr = [...popup_def];
 	}
 	
 	let player_name = '';
@@ -42,7 +40,7 @@
 	if($connections.connectionState === 'NotJoined') {
 		popup_attr.items = [];
 		popup_attr.message = "Enter your name:";
-		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup_def;};
+		popup_attr.onSubmit = (name) => {player_name = name;};
 		popup_attr.display = true;
 	}
 
@@ -71,7 +69,6 @@
 		console.log("closed ", event.data);
 	}
 	function onMessage(event) {
-		console.log(event);
 		primary_action = '';
 		secondary_action = '';
 		target_name = '';

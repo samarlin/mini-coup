@@ -20,7 +20,6 @@
                 <button on:click={() => {
                     attr.onSubmit(item);
                     selection = '';
-                    attr.display = false;
                 }}>{item}</button>
             {/each}
         {:else if attr.multi}
