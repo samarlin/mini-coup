@@ -349,9 +349,8 @@
 	<h2>and you have {$player.coins} coins.</h2>
 
 	<h2>Your opponents are:</h2>
-	{#each $opponents as op}
-		<span>{op.name}</span>
-		<Opponent name={op.name}/>
+	{#each Object.keys($opponents) as op}
+		<Opponent name={op}/>
 	{/each}
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
