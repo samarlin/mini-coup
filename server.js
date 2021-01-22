@@ -25,7 +25,7 @@ wss.on('connection', function connection(ws) {
     let message = JSON.parse(msg);
     if (message.type === "ASSOCIATE") {
       state.players[message.id].connection = ws;
-    } else {
+    } else if (message.type !== "PING") {
       game.onMessage(message);
     }
   });

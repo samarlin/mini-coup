@@ -253,6 +253,7 @@ class Game {
           this.current_player.coins += 1;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
+          this.awaiting_secondary = false;
         } else if(message.type === 'COUP_PLAYER') {
           // send message to message.target to pick a card to lose
           this.players[message.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'COUP'}));
@@ -261,8 +262,8 @@ class Game {
           this.current_player.coins -= 7;
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.current_player.coins}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_MONEY', coins: this.current_player.coins}});
-        }
-        this.awaiting_secondary = false;
+          this.awaiting_secondary = true;
+        }  
       }
     } else if(message.type in SECONDARY_ACTIONS) {
       // process SECONDARY_ACTION

@@ -7,6 +7,7 @@
 	import {player, opponents} from './player.store.js';
 
 	let HOST = location.origin.replace(/^http/, 'ws');
+	let interval;
 
 	let popup_attr = {
 		message: '',
@@ -60,8 +61,10 @@
 	}
 	function onOpen() {
 		$connections.connection.send(JSON.stringify({type: "ASSOCIATE", id: $player.name}));
+		interval = setInterval(() => {$connections.connection.send(JSON.stringify({type: "PING"}));}, 20000);
 	}
 	function onClose(event) {
+		clearInterval(interval);
 		console.log("closed ", event.data);
 	}
 	function onMessage(event) {
