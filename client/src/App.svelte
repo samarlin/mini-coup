@@ -1,5 +1,6 @@
 <script>
 	import Popup from './Popup.svelte';
+	import Opponent from './Opponent.svelte';
 
 	import {connections} from './connection.store.js';
 	import {joinGame} from './connection.store.js';
@@ -348,6 +349,9 @@
 	<h2>and you have {$player.coins} coins.</h2>
 
 	<h2>Your opponents are:</h2>
+	{#each $opponents as opponent}
+		<svelte:component this={Opponent} name={opponent.name}/>
+	{/each}
 	<h2>{JSON.stringify($opponents)}</h2>
 	{#if ($player.admin && $connections.connectionState !== 'Joined')}
 		<button on:click={() => {startGame();}}>Start Game</button>
