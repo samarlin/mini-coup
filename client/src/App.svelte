@@ -82,6 +82,9 @@
 				// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
 				// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS 
 				primary_action = '';
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {};
+				});
 				take_primary_action();
 				break;
 			case 'INVALID_MOVE':
@@ -288,7 +291,7 @@
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
 				$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
-				if(msg.reason === "BLUFF") {
+				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
 				}
 				break;

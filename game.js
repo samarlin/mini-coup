@@ -81,7 +81,7 @@ const PRIMARY_ACTIONS_VALIDATIONS = {
     return "pass"
   },
   DRAW_CARDS: ({ gameState }) => {
-    if(!gameState.deck.length >= 2) { return "insufficient cards in deck"}
+    if(!gameState.deck.length() >= 2) { return "insufficient cards in deck"}
     return "pass"
   }
 };
@@ -142,53 +142,48 @@ const CARD_TO_MOVE = {
   ambassador: ["DRAW_CARDS", "BLOCK_STEAL"],
 }
 
-// takes arr and picks num elements randomly, removes them from arr
-function pickRand(arr, num) {
-  let cards = [];
-  for (let i = 0; i < num; ++i) {
-    let index = Math.floor(Math.random() * arr.length);
-    cards.push(arr[index]);
-    arr.splice(index, 1);
+class Deck {
+  constructor() {
+    this.cards = Array(3).fill(["contessa","duke","assassin","captain","ambassador"]).flat();
+    this.shuffle();
   }
 
-  return cards;
-}
+  shuffle() {
+    for (let i = this.cards.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+    }
+    console.log(this.cards);
+  }
 
-class Deck {
-  // deck needs to be fleshed out:
-  /*
-  TODOs:
-  * Return Ambassador discards to the deck
-  * Revealed card (after unsuccessful challenge is made & before new card is drawn) goes back into deck
-  * Shuffle deck, obviously
-  */
+  drawCards(num) {
+    let selected_cards = [];
+    for(let i = 0; i < num; ++i) {
+      selected_cards.push(this.cards.shift());
+    }
+
+    return selected_cards;
+  }
+
+  replaceCards(returned_cards) {
+    this.cards = this.cards.concat(returned_cards);
+    this.shuffle();
+  }
+
+  length() {
+    return this.cards.length;
+  }
 }
 
 class Game {
   constructor(players) {
     this.event_log = [];
 
-    this.deck = [
-      "contessa",
-      "duke",
-      "assassin",
-      "captain",
-      "ambassador",
-      "contessa",
-      "duke",
-      "assassin",
-      "captain",
-      "ambassador",
-      "contessa",
-      "duke",
-      "assassin",
-      "captain",
-      "ambassador",
-    ]; 
+    this.deck = new Deck();
     this.players = players;
     this.dead_players = {};
     Object.keys(this.players).forEach((player) => {
-      this.players[player].cards = pickRand(this.deck, 2);
+      this.players[player].cards = this.deck.drawCards(2);
       this.players[player].connection.send(JSON.stringify({type: 'DEAL_CARDS', cards: this.players[player].cards}));
       this.players[player].coins = 2;
       this.players[player].connection.send(JSON.stringify({type: 'RECEIVE_MONEY', coins: this.players[player].coins}));
@@ -327,8 +322,9 @@ class Game {
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
 
-                let new_card = pickRand(this.deck, 1); 
+                let new_card = this.deck.drawCards(1); 
                 this.players[message.player].cards.push(new_card);
+                this.deck.replaceCards(message.card);
 
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
                 this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
@@ -355,6 +351,7 @@ class Game {
               break;
             case 'CARDS_CHOSEN':
               this.players[message.player].cards = message.cards;
+              this.deck.replaceCards(message.discards);
               this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CARDS_CHOSEN', cards: message.cards.length}});
               this.awaiting_secondary = false;
               break;
@@ -399,7 +396,7 @@ class Game {
           this.awaiting_secondary = false;
           break;
         case 'DRAW_CARDS':
-          let local_pick = pickRand(this.deck, 2);
+          let local_pick = this.deck.drawCards(2);
           this.current_player.connection.send(JSON.stringify({type: 'RECEIVE_CARDS', cards: local_pick}));
           this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'RECEIVE_CARDS'}});
           
