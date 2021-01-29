@@ -208,7 +208,7 @@ class Game {
       player.connection.send(JSON.stringify(message)); 
     });
     Object.keys(this.dead_players).forEach(dead_player => {
-      dead_player.connection.send(JSON.stringify(message));
+      this.dead_players[dead_player].connection.send(JSON.stringify(message));
     })
   }
 
@@ -230,6 +230,8 @@ class Game {
         return;
       } 
 
+      this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'PRIMARY_TAKEN', primary: message.type, involved_players: {origin: this.current_player.name, target: message.target}}});
+      
       // query all other players for valid SECONDARY_ACTION
       if (valid_responses.length > 0) {
         this.awaiting_secondary = true;
@@ -291,7 +293,7 @@ class Game {
                 }
               }
               this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}));
-              this.sendUpdate(target, {type: 'UPDATE', msg: {player: target, type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}});
+              this.sendUpdate("", {type: 'UPDATE', msg: {player: target, type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}});
               break;
             case 'BLOCK_AID':
               // give other users an opportunity to CALL_BLUFF
@@ -326,7 +328,7 @@ class Game {
                 this.deck.replaceCards(message.card);
 
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
-                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "REPLACED"}});
 
                 // the challenging player now loses a card:
                 this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
@@ -340,8 +342,8 @@ class Game {
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
-                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
-                
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "LOST"}});
+
                 if (message.player === this.current_player.name) {
                   this.primary_success = false;
                 }
@@ -413,7 +415,24 @@ class Game {
       this.primary_success = false;
       this.active_secondary = {};
 
-      let curr_ind = Object.values(this.players).indexOf(this.current_player);
+      let curr_ind = Object.keys(this.players).indexOf(this.current_player.name);
+      
+      // cull dead players
+      let lost = [];
+      Object.keys(this.players).forEach(player => {
+        if(this.players[player].cards.length === 0) {
+          lost.push(player);
+        }
+      });
+
+      lost.forEach(loser => {
+        this.dead_players[loser] = this.players[loser];
+        if(Object.keys(this.players).indexOf(loser) <= curr_ind) {
+          curr_ind = (curr_ind === 0) ? Object.keys(this.players).length - 2 : curr_ind - 1;
+        }
+        delete this.players[loser];
+      });
+
       curr_ind = (curr_ind === (Object.keys(this.players).length - 1)) ? 0 : curr_ind + 1;
       this.current_player = Object.values(this.players)[curr_ind];
 
@@ -423,6 +442,7 @@ class Game {
 
   turn() {
     // if current player has 0 cards, add them to dead_players and skip turn
+    // redundant given end-of-turn player culling 
     if (this.current_player.cards.length === 0) {
       let name = this.current_player.name;
       this.dead_players[name] = this.current_player;
@@ -433,16 +453,18 @@ class Game {
 
       delete this.players[name];
 
-      if(Object.keys(this.players).length <= 1) {
-        this.current_player.connection.send(JSON.stringify({type: "GAME_OVER", win: true}));
-        Object.keys(this.dead_players).forEach((name) => {
-          this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
-        });
-        // take other server-side game-over actions (TODO: eg close room, reset game state)
-        return;
-      } else {
+      if(Object.keys(this.players).length > 1) {
         this.turn();
       }
+    }
+
+    if(Object.keys(this.players).length <= 1) {
+      this.current_player.connection.send(JSON.stringify({type: "GAME_OVER", win: true}));
+      Object.keys(this.dead_players).forEach((name) => {
+        this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
+      });
+      // take other server-side game-over actions (TODO: eg close room, reset game state)
+      return;
     }
 
     // if current player's coins >= 10 must coup
