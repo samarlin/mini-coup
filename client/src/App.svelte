@@ -294,6 +294,7 @@
 					$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
 				}
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
+					$opponents[msg.instigator].pending_action = {};
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
 				}
 				break;
@@ -305,19 +306,16 @@
 				// revealed: message.card, result: "REPLACED" || "LOST"
 				$opponents[msg.player].cards = msg.cards;
 				$opponents[msg.player].pending_action = {};
-				if($opponents[msg.player].cards === 0) {
-					$opponents[msg.player].alive = false;
-					$opponents[msg.player].last_action = {type: 'DIED'};
-					$opponents[msg.player].pending_action = {};
-				}
 
 				if(msg.result === "LOST") {
 					$opponents[msg.player].last_action = {type: 'LOST_CARD'};
-					$opponents[msg.player].pending_action = {};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
+					if($opponents[msg.player].cards === 0) {
+						$opponents[msg.player].alive = false;
+						$opponents[msg.player].last_action = {type: 'DIED'};
+					}
 				} else {
 					$opponents[msg.player].last_action = {type: 'REVEALED_CARD'};
-					$opponents[msg.player].pending_action = {};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 					$opponents[msg.player].cards -= 1;
 					setTimeout(function() {
@@ -350,11 +348,12 @@
 					if(opponent !== msg.involved_players.origin)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
+				$opponents[msg.involved_players.origin].pending_action = {};
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 			case 'PRIMARY_TAKEN':
-				$opponents[msg.involved_players.origin].pending_action = {};
-				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
+				$opponents[msg.player].pending_action = {};
+				$opponents[msg.player].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 		}
 	}
