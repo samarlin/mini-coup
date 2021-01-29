@@ -208,7 +208,7 @@ class Game {
       player.connection.send(JSON.stringify(message)); 
     });
     Object.keys(this.dead_players).forEach(dead_player => {
-      dead_player.connection.send(JSON.stringify(message));
+      this.dead_players[dead_player].connection.send(JSON.stringify(message));
     })
   }
 
