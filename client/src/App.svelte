@@ -280,7 +280,7 @@
 			case 'INIT_GAME':
 				msg.players.forEach(opponent => {
 					if(opponent !== $player.name)
-						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, pending_action: {}, last_action: {}};
+						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 				});
 				break;
 			case 'RECEIVE_MONEY': 
@@ -300,10 +300,22 @@
 				$opponents[msg.player].pending_action = {};
 				break;
 			case 'CHANGE_CARDS':
+				// revealed: message.card, result: "REPLACED" || "LOST"
 				$opponents[msg.player].cards = msg.cards;
 				$opponents[msg.player].pending_action = {};
 				if($opponents[msg.player].cards === 0) {
 					$opponents[msg.player].alive = false;
+				}
+
+				if(msg.result === "LOST") {
+					$opponents[msg.player].revealed_cards.push(msg.revealed);
+				} else {
+					$opponents[msg.player].revealed_cards.push(msg.revealed);
+					$opponents[msg.player].cards -= 1;
+					setTimeout(function() {
+						$opponents[msg.player].revealed_cards.pop();
+						$opponents[msg.player].cards += 1;
+					}, 1000);
 				}
 				break;
 			case 'CARDS_CHOSEN':
@@ -326,6 +338,12 @@
 				$opponents[msg.player].pending_action = {type: 'TAKE_PRIMARY_ACTION'};
 				break;
 			case 'TAKE_SECONDARY_ACTION':
+				Object.keys($opponents).forEach(opponent => {
+					if(opponent !== msg.involved_players.origin)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
+				break;
+			case 'PRIMARY_TAKEN':
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 		}

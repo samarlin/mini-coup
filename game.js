@@ -230,6 +230,8 @@ class Game {
         return;
       } 
 
+      this.sendUpdate(this.current_player.name, {type: 'UPDATE', msg: {player: this.current_player.name, type: 'PRIMARY_TAKEN', primary: message.type, involved_players: {origin: this.current_player.name, target: message.target}}});
+      
       // query all other players for valid SECONDARY_ACTION
       if (valid_responses.length > 0) {
         this.awaiting_secondary = true;
@@ -326,7 +328,7 @@ class Game {
                 this.deck.replaceCards(message.card);
 
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
-                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "REPLACED"}});
 
                 // the challenging player now loses a card:
                 this.players[message.instigator].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'FAILED_BLUFF'}));
@@ -340,7 +342,7 @@ class Game {
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
-                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length}});
+                this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "LOST"}});
                 
                 if (message.player === this.current_player.name) {
                   this.primary_success = false;
