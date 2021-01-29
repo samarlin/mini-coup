@@ -308,8 +308,10 @@
 				}
 
 				if(msg.result === "LOST") {
+					$opponents[msg.player].last_action = {type: 'LOST_CARD'};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 				} else {
+					$opponents[msg.player].last_action = {type: 'REVEALED_CARD'};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 					$opponents[msg.player].cards -= 1;
 					setTimeout(function() {
@@ -342,8 +344,10 @@
 					if(opponent !== msg.involved_players.origin)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
+				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 			case 'PRIMARY_TAKEN':
+				$opponents[msg.involved_players.origin].pending_action = {};
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 		}

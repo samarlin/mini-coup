@@ -1,7 +1,6 @@
 <script>
     export let name;
     import {opponents} from './player.store.js'
-    import {fade} from 'svelte/transition';
 
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],
@@ -12,10 +11,10 @@
 <div id="opp_info">
     <h2>{name}</h2>
     {#each Array($opponents[name].cards) as _, i}
-        <img transition:fade src="assets/cards/back.png" alt="card back" width="100">
+        <img src="assets/cards/back.png" alt="card back" width="100">
     {/each}
     {#each $opponents[name].revealed_cards as card}
-        <img transition:fade src="assets/cards/{card}.png" alt="{card}" width="100">
+        <img src="assets/cards/{card}.png" alt="{card}" width="100">
     {/each}
     <h4>{$opponents[name].coins} coins</h4>
 

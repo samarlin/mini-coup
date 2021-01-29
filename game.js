@@ -293,7 +293,7 @@ class Game {
                 }
               }
               this.players[target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}));
-              this.sendUpdate(target, {type: 'UPDATE', msg: {player: target, type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}});
+              this.sendUpdate("", {type: 'UPDATE', msg: {player: target, type: 'REVEAL_CARD', reason: 'BLUFF', prev_type: local_type, instigator: message.player}});
               break;
             case 'BLOCK_AID':
               // give other users an opportunity to CALL_BLUFF
