@@ -290,7 +290,9 @@
 				break;
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
-				$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
+				if(msg.player !== $player.name) {
+					$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
+				}
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
 				}

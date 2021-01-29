@@ -343,7 +343,7 @@ class Game {
                 this.players[message.player].cards.splice(idx, 1);
                 this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
                 this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "LOST"}});
-                
+
                 if (message.player === this.current_player.name) {
                   this.primary_success = false;
                 }
@@ -415,7 +415,24 @@ class Game {
       this.primary_success = false;
       this.active_secondary = {};
 
-      let curr_ind = Object.values(this.players).indexOf(this.current_player);
+      let curr_ind = Object.keys(this.players).indexOf(this.current_player.name);
+      
+      // cull dead players
+      let lost = [];
+      Object.keys(this.players).forEach(player => {
+        if(this.players[player].cards.length === 0) {
+          lost.push(player);
+        }
+      });
+
+      lost.forEach(loser => {
+        this.dead_players[loser] = this.players[loser];
+        if(Object.keys(this.players).indexOf(loser) <= curr_ind) {
+          curr_ind = (curr_ind === 0) ? Object.keys(this.players).length - 2 : curr_ind - 1;
+        }
+        delete this.players[loser];
+      });
+
       curr_ind = (curr_ind === (Object.keys(this.players).length - 1)) ? 0 : curr_ind + 1;
       this.current_player = Object.values(this.players)[curr_ind];
 
@@ -425,6 +442,7 @@ class Game {
 
   turn() {
     // if current player has 0 cards, add them to dead_players and skip turn
+    // redundant given end-of-turn player culling 
     if (this.current_player.cards.length === 0) {
       let name = this.current_player.name;
       this.dead_players[name] = this.current_player;
