@@ -435,16 +435,18 @@ class Game {
 
       delete this.players[name];
 
-      if(Object.keys(this.players).length <= 1) {
-        this.current_player.connection.send(JSON.stringify({type: "GAME_OVER", win: true}));
-        Object.keys(this.dead_players).forEach((name) => {
-          this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
-        });
-        // take other server-side game-over actions (TODO: eg close room, reset game state)
-        return;
-      } else {
+      if(Object.keys(this.players).length > 1) {
         this.turn();
       }
+    }
+
+    if(Object.keys(this.players).length <= 1) {
+      this.current_player.connection.send(JSON.stringify({type: "GAME_OVER", win: true}));
+      Object.keys(this.dead_players).forEach((name) => {
+        this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
+      });
+      // take other server-side game-over actions (TODO: eg close room, reset game state)
+      return;
     }
 
     // if current player's coins >= 10 must coup
