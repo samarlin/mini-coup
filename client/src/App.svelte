@@ -307,19 +307,23 @@
 				$opponents[msg.player].pending_action = {};
 				if($opponents[msg.player].cards === 0) {
 					$opponents[msg.player].alive = false;
+					$opponents[msg.player].last_action = {type: 'DIED'};
+					$opponents[msg.player].pending_action = {};
 				}
 
 				if(msg.result === "LOST") {
 					$opponents[msg.player].last_action = {type: 'LOST_CARD'};
+					$opponents[msg.player].pending_action = {};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 				} else {
 					$opponents[msg.player].last_action = {type: 'REVEALED_CARD'};
+					$opponents[msg.player].pending_action = {};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 					$opponents[msg.player].cards -= 1;
 					setTimeout(function() {
 						$opponents[msg.player].revealed_cards.pop();
 						$opponents[msg.player].cards += 1;
-					}, 1000);
+					}, 1500);
 				}
 				break;
 			case 'CARDS_CHOSEN':
