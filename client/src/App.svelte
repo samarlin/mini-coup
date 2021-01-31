@@ -255,7 +255,7 @@
 				$player.cards = [reveal.cards[selected_cards[0]], reveal.cards[selected_cards[1]]];
 				reveal.cards.splice(selected_cards[1], 1); reveal.cards.splice(selected_cards[0], 1); 
 			} else {
-				$player.cards = selected_cards;
+				$player.cards = [selected_cards];
 				const idx = reveal.cards.indexOf(selected_cards);
 				if(idx > -1) {
 					reveal.cards.splice(idx, 1);
