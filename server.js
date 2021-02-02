@@ -7,73 +7,105 @@ const app = express();
 const WebSocket = require("ws");
 
 const cors = require("cors");
-const body_parser = require("body-parser");
 const http = require("http").createServer(app);
 const wss = new WebSocket.Server({ server: http });
 
 app.use(cors());
-app.use(body_parser.json());
+app.use(express.json());
 
-let game;
-let state = {
-  players: {},
-};
-const defaultState = JSON.parse(JSON.stringify(state));
+let rooms = {};
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(msg) {
     let message = JSON.parse(msg);
-    if (message.type === "ASSOCIATE") {
-      state.players[message.id].connection = ws;
-    } else if (message.type !== "PING") {
-      game.onMessage(message);
+    switch(message.type) {
+      /* This has been moved to a POST route 
+      case 'CREATE_LOBBY':
+        let id = Math.floor(1000 + Math.random() * 9000);
+        while(id in lobbies) {
+          id = Math.floor(1000 + Math.random() * 9000);
+        }
+
+        lobbies[id] = {game: null, lobby: id, players: {}};
+        lobbies[id].players[message.name] = {connection: ws, name: message.name, admin: true};
+        ws.send(JSON.stringify({type: "LOBBY_CREATED", lobby: id, admin: true}));
+        ws.lobby = id; ws.name = message.name;
+        break;
+      */
+
+      case 'JOIN_LOBBY':
+        if (message.name in rooms[message.room].players) {
+          ws.send(JSON.stringify({type: "JOIN_FAILED", reason: 'name'}));
+        } else {
+          rooms[message.room].players[message.name] = {admin: false, name: message.name, connection: ws};
+          ws.send(JSON.stringify({type: "ROOM_JOINED", admin: false, room: message.room, players: Object.keys(rooms[message.room].players)}));
+          ws.room = message.room; ws.name = message.name;
+        }
+        break;
+
+      case 'START_GAME':
+
+        break;
+
+      case 'PING':
+        // keeping connection alive for Heroku
+        break;
+      
+      default:
+        lobbies[ws.lobby].game.onMessage(message);
+        break;
     }
   });
+
+  ws.on('close', function() {
+    if(ws.hasOwnProperty(lobby) && ws.hasOwnProperty(name)) {
+      delete lobbies[ws.lobby].players[ws.name];
+      if(Object.keys(lobbies[ws.lobby].players).length === 0) {
+        delete lobbies[ws.lobby];
+      }
+    }
+  })
+});
+
+/*
+// rewrite for '/rooms/:id'?
+app.get("/rooms/:id/reset", (req, res) => {
+  if(req.params.id in rooms) {
+    rooms[id] = {game: null, room: id, players: {}};
+    res.send({reset: true});
+  } else {
+    res.send({reset: false});
+  }
+});
+
+app.get("/rooms/:id/events", (req, res) => {
+  if(req.params.id in rooms) {
+    res.json(rooms[req.params.id].game.event_log);
+  }
+});
+*/
+
+app.get("/rooms/:id", (req, res) => {
+  if(req.params.id in rooms) {
+    let isEmpty = Object.keys(rooms[req.params.id].players).length === 0;
+    res.send({exists: true, empty: isEmpty, open: rooms[req.params.id].open, room: req.params.id});
+  } else {
+    res.send({exists: false});
+  }
 });
 
 let clientDir = __dirname + "/client/public/";
 app.use(express.static(clientDir));
-
-app.get("/reset", (_, res) => {
-  state = {
-    players: {},
-  };
-  res.send("Done!");
+app.get('*', (req, res) => {
+  res.sendFile(clientDir + "index.html");
 });
 
-app.get("/stats", (_, res) => {
-  let sanitized = {
-    ...state,
-    players: Object.entries(state.players).map(([name, player]) => {
-    const {connection, ...rest} = player;
-    return rest;
-    })};
-  res.json(sanitized);
-});
-
-app.get("/events", (_, res) => {
-  res.json(game.event_log);
-});
-
-app.post("/join-game", (req, res) => {
-  let body = req.body;
-  let admin = false;
-  if (Object.keys(state.players).length === 0) {
-    admin = true;
+app.post("/create-room", (req, res) => {
+  let id = Math.floor(1000 + Math.random() * 9000);
+  while(id in lobbies) {
+    id = Math.floor(1000 + Math.random() * 9000);
   }
 
-  state.players[body.name] = { admin: admin, name: body.name };
-
-  res.json({ admin });
-});
-
-app.post("/start-game", (req, res) => {
-  // start game,
-  // send message to all clients w/ game init info
-  game = new coup.Game(state.players);
-  res.send("Game started!");
-});
-
-http.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  rooms[id] = {game: null, room: id, players: {}};
+  res.json({room: id})
 });

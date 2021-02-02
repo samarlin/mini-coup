@@ -1,6 +1,6 @@
 <script>
     export let name;
-    import {opponents} from './player.store.js'
+    import {opponents} from '../stores/player.store.js'
 
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],

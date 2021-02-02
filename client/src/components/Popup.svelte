@@ -56,6 +56,7 @@
 
         transform: translateY(-50%) translateX(-50%);
         background-color: rgb(250, 245, 250);
+        color: darkslateblue;
 
         padding: 2em;
         border: thin solid darkslateblue;
