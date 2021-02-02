@@ -1,7 +1,9 @@
 <script>
-    import Popup from './components/Popup.svelte';
-    import {connections, joinGame} from './stores/connection.store.js';
+    import Popup from '../components/Popup.svelte';
+    import {joinRoom, createRoom} from '../stores/connection.store.js';
+    import {player} from '../stores/player.store.js';
     
+    let lobby_id, popup;
     let popup_attr = {
 		message: '',
 		display: false,
@@ -9,39 +11,71 @@
 		multi: false,
 		alert: false,
         onSubmit: () => {}
-	}
-
-    async function createLobby(event) {
-        // enter name
-        // get a lobby ID
-        // go to lobby URL
-
     }
 
-    async function joinLobby(event) {
-        // enter name, lobby ID
-        // verify lobby ID
-        // go to lobby URL
+    async function createLobby(event) {
+        // get a room ID
+        let result = await createRoom();
+        if (result.status === 'ok') {
+            $player.room = result.room;
+            // go to room URL
+            window.location.href = "/rooms/" + result.room;
+        } else {
+            popup_attr.message = "Connection failure, please try again.";
+            popup_attr.alert = true;
+            popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
+            popup_attr.display = true;
+        }	
+    }
 
+    function joinLobby_popup(event) {
+        // enter room ID
+		popup_attr.message = "Enter room ID:";
+		popup_attr.onSubmit = (id) => {lobby_id = id; popup_attr = popup.initialData();};
+		popup_attr.display = true;
+    }
+
+    $: if(lobby_id) {
+        joinLobby();
+    }
+
+    async function joinLobby() {
+        // verify lobby ID
+        let result = await joinRoom(lobby_id);
+        if (result.status === 'ok') {
+            if(result.exists && result.open) {
+                $player.room = lobby_id;
+                // go to room
+                window.location.href = "/rooms/" + lobby_id;
+            } else {
+                popup_attr.message = "Room does not exist or is not open.";
+                popup_attr.alert = true;
+                popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
+                popup_attr.display = true;
+            }
+        } else {
+            popup_attr.message = "Connection failure, please try again.";
+            popup_attr.alert = true;
+            popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
+            popup_attr.display = true;
+        }
     }
 </script>
 
-<Popup attr={popup_attr}/>
+<Popup bind:this={popup} attr={popup_attr}/>
 
 <main>
     <h1>Welcome to Mini Coup!</h1>
-    <button on:click|once={createLobby}>Create New Game</button>
-    <button on:click|once={joinLobby}>Join Existing Game</button>
+    <button on:click={createLobby}>Create New Room</button>
+    <button on:click={joinLobby_popup}>Join Existing Room</button>
 </main>
 
 <style>
 	main {
         color: darkslateblue;
-        background-color: rgb(250, 245, 250);
 
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
 		margin: 0 auto;
 	}
 

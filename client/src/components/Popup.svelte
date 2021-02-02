@@ -1,12 +1,26 @@
 <script>
-    export let attr = {
-        message: '',
-        display: false,
-        items: [],
-        multi: false,
-        alert: false,
-        onSubmit: () => {}
-    };
+    export function initialData() {
+        return {
+            message: '',
+            display: false,
+            items: [],
+            multi: false,
+            alert: false,
+            onSubmit: () => {}
+        };
+    }
+
+    export let attr = initialData();
+    export function reset() {
+        this.set(attr = initialData());
+    }
+
+    export function trigger_alert(message, next_action) {
+		popup_attr.message = message;
+		popup_attr.alert = true;
+		popup_attr.onSubmit = () => {next_action(); default_popup();};
+		popup_attr.display = true;
+	}
 
     let selection = '';
 </script>

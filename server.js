@@ -19,32 +19,26 @@ wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(msg) {
     let message = JSON.parse(msg);
     switch(message.type) {
-      /* This has been moved to a POST route 
-      case 'CREATE_LOBBY':
-        let id = Math.floor(1000 + Math.random() * 9000);
-        while(id in lobbies) {
-          id = Math.floor(1000 + Math.random() * 9000);
-        }
-
-        lobbies[id] = {game: null, lobby: id, players: {}};
-        lobbies[id].players[message.name] = {connection: ws, name: message.name, admin: true};
-        ws.send(JSON.stringify({type: "LOBBY_CREATED", lobby: id, admin: true}));
-        ws.lobby = id; ws.name = message.name;
-        break;
-      */
-
+      // socket is created and JOIN_LOBBY is sent after POST /create-room -> GET /rooms/:id (admin: true),
+      //  POST /join-room -> GET /rooms/:id 
+      //  or just GET /rooms/:id for an existing & open id (admin: false)
       case 'JOIN_LOBBY':
         if (message.name in rooms[message.room].players) {
           ws.send(JSON.stringify({type: "JOIN_FAILED", reason: 'name'}));
         } else {
-          rooms[message.room].players[message.name] = {admin: false, name: message.name, connection: ws};
-          ws.send(JSON.stringify({type: "ROOM_JOINED", admin: false, room: message.room, players: Object.keys(rooms[message.room].players)}));
+          let isAdmin = Object.keys(rooms[message.room].players).length === 0;
+          rooms[message.room].players[message.name] = {admin: isAdmin, name: message.name, connection: ws};
+          ws.send(JSON.stringify({type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}));
           ws.room = message.room; ws.name = message.name;
+
+          if(!isAdmin) {
+            // broadcast join to other members of room
+          }
         }
         break;
 
       case 'START_GAME':
-
+        rooms[ws.room].game = new coup.Game(rooms[ws.room].players);
         break;
 
       case 'PING':
@@ -71,7 +65,7 @@ wss.on('connection', function connection(ws) {
 // rewrite for '/rooms/:id'?
 app.get("/rooms/:id/reset", (req, res) => {
   if(req.params.id in rooms) {
-    rooms[id] = {game: null, room: id, players: {}};
+    rooms[id] = {game: null, room: id, open: true, players: {}};
     res.send({reset: true});
   } else {
     res.send({reset: false});
@@ -85,15 +79,6 @@ app.get("/rooms/:id/events", (req, res) => {
 });
 */
 
-app.get("/rooms/:id", (req, res) => {
-  if(req.params.id in rooms) {
-    let isEmpty = Object.keys(rooms[req.params.id].players).length === 0;
-    res.send({exists: true, empty: isEmpty, open: rooms[req.params.id].open, room: req.params.id});
-  } else {
-    res.send({exists: false});
-  }
-});
-
 let clientDir = __dirname + "/client/public/";
 app.use(express.static(clientDir));
 app.get('*', (req, res) => {
@@ -106,6 +91,15 @@ app.post("/create-room", (req, res) => {
     id = Math.floor(1000 + Math.random() * 9000);
   }
 
-  rooms[id] = {game: null, room: id, players: {}};
+  rooms[id] = {game: null, open: true, room: id, players: {}};
   res.json({room: id})
+});
+
+app.post("/join-room", (req, res) => {
+  let body = req.body;
+  if(body.room in rooms) {
+    res.json({exists: true, open: rooms[body.room].open});
+  } else {
+    res.json({exists: false});
+  }
 });

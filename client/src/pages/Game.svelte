@@ -1,12 +1,9 @@
 <script>
-	import Popup from './components/Popup.svelte';
-	import Opponent from './components/Opponent.svelte';
+	import Popup from '../components/Popup.svelte';
+	import Opponent from '../components/Opponent.svelte';
 
-	import {connections} from './stores/connection.store.js';
-	import {joinGame} from './stores/connection.store.js';
-	import {io} from 'socket.io-client';
-
-	import {player, opponents} from './stores/player.store.js';
+	import {connections} from '../stores/connection.store.js';
+	import {player, opponents} from '../stores/player.store.js';
 
 	let HOST = location.origin.replace(/^http/, 'ws');
 	let interval;
@@ -43,13 +40,7 @@
 		popup_attr.display = true;
 	}
 
-	$: if (player_name) {
-		$player.name = player_name;
-		joinGame(player_name).then((data) => {
-			$player.admin = data.admin;
-			establishConnection();
-		});
-	}
+	
 
 	function startGame() {
 		fetch("https://mini-coup.herokuapp.com/start-game", { method: "POST" });
@@ -389,11 +380,9 @@
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
         margin: 0 auto;
 
         color: darkslateblue;
-        background-color: rgb(250, 245, 250);
 	}
 
 	h1 {

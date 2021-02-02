@@ -2,8 +2,7 @@
 	import router from 'page';
 
 	import Home from './pages/Home.svelte';
-	import Lobby from './pages/Lobby.svelte';
-	import Game from './pages/Game.svelte';
+	import Room from './pages/Room.svelte';
 
 	let page, params;
 	router('/', () => {page = Home;});
