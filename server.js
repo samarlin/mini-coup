@@ -28,17 +28,30 @@ wss.on('connection', function connection(ws) {
         } else {
           let isAdmin = Object.keys(rooms[message.room].players).length === 0;
           rooms[message.room].players[message.name] = {admin: isAdmin, name: message.name, connection: ws};
-          ws.send(JSON.stringify({type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}));
+          ws.send(JSON.stringify({type: "ROOM_JOINED", admin: isAdmin, players: Object.keys(rooms[message.room].players)}));
           ws.room = message.room; ws.name = message.name;
 
           if(!isAdmin) {
             // broadcast join to other members of room
+            Object.keys(rooms[message.room].players).forEach(player => {
+              if(player !== message.name) {
+                rooms[message.room].players[player].send(JSON.stringify({type: 'PLAYER_JOINED', name: message.name}));
+              }
+            });
           }
         }
         break;
 
       case 'START_GAME':
-        rooms[ws.room].game = new coup.Game(rooms[ws.room].players);
+        // send GAME_STARTED to all other players in room
+        Object.keys(rooms[message.room].players).forEach(player => {
+          if(player !== ws.name) {
+            rooms[ws.room].players[ws.name].send(JSON.stringify({type: 'GAME_STARTED'}));
+          }
+        });
+        setTimeout(() => {
+          rooms[ws.room].game = new coup.Game(rooms[ws.room].players);
+        }, 500);
         break;
 
       case 'PING':
@@ -46,7 +59,7 @@ wss.on('connection', function connection(ws) {
         break;
       
       default:
-        lobbies[ws.lobby].game.onMessage(message);
+        rooms[ws.room].game.onMessage(message);
         break;
     }
   });

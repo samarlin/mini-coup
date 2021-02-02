@@ -5,9 +5,6 @@
 	import {connections} from '../stores/connection.store.js';
 	import {player, opponents} from '../stores/player.store.js';
 
-	let HOST = location.origin.replace(/^http/, 'ws');
-	let interval;
-
 	let popup_attr = {
 		message: '',
 		display: false,
@@ -16,50 +13,14 @@
 		alert: false,
         onSubmit: () => {}
 	}
-
-	function default_popup() {
-		popup_attr.message = '';
-		popup_attr.display = false;
-		popup_attr.items = [];
-		popup_attr.multi = false;
-		popup_attr.alert = false;
-		popup_attr.onSubmit = () => {};
-	}
 	
-	let player_name = '';
 	let primary_action = '';
 	let secondary_action = '';
 	let target_name = '';
 	let reveal = {};
 	let selected_cards = '';
-
-	if($connections.connectionState === 'NotJoined') {
-		popup_attr.items = [];
-		popup_attr.message = "Enter your name:";
-		popup_attr.onSubmit = (name) => {player_name = name; default_popup();};
-		popup_attr.display = true;
-	}
-
 	
-
-	function startGame() {
-		fetch("https://mini-coup.herokuapp.com/start-game", { method: "POST" });
-	}
-	function establishConnection() {
-		$connections.connection = WebSocket(HOST);
-		$connections.connection.onopen = onOpen;
-		$connections.connection.onclose = onClose;
-		$connections.connection.onmessage = onMessage;
-		$connections.connectionState = 'Joining';
-	}
-	function onOpen() {
-		$connections.connection.send(JSON.stringify({type: "ASSOCIATE", id: $player.name}));
-		interval = setInterval(() => {$connections.connection.send(JSON.stringify({type: "PING"}));}, 20000);
-	}
-	function onClose(event) {
-		clearInterval(interval);
-		console.log("closed ", event.data);
-	}
+    $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
 		let message = JSON.parse(event.data);
 		
@@ -69,7 +30,6 @@
 				break;
 			case 'DEAL_CARDS': // initial dealing of cards
 				$player.cards = message.cards;
-				$connections.connectionState = 'Joined';
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
@@ -369,11 +329,8 @@
 
 	<h2>Your opponents are:</h2>
 	{#each Object.keys($opponents) as op}
-		<Opponent name={op}/>
+		<Opponent name={op} game_active={true}/>
 	{/each}
-	{#if ($player.admin && $connections.connectionState !== 'Joined')}
-		<button on:click={() => {startGame();}}>Start Game</button>
-	{/if}
 </main>
 
 <style>

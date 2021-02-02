@@ -22,7 +22,7 @@
 		popup_attr.display = true;
 	}
 
-    let selection = '';
+    let selection = '', text, error = false;
 </script>
 
 {#if attr.display}
@@ -49,10 +49,16 @@
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
-            <input type="text" bind:value={selection}>
+            <input type="text" bind:this={text} bind:value={selection} pattern="[a-zA-Z0-9]{10}">
+            {#if attr.error}<span>10-character limit, alphanumerics only.</span>{/if}
             <button on:click={() => {
-                attr.onSubmit(selection);
-                selection = '';
+                if(text.checkValidity()) {
+                    attr.onSubmit(selection);
+                    error = false;
+                    selection = '';
+                } else {
+                    error = true;
+                }
             }}>Submit</button>
         {:else}
             <button on:click={() => {
