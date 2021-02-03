@@ -116,3 +116,7 @@ app.post("/join-room", (req, res) => {
     res.json({exists: false});
   }
 });
+
+http.listen(port, () => {
+  console.log(`Example app listening at on ${port}`);
+});
