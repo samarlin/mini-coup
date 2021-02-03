@@ -278,6 +278,7 @@
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
 					$opponents[msg.instigator].pending_action = {};
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
+					popup_attr = popup.initialData();
 				}
 				break;
 			case 'APPROVED_MOVE':

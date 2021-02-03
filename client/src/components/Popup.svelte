@@ -25,6 +25,16 @@
 	}
 
     let selection = '', text, error = false;
+    $: forSubmitText = attr.onSubmit;
+    function submitText() {
+        if(text.checkValidity()) {
+            attr.onSubmit(selection);
+            error = false;
+            selection = '';
+        } else {
+            error = true;
+        }
+    }
 </script>
 
 {#if attr.display}
@@ -52,17 +62,9 @@
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
-            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"}>
+            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()}>
             {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
-            <button on:click={() => {
-                if(text.checkValidity()) {
-                    attr.onSubmit(selection);
-                    error = false;
-                    selection = '';
-                } else {
-                    error = true;
-                }
-            }}>Submit</button>
+            <button on:click={submitText}>Submit</button>
         {:else}
             <button on:click={() => {
                 attr.onSubmit(selection);

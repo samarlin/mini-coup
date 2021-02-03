@@ -34,6 +34,7 @@
         {/if}
         
         {#if Object.keys($opponents[name].last_action).length !== 0}
+            <br>
             <span>Recently 
                 {#if $opponents[name].last_action.type in $tenses}
                 {$tenses[$opponents[name].last_action.type]}
