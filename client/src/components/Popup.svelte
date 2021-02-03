@@ -49,7 +49,7 @@
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
-            <input type="text" bind:this={text} bind:value={selection} pattern="[a-zA-Z0-9]{10}">
+            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"}>
             {#if attr.error}<span>10-character limit, alphanumerics only.</span>{/if}
             <button on:click={() => {
                 if(text.checkValidity()) {
