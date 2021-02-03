@@ -169,8 +169,8 @@
 	}
 
 	function choose_player(text) {
-		popup_attr.message = 'Enter player name to ' + text;
-		popup_attr.items = Object.keys($opponents).filter(player => {$opponents[player].alive});;
+		popup_attr.message = 'Choose player to ' + text;
+		popup_attr.items = Object.keys($opponents).filter(player => $opponents[player].alive);
 		popup_attr.onSubmit = (input_name) => {target_name = input_name; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
