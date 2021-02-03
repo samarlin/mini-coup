@@ -1,6 +1,6 @@
 <script>
     import Popup from '../components/Popup.svelte';
-    import {joinRoom, createRoom} from '../stores/connection.store.js';
+    import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
     
     let lobby_id, popup;
@@ -21,7 +21,7 @@
                 console.log(result);
                 console.log('room', $player.room);
                 // go to room URL
-                window.location.href = "/rooms/" + result.room;
+                $connections.router("/rooms/" + result.room);
             } else {
                 popup_attr.message = "Connection failure, please try again.";
                 popup_attr.alert = true;
@@ -49,7 +49,7 @@
             if(result.exists && result.open) {
                 $player.room = lobby_id;
                 // go to room
-                window.location.href = "/rooms/" + lobby_id;
+                $connections.router("/rooms/" + lobby_id);
             } else {
                 popup_attr.message = "Room does not exist or is not open.";
                 popup_attr.alert = true;

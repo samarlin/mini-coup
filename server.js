@@ -36,7 +36,7 @@ wss.on('connection', function connection(ws) {
             // broadcast join to other members of room
             Object.keys(rooms[message.room].players).forEach(player => {
               if(player !== message.name) {
-                rooms[message.room].players[player].send(JSON.stringify({type: 'PLAYER_JOINED', name: message.name}));
+                rooms[message.room].players[player].connection.send(JSON.stringify({type: 'PLAYER_JOINED', name: message.name}));
               }
             });
           }
@@ -47,7 +47,7 @@ wss.on('connection', function connection(ws) {
         // send GAME_STARTED to all other players in room
         Object.keys(rooms[message.room].players).forEach(player => {
           if(player !== ws.name) {
-            rooms[ws.room].players[ws.name].send(JSON.stringify({type: 'GAME_STARTED'}));
+            rooms[ws.room].players[ws.name].connection.send(JSON.stringify({type: 'GAME_STARTED'}));
           }
         });
         setTimeout(() => {

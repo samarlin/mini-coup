@@ -32,7 +32,7 @@
     onMount(async () => {
         console.log($player.room, params.id);
         if($player.room && params.id !== $player.room) {
-            window.location.href = "/rooms/" + $player.room;
+            $connections.router("/rooms/" + $player.room);
         } else if (!$player.room) {
             // check room 
             let result = await joinRoom(params.id)
@@ -40,7 +40,7 @@
                 $player.room = params.id;
             } else {
                 $connections.connectionState = "Failed";
-                window.location.href = "/";
+                $connections.router("/");
             }  
         } 
         // open websocket & join room

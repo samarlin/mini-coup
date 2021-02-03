@@ -4,7 +4,8 @@ import {writable} from 'svelte/store';
 export const connections = writable({
     connectionState: 'NotJoined',
     connection: null,
-    current_message: null
+    current_message: null, 
+    router: null
 });
 
 export async function createRoom(){
