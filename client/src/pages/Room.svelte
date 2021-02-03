@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
     // switch between Lobby and Game 'pages' from in here
-    import Lobby from './pages/Lobby.svelte';
-    import Game from './pages/Game.svelte';
+    import Lobby from './Lobby.svelte';
+    import Game from './Game.svelte';
     import { player } from "../stores/player.store.js";
     import { connections, joinRoom } from "../stores/connection.store.js";
     export let params;
