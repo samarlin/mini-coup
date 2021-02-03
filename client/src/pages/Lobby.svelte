@@ -75,7 +75,7 @@
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
-	{#if ($player.admin && $connections.connectionState !== 'Joined')}
+	{#if $player.admin}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
 </main>
