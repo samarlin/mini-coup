@@ -379,6 +379,10 @@
 		font-weight: 100;
 	}
 
+	h2 {
+		margin-bottom: 5px;
+	}
+
 	img {
 		max-width: calc(50%/2);
 		padding: 1em;
