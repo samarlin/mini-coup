@@ -18,7 +18,8 @@
         createRoom().then(result => {
             if (result.status === 'ok') {
                 $player.room = result.room;
-                console.log($player.room);
+                console.log(result);
+                console.log('room', $player.room);
                 // go to room URL
                 window.location.href = "/rooms/" + result.room;
             } else {

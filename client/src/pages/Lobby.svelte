@@ -1,12 +1,19 @@
 <script>
-    import { onMount, createEventDispatcher } from "svelte";
+    import { createEventDispatcher } from "svelte";
     import Popup from '../components/Popup.svelte';
     import Opponent from '../components/Opponent.svelte';
-    import { player, opponents } from "../stores/player.store.js";
+    import { player } from "../stores/player.store.js";
     import { connections } from "../stores/connection.store.js";
 
     export let params;
-    let popup, popup_attr = popup.initialData();
+    let popup, popup_attr = {
+            message: '',
+            display: false,
+            items: [],
+            multi: false,
+            alert: false,
+            onSubmit: () => {}
+    };
     let HOST = location.origin.replace(/^http/, 'ws');
 
     const dispatch = createEventDispatcher();
