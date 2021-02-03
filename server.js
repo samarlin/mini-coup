@@ -66,7 +66,7 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('close', function() {
-    if(ws.hasOwnProperty(room) && ws.hasOwnProperty(name)) {
+    if(ws.hasOwnProperty('room') && ws.hasOwnProperty('name')) {
       delete rooms[ws.room].players[ws.name];
       if(Object.keys(rooms[ws.room].players).length === 0) {
         delete rooms[ws.room];
