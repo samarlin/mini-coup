@@ -29,27 +29,36 @@
         }
     }
 
-    onMount(async () => {
+    onMount(() => {
         console.log($player.room, params.id);
         if($player.room && params.id !== $player.room) {
             window.location.href = "/rooms/" + $player.room;
         } else if (!$player.room) {
             // check room 
-            let result = await joinRoom(params.id);
-            if (result.status === 'ok' && (result.exists && result.open)) {
-                $player.room = params.id;
-            } else {
-                $connections.connectionState = "Failed";
-                window.location.href = "/";
-            }          
-        }
-        // open websocket & join room
-        $connections.connection = WebSocket(HOST);
-        $connections.connection.onopen = onOpen;
-        $connections.connection.onclose = onClose;
-        $connections.connectionState = 'Joining';
+            joinRoom(params.id).then(result => {
+                if (result.status === 'ok' && (result.exists && result.open)) {
+                    $player.room = params.id;
+                } else {
+                    $connections.connectionState = "Failed";
+                    window.location.href = "/";
+                }  
+                // open websocket & join room
+                $connections.connection = WebSocket(HOST);
+                $connections.connection.onopen = onOpen;
+                $connections.connection.onclose = onClose;
+                $connections.connectionState = 'Joining';
 
-        page = Lobby;
+                page = Lobby;
+            });        
+        } else {
+            // open websocket & join room
+            $connections.connection = WebSocket(HOST);
+            $connections.connection.onopen = onOpen;
+            $connections.connection.onclose = onClose;
+            $connections.connectionState = 'Joining';
+
+            page = Lobby;
+        }
     });
 </script>
 

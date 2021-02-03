@@ -13,19 +13,21 @@
         onSubmit: () => {}
     }
 
-    async function createLobby(event) {
+    function createLobby(event) {
         // get a room ID
-        let result = await createRoom();
-        if (result.status === 'ok') {
-            $player.room = result.room;
-            // go to room URL
-            window.location.href = "/rooms/" + result.room;
-        } else {
-            popup_attr.message = "Connection failure, please try again.";
-            popup_attr.alert = true;
-            popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
-            popup_attr.display = true;
-        }	
+        createRoom().then(result => {
+            if (result.status === 'ok') {
+                $player.room = result.room;
+                console.log($player.room);
+                // go to room URL
+                window.location.href = "/rooms/" + result.room;
+            } else {
+                popup_attr.message = "Connection failure, please try again.";
+                popup_attr.alert = true;
+                popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
+                popup_attr.display = true;
+            }	
+        });
     }
 
     function joinLobby_popup(event) {
