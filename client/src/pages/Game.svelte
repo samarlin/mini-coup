@@ -108,7 +108,8 @@
 				message = {type: 'TAKE_FOREIGN_AID', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
 				Object.keys($opponents).forEach(opponent => {
-					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+					if($opponents[opponent].alive)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				break;
 			case 'TAKE_INCOME':
@@ -127,7 +128,8 @@
 				message = {type: 'TAKE_TAX', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
 				Object.keys($opponents).forEach(opponent => {
-					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+					if($opponents[opponent].alive)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				break;
 			case 'STEAL_FROM_PLAYER':
@@ -137,7 +139,8 @@
 			case 'DRAW_CARDS':
 				message = {type: 'DRAW_CARDS', player: $player.name};
 				Object.keys($opponents).forEach(opponent => {
-					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+					if($opponents[opponent].alive)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
@@ -189,14 +192,16 @@
 			case 'ASSASSINATE_PLAYER':
 				message = {type: 'ASSASSINATE_PLAYER', target: target_name, player: $player.name};
 				Object.keys($opponents).forEach(opponent => {
-					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+					if($opponents[opponent].alive)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'STEAL_FROM_PLAYER':
 				message = {type: 'STEAL_FROM_PLAYER', target: target_name, player: $player.name};
 				Object.keys($opponents).forEach(opponent => {
-					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+					if($opponents[opponent].alive)
+						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
