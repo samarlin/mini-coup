@@ -201,6 +201,14 @@ class Game {
     setTimeout(() => {this.turn();}, 500);
   }
 
+  playerLeft(name) {
+    // figure out what else to do here
+    this.players[name].cards.forEach(card => {
+      this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: this.players[name].cards.length - 1, revealed: card, result: "LOST"}});
+    });
+    this.players[name].cards = [];
+  }
+
   // pass in name of player to exclude and message to update all other players
   sendUpdate(excluded_player, message) {
     let other_players = Object.values(this.players).filter(player => player.name !== excluded_player);

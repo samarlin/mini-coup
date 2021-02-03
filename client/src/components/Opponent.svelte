@@ -1,14 +1,14 @@
 <script>
-    export let name, game_active;
+    export let name, game_active = false;
     import {opponents} from '../stores/player.store.js'
-
+    let curr_class = (game_active) ? "in_game" : "in_lobby";
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],
     // "pending_action":{"type":"TAKE_PRIMARY_ACTION", "reason":"whatever"},
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info">
+<div id="opp_info" class="{curr_class}">
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
@@ -39,12 +39,26 @@
 <style>
     #opp_info {
         text-align: center;
+        vertical-align: top;
+
         padding: 1em;
-        margin: auto;
+        margin: 1em;
+
         width: 300px;
+
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
+        border-radius: 25px;
+        
         display: inline-block;
+    }
+
+    .in_game {
+        height: 370px;
+    }
+
+    .in_lobby {
+        height: 70px;
     }
 
     img {

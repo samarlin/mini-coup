@@ -70,6 +70,8 @@
 
 <style>
     #popup {
+        border-radius: 25px;
+        
         position: absolute;
         top: 50%;
         left: 50%;
