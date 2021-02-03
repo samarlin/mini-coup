@@ -93,7 +93,7 @@ app.get("/rooms/:id/events", (req, res) => {
 });
 */
 
-app.use(express.static('client/public'));
+app.use(express.static(path.resolve(__dirname, 'client/public')));
 app.get('*', (req, res) => {
   console.log(req.originalUrl) 
   console.log(req.baseUrl) 
