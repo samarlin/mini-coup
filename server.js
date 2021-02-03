@@ -19,10 +19,10 @@ wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(msg) {
     let message = JSON.parse(msg);
     switch(message.type) {
-      // socket is created and JOIN_LOBBY is sent after POST /create-room -> GET /rooms/:id (admin: true),
+      // socket is created and JOIN_ROOM is sent after POST /create-room -> GET /rooms/:id (admin: true),
       //  POST /join-room -> GET /rooms/:id 
       //  or just GET /rooms/:id for an existing & open id (admin: false)
-      case 'JOIN_LOBBY':
+      case 'JOIN_ROOM':
         if (message.name in rooms[message.room].players) {
           ws.send(JSON.stringify({type: "JOIN_FAILED", reason: 'name'}));
         } else {
@@ -65,10 +65,10 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('close', function() {
-    if(ws.hasOwnProperty(lobby) && ws.hasOwnProperty(name)) {
-      delete lobbies[ws.lobby].players[ws.name];
-      if(Object.keys(lobbies[ws.lobby].players).length === 0) {
-        delete lobbies[ws.lobby];
+    if(ws.hasOwnProperty(room) && ws.hasOwnProperty(name)) {
+      delete rooms[ws.room].players[ws.name];
+      if(Object.keys(rooms[ws.room].players).length === 0) {
+        delete rooms[ws.room];
       }
     }
   })
@@ -100,7 +100,7 @@ app.get('*', (req, res) => {
 
 app.post("/create-room", (req, res) => {
   let id = Math.floor(1000 + Math.random() * 9000);
-  while(id in lobbies) {
+  while(id in rooms) {
     id = Math.floor(1000 + Math.random() * 9000);
   }
 

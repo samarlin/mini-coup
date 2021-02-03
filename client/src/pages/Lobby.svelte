@@ -47,7 +47,7 @@
     }
 
     function checkName() {
-        $connections.connection.send(JSON.stringify({type: 'JOIN_LOBBY', name: player_name}))
+        $connections.connection.send(JSON.stringify({type: 'JOIN_ROOM', name: player_name}))
     }
     
     $: if(player_name) {
@@ -61,7 +61,7 @@
     <h1>Welcome to Mini Coup!</h1>
     <h2>You're in Room {$player.room}</h2>
     {#if player_list.length !== 0}
-        <h2>Players in lobby:</h2>
+        <h2>Players in room:</h2>
         {#each player_list as plr}
             <Opponent name={plr} game_active={false}/>
         {/each}
