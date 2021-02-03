@@ -2,7 +2,7 @@
     export let name, game_active = false;
     import {opponents} from '../stores/player.store.js'
     let curr_class = (game_active) ? "in_game" : "in_lobby";
-    $: num_images = Array($opponents[name].cards).length + $opponents[name].revealed_cards.length;
+
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],
     // "pending_action":{"type":"TAKE_PRIMARY_ACTION", "reason":"whatever"},
@@ -13,10 +13,10 @@
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
-            <img src="/assets/cards/back.png" alt="card back" style="--num-images: {num_images};">
+            <img src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         {#each $opponents[name].revealed_cards as card}
-            <img src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {num_images};">
+            <img src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         <h4>{$opponents[name].coins} coins</h4>
 
