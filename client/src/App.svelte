@@ -7,7 +7,6 @@
 	let page, params;
 	router('/', () => {page = Home;});
 	router('/room/:id', (ctx, next) => {params = ctx.params; next();}, () => {page = Room;});
-	router('/*', () => {page = Home;});
 
 	router.start();
 </script>
