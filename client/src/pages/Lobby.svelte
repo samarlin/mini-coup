@@ -27,8 +27,19 @@
         let message = JSON.parse(event.data);
         switch(message.type) {
             case 'JOIN_FAILED':
-                gatherName(true);
+                if (message.reason === "name") {
+                    gatherName(true);
+                } else {
+                    otherError();
+                }
                 break;
+
+            case 'PLAYER_LEFT':
+                $player.admin = message.updated_admin;
+                // remove player from player list
+                let idx = player_list.indexOf(message.name);
+                if (idx > -1)
+                    player_list.splice(idx, 1);
 
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
@@ -47,6 +58,13 @@
                 dispatch('message', {text: 'GAME_STARTED'});
                 break;
         } 
+    }
+
+    function otherError() {
+        $connections.connectionState = "Failed";
+		popup_attr.message = "Room does not exist.";
+		popup_attr.onSubmit = () => {$connections.router('/'); popup_attr = popup.initialData();};
+		popup_attr.display = true;
     }
 
     function gatherName(error = false) {
@@ -78,7 +96,7 @@
         {/each}
     {/if}
     <br><br>
-	{#if $player.admin}
+	{#if ($player.admin && player_list.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
 </main>
@@ -91,6 +109,15 @@
 		padding: 1em;
 		margin: 0 auto;
 	}
+    
+    button {
+        color: darkslateblue;
+        margin: 2.5px;
+        background-color: rgb(250, 245, 250);
+        border: thin solid darkslateblue;
+		border-radius: 25px;
+        outline: none;
+    }
 
 	h1 {
 		text-transform: uppercase;

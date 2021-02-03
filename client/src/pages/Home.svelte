@@ -81,6 +81,15 @@
 		margin: 0 auto;
 	}
 
+    button {
+        color: darkslateblue;
+        margin: 2.5px;
+        background-color: rgb(250, 245, 250);
+        border: thin solid darkslateblue;
+		border-radius: 25px;
+        outline: none;
+    }
+
 	h1 {
 		text-transform: uppercase;
 		font-size: 4em;

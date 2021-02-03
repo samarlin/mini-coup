@@ -70,6 +70,8 @@
 
 <style>
     #popup {
+        border-radius: 25px;
+
         position: absolute;
         top: 50%;
         left: 50%;
@@ -80,5 +82,14 @@
 
         padding: 2em;
         border: thin solid darkslateblue;
+    }
+
+    button, input[type=text] {
+        color: darkslateblue;
+        margin: 2.5px;
+        background-color: rgb(250, 245, 250);
+        border: thin solid darkslateblue;
+		border-radius: 25px;
+        outline: none;
     }
 </style>

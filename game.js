@@ -201,6 +201,19 @@ class Game {
     setTimeout(() => {this.turn();}, 500);
   }
 
+  playerLeft(name) {
+    // figure out what else to do here
+    let len = this.players[name].cards.length;
+    this.players[name].cards.forEach(card => {
+      len--;
+      this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
+    });
+    this.players[name].cards = [];
+    if(this.current_player.name === name) {
+      this.onMessage({type: 'END_TURN'});
+    }
+  }
+
   // pass in name of player to exclude and message to update all other players
   sendUpdate(excluded_player, message) {
     let other_players = Object.values(this.players).filter(player => player.name !== excluded_player);
@@ -215,6 +228,11 @@ class Game {
   onMessage(message) {
     this.event_log.push(message);
     this.current_turn_moves.unshift(message);
+
+    if(message.type === 'END_TURN') {
+      this.primary_success = false;
+      this.awaiting_secondary = false;
+    }
 
     let is_primary = message.type in PRIMARY_ACTIONS;
 

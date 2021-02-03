@@ -107,6 +107,9 @@
 			case 'TAKE_FOREIGN_AID':
 				message = {type: 'TAKE_FOREIGN_AID', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
 				break;
 			case 'TAKE_INCOME':
 				message = {type: 'TAKE_INCOME', player: $player.name};
@@ -123,6 +126,9 @@
 			case 'TAKE_TAX':
 				message = {type: 'TAKE_TAX', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
 				break;
 			case 'STEAL_FROM_PLAYER':
 				target_name = '';
@@ -130,12 +136,24 @@
 				break;
 			case 'DRAW_CARDS':
 				message = {type: 'DRAW_CARDS', player: $player.name};
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
 		}
 	}
 
 	function take_secondary_action(primary_action, involved_players, valid_actions) {
+		if(involved_players.target && involved_players.target !== $player.name) {
+			if(primary_action === "ASSASSINATE_PLAYER") {
+				let idx = valid_actions.indexOf('BLOCK_ASSASSINATE');
+				valid_actions.splice(idx, 1);
+			} else if(primary_action === "STEAL_FROM_PLAYER") {
+				let idx = valid_actions.indexOf('BLOCK_STEAL');
+				valid_actions.splice(idx, 1);
+			}
+		}
 		popup_attr.message = 'Select secondary action in response to ' + primary_action + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
 		popup_attr.items = valid_actions;
 		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup.initialData();};
@@ -170,10 +188,16 @@
 				break;
 			case 'ASSASSINATE_PLAYER':
 				message = {type: 'ASSASSINATE_PLAYER', target: target_name, player: $player.name};
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'STEAL_FROM_PLAYER':
 				message = {type: 'STEAL_FROM_PLAYER', target: target_name, player: $player.name};
+				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
 		}

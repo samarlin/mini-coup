@@ -1,6 +1,7 @@
 <script>
-    export let name, game_active;
+    export let name, game_active = false;
     import {opponents} from '../stores/player.store.js'
+    let curr_class = (game_active) ? "in_game" : "in_lobby";
 
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],
@@ -8,14 +9,14 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info">
+<div id="opp_info" class="{curr_class}">
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
-            <img src="/assets/cards/back.png" alt="card back" width="100">
+            <img src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         {#each $opponents[name].revealed_cards as card}
-            <img src="/assets/cards/{card}.png" alt="{card}" width="100">
+            <img src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         <h4>{$opponents[name].coins} coins</h4>
 
@@ -39,15 +40,31 @@
 <style>
     #opp_info {
         text-align: center;
+        vertical-align: top;
+
         padding: 1em;
-        margin: auto;
+        margin: 1em;
+
         width: 300px;
+
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
+        border-radius: 25px;
+
         display: inline-block;
+    }
+
+    .in_game {
+        height: 370px;
+    }
+
+    .in_lobby {
+        height: 70px;
     }
 
     img {
         padding: .5em;
+        max-width: calc(200px / var(--num-images));
+        max-height: 170px;
     }
 </style>
