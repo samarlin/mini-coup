@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "mini-css-extract-plugin": "^0.6.0",
     "page": "^1.11.6",
+    "path": "^0.12.7",
     "serve": "^11.0.0",
     "style-loader": "^0.23.1",
     "surge": "^0.21.7",

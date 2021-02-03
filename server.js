@@ -7,6 +7,7 @@ const app = express();
 const WebSocket = require("ws");
 
 const cors = require("cors");
+const path = require("path");
 const http = require("http").createServer(app);
 const wss = new WebSocket.Server({ server: http });
 
@@ -92,10 +93,9 @@ app.get("/rooms/:id/events", (req, res) => {
 });
 */
 
-let clientDir = __dirname + "/client/public/";
-app.use(express.static(clientDir));
+app.use(express.static('client/public'));
 app.get('*', (req, res) => {
-  res.sendFile(clientDir + "index.html");
+  res.sendFile(path.resolve(__dirname, 'client/public', 'index.html'));
 });
 
 app.post("/create-room", (req, res) => {
