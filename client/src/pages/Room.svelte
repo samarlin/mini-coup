@@ -22,6 +22,7 @@
         console.log(event.detail.text);
         if (event.detail.text === "START_GAME") {
             // sent by lobby (player is admin) -- start the game
+            $connections.connection.send(JSON.stringify({type: 'START_GAME'}));
             page = Game;
         } else if (event.detail.text === "GAME_STARTED") {
             // sent by lobby via other player 

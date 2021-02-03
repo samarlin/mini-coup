@@ -39,6 +39,7 @@
             
             case 'PLAYER_JOINED':
                 player_list.push(message.name);
+                player_list = player_list;
                 break;
 
             case 'GAME_STARTED':
@@ -75,6 +76,7 @@
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
+    <br><br>
 	{#if $player.admin}
 		<button on:click={startGame}>Start Game</button>
 	{/if}

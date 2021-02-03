@@ -14,7 +14,7 @@ const wss = new WebSocket.Server({ server: http });
 app.use(cors());
 app.use(express.json());
 
-let rooms = {};
+let rooms = {}, interval;
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(msg) {
@@ -105,6 +105,14 @@ app.post("/create-room", (req, res) => {
   }
 
   rooms[id] = {game: null, open: true, room: id, players: {}};
+  clearInterval(interval);
+  interval = setInterval(() => {
+    Object.keys(rooms).forEach(room => {
+      if(Object.keys(rooms[room].players).length === 0) {
+        delete rooms[room];
+      }
+    });
+  }, 18000);
   res.json({room: id})
 });
 
