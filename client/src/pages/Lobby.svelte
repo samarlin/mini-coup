@@ -33,6 +33,7 @@
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
                 $player.admin = message.admin;
+                $player.name = player_name;
                 player_list = message.players;
                 $connections.connectionState = 'Joined';
                 break;
