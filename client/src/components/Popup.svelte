@@ -1,4 +1,6 @@
 <script>
+    import {reverse} from '../stores/player.store.js'
+
     export function initialData() {
         return {
             message: '',
@@ -34,7 +36,7 @@
                 <button on:click={() => {
                     attr.onSubmit(item);
                     selection = '';
-                }}>{item}</button>
+                }}>{#if item in $reverse}{$reverse[item]}{:else}{item}{/if}</button>
             {/each}
         {:else if attr.multi}
             <select multiple bind:value={selection}>
@@ -43,6 +45,7 @@
                 {/each}
             </select>
             {#if selection.length === 2}
+                <br><br>
                 <button on:click={() => {
                     attr.onSubmit(selection);
                     selection = '';
@@ -87,7 +90,7 @@
     button, input[type=text] {
         color: darkslateblue;
         margin: 2.5px;
-        background-color: rgb(250, 245, 250);
+        background-color: white;
         border: thin solid darkslateblue;
 		border-radius: 25px;
         outline: none;

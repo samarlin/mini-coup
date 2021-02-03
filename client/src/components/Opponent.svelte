@@ -1,6 +1,6 @@
 <script>
     export let name, game_active = false;
-    import {opponents} from '../stores/player.store.js'
+    import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     let curr_class = (game_active) ? "in_game" : "in_lobby";
 
     // Opponent format ref: 
@@ -18,20 +18,30 @@
         {#each $opponents[name].revealed_cards as card}
             <img src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
-        <h4>{$opponents[name].coins} coins</h4>
+        <h4>{$opponents[name].coins} {#if $opponents[name].coins === 1}coin{:else}coins{/if}</h4>
 
         {#if Object.keys($opponents[name].pending_action).length !== 0}
-            <span>Awaiting resolution of {$opponents[name].pending_action.type} </span>
+            <span>Awaiting selection of 
+                {#if $opponents[name].pending_action.type in $move_mappings}
+                {$move_mappings[$opponents[name].pending_action.type]}{:else}
+                {$opponents[name].pending_action.type}{/if}</span>
             {#if $opponents[name].pending_action.reason}
-                <span>(reason: {$opponents[name].pending_action.reason})</span>
+                <span>{#if $opponents[name].pending_action.reason in $move_mappings}
+                    {$move_mappings[$opponents[name].pending_action.type]}{:else}
+                    {$opponents[name].pending_action.type}{/if}.</span>
             {/if}
             <br>
         {/if}
         
         {#if Object.keys($opponents[name].last_action).length !== 0}
-            <span>Most recent action: {$opponents[name].last_action.type} </span>
+            <span>Recently 
+                {#if $opponents[name].last_action.type in $tenses}
+                {$tenses[$opponents[name].last_action.type]}
+                {:else if $opponents[name].last_action.type in $move_mappings}
+                {$move_mappings[$opponents[name].last_action.type]}{:else}
+                {$opponents[name].last_action.type}{/if} </span>
             {#if $opponents[name].last_action.target}
-                <span>against {$opponents[name].last_action.target}</span>
+                <span>{$opponents[name].last_action.target}.</span>
             {/if}
         {/if}
     {/if}

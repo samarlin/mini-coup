@@ -294,6 +294,7 @@
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 					if($opponents[msg.player].cards === 0) {
 						$opponents[msg.player].alive = false;
+						$opponents[msg.player].pending_action = {};
 						$opponents[msg.player].last_action = {type: 'DIED'};
 					}
 				} else {
