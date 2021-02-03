@@ -4,6 +4,7 @@ export const player = writable({
     name: null,
     admin: null,
     alive: true,
+    room: null,
     coins: 0,
     cards: []
 });

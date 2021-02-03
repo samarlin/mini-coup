@@ -281,6 +281,8 @@ class Game {
           // We no longer need to check for "APPROVE_MOVE" as
           // the first non-"APPROVE_MOVE" secondary action received is the one which resolves
 
+          // send to all other players 
+
           switch(message.type) { // CALL_BLUFF, BLOCK_AID, BLOCK_STEAL, BLOCK_ASSASSINATE
             case 'CALL_BLUFF':
               // can either be current player or player who blocked steal/assassinate/aid
@@ -463,7 +465,7 @@ class Game {
       Object.keys(this.dead_players).forEach((name) => {
         this.dead_players[name].connection.send(JSON.stringify({type: "GAME_OVER", win: false}));
       });
-      // take other server-side game-over actions (TODO: eg close room, reset game state)
+      // take other server-side game-over actions (eg close room, reset game state...?)
       return;
     }
 

@@ -1,14 +1,28 @@
 <script>
-    export let attr = {
-        message: '',
-        display: false,
-        items: [],
-        multi: false,
-        alert: false,
-        onSubmit: () => {}
-    };
+    export function initialData() {
+        return {
+            message: '',
+            display: false,
+            items: [],
+            multi: false,
+            alert: false,
+            onSubmit: () => {}
+        };
+    }
 
-    let selection = '';
+    export let attr = initialData();
+    export function reset() {
+        this.set(attr = initialData());
+    }
+
+    export function trigger_alert(message, next_action) {
+		popup_attr.message = message;
+		popup_attr.alert = true;
+		popup_attr.onSubmit = () => {next_action(); default_popup();};
+		popup_attr.display = true;
+	}
+
+    let selection = '', text, error = false;
 </script>
 
 {#if attr.display}
@@ -35,10 +49,16 @@
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
-            <input type="text" bind:value={selection}>
+            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"}>
+            {#if attr.error}<span>10-character limit, alphanumerics only.</span>{/if}
             <button on:click={() => {
-                attr.onSubmit(selection);
-                selection = '';
+                if(text.checkValidity()) {
+                    attr.onSubmit(selection);
+                    error = false;
+                    selection = '';
+                } else {
+                    error = true;
+                }
             }}>Submit</button>
         {:else}
             <button on:click={() => {
@@ -56,6 +76,7 @@
 
         transform: translateY(-50%) translateX(-50%);
         background-color: rgb(250, 245, 250);
+        color: darkslateblue;
 
         padding: 2em;
         border: thin solid darkslateblue;
