@@ -43,7 +43,7 @@ wss.on('connection', function connection(ws) {
             });
           }
 
-          if(Object.keys(rooms[message.room].players.length === 6))
+          if(Object.keys(rooms[message.room].players).length === 6)
             rooms[message.room].open = false;
         }
         break;
