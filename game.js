@@ -203,8 +203,10 @@ class Game {
 
   playerLeft(name) {
     // figure out what else to do here
+    let len = this.players[name].cards.length;
     this.players[name].cards.forEach(card => {
-      this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: this.players[name].cards.length - 1, revealed: card, result: "LOST"}});
+      len--;
+      this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
     });
     this.players[name].cards = [];
   }
