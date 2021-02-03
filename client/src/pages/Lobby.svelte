@@ -20,7 +20,7 @@
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name, player_list;
+    let player_name = '', player_list = [];
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
