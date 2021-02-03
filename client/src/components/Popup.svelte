@@ -50,7 +50,7 @@
             {/if}
         {:else if !attr.alert}
             <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"}>
-            {#if error}<span>10-character limit, alphanumerics only.</span>{/if}
+            {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
             <button on:click={() => {
                 if(text.checkValidity()) {
                     attr.onSubmit(selection);
