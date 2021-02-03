@@ -380,6 +380,7 @@
 	}
 
 	img {
+		max-width: calc(50%/2);
 		padding: 1em;
 	}
 
