@@ -94,11 +94,13 @@ app.get("/rooms/:id/events", (req, res) => {
 */
 
 app.use(express.static('client/public'));
-/*
 app.get('*', (req, res) => {
+  console.log(req.originalUrl) 
+  console.log(req.baseUrl) 
+  console.log(req.path)
+  console.log(req.baseUrl + req.path)
   res.sendFile(path.resolve(__dirname, 'client/public', 'index.html'));
 });
-*/
 
 app.post("/create-room", (req, res) => {
   let id = Math.floor(1000 + Math.random() * 9000);
