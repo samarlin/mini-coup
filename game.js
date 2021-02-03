@@ -209,6 +209,9 @@ class Game {
       this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
     });
     this.players[name].cards = [];
+    if(this.current_player.name === name) {
+      this.onMessage({type: 'END_TURN'});
+    }
   }
 
   // pass in name of player to exclude and message to update all other players
@@ -225,6 +228,11 @@ class Game {
   onMessage(message) {
     this.event_log.push(message);
     this.current_turn_moves.unshift(message);
+
+    if(message.type === 'END_TURN') {
+      this.primary_success = false;
+      this.awaiting_secondary = false;
+    }
 
     let is_primary = message.type in PRIMARY_ACTIONS;
 
