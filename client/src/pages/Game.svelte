@@ -3,7 +3,7 @@
 	import Opponent from '../components/Opponent.svelte';
 
 	import {connections} from '../stores/connection.store.js';
-	import {player, opponents} from '../stores/player.store.js';
+	import {player, opponents, reverse} from '../stores/player.store.js';
 
 	let popup_attr = {
 		message: '',
@@ -157,7 +157,7 @@
 				valid_actions.splice(idx, 1);
 			}
 		}
-		popup_attr.message = 'Select secondary action in response to ' + primary_action + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
+		popup_attr.message = 'Select action in response to ' + $reverse[primary_action] + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
 		popup_attr.items = valid_actions;
 		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
