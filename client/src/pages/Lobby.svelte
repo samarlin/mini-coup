@@ -90,8 +90,8 @@
     <h1>Welcome to Mini Coup!</h1>
     <h2>You're in Room {$player.room}</h2>
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
+    <h2 class="h2nhalf">Players in room:</h2>
     {#if player_list.length !== 0}
-        <h2>Players in room:</h2>
         {#each player_list as plr}
             <Opponent name={plr} game_active={false}/>
         {/each}
@@ -120,9 +120,21 @@
         outline: none;
     }
 
+    p {
+        width: 300px;
+        margin: auto;
+    }
+
 	h1 {
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
 	}
+    
+    .h2nhalf {
+        text-transform: uppercase;
+		font-size: 3em;
+		font-weight: 100;
+        margin-bottom: 10px;
+    }
 </style>
