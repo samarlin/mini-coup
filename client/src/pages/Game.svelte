@@ -323,7 +323,7 @@
 	<h1>Hello {$player.name}!</h1>
 	<h2>Your cards are:</h2>
 	{#each $player.cards as card} 
-		<img src="assets/cards/{card}.png" alt="{card}" width="300">
+		<img src="/assets/cards/{card}.png" alt="{card}" width="300">
 	{/each}
 	<h2>and you have {$player.coins} coins.</h2>
 

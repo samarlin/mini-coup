@@ -47,12 +47,12 @@ wss.on('connection', function connection(ws) {
         // send GAME_STARTED to all other players in room
         Object.keys(rooms[ws.room].players).forEach(player => {
           if(player !== ws.name) {
-            rooms[ws.room].players[ws.name].connection.send(JSON.stringify({type: 'GAME_STARTED'}));
+            rooms[ws.room].players[player].connection.send(JSON.stringify({type: 'GAME_STARTED'}));
           }
         });
         setTimeout(() => {
           rooms[ws.room].game = new coup.Game(rooms[ws.room].players);
-        }, 500);
+        }, 1000);
         break;
 
       case 'PING':
