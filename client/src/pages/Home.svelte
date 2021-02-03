@@ -18,8 +18,7 @@
         createRoom().then(result => {
             if (result.status === 'ok') {
                 $player.room = result.room;
-                console.log(result);
-                console.log('room', $player.room);
+                
                 // go to room URL
                 $connections.router("/rooms/" + result.room);
             } else {

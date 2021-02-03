@@ -19,7 +19,6 @@
     }
     
     function handleMessage(event) {
-        console.log(event.detail.text);
         if (event.detail.text === "START_GAME") {
             // sent by lobby (player is admin) -- start the game
             $connections.connection.send(JSON.stringify({type: 'START_GAME'}));
@@ -31,7 +30,6 @@
     }
 
     onMount(async () => {
-        console.log($player.room, params.id);
         if($player.room && params.id !== $player.room) {
             $connections.router("/rooms/" + $player.room);
         } else if (!$player.room) {

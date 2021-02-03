@@ -14,7 +14,6 @@ export async function createRoom(){
         let result = await response.json();
         return {room: result.room, status: 'ok'};
     } else {
-        console.log(response.status);
         return {status: response.status};
     }
 }
@@ -31,7 +30,6 @@ export async function joinRoom(room){
         let result = await response.json();
         return {exists: result.exists, open: result.open, status: 'ok'};
     } else {
-        console.log(response.status);
         return {status: response.status};
     }
 }

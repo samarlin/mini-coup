@@ -45,7 +45,7 @@ wss.on('connection', function connection(ws) {
 
       case 'START_GAME':
         // send GAME_STARTED to all other players in room
-        Object.keys(rooms[message.room].players).forEach(player => {
+        Object.keys(rooms[ws.room].players).forEach(player => {
           if(player !== ws.name) {
             rooms[ws.room].players[ws.name].connection.send(JSON.stringify({type: 'GAME_STARTED'}));
           }
