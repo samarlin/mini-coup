@@ -73,6 +73,7 @@ wss.on('connection', function connection(ws) {
 
   ws.on('close', function() {
     if(ws.hasOwnProperty('room') && ws.hasOwnProperty('name')) {
+      console.log(ws.room, ws.name); // ...debugging
       let wasAdmin = rooms[ws.room].players[ws.name].admin;
       if(rooms[ws.room].game !== null) {
         rooms[ws.room].game.playerLeft(ws.name);
