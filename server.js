@@ -92,13 +92,9 @@ app.get("/rooms/:id/events", (req, res) => {
   }
 });
 */
-
+console.log(path.resolve(__dirname, 'client/public'));
 app.use(express.static(path.resolve(__dirname, 'client/public')));
 app.get('*', (req, res) => {
-  console.log(req.originalUrl) 
-  console.log(req.baseUrl) 
-  console.log(req.path)
-  console.log(req.baseUrl + req.path)
   res.sendFile(path.resolve(__dirname, 'client/public', 'index.html'));
 });
 
