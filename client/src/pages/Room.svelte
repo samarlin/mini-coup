@@ -30,6 +30,7 @@
     }
 
     onMount(async () => {
+        console.log($player.room, params.id);
         if($player.room && params.id !== $player.room) {
             window.location.href = "/rooms/" + $player.room;
         } else if (!$player.room) {
@@ -49,7 +50,7 @@
         $connections.connectionState = 'Joining';
 
         page = Lobby;
-    })
+    });
 </script>
 
 <svelte:component this={page} params={page_params} on:message={handleMessage}/>
