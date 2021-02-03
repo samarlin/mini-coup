@@ -62,7 +62,7 @@
                 }}>Submit</button>
             {/if}
         {:else if !attr.alert}
-            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()}>
+            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autofocus>
             {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
             <button on:click={submitText}>Submit</button>
         {:else}

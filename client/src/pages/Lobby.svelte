@@ -89,6 +89,7 @@
 <main>
     <h1>Welcome to Mini Coup!</h1>
     <h2>You're in Room {$player.room}</h2>
+    <p>You'll need at least three and no more than six players to start the game.</p><br><br>
     {#if player_list.length !== 0}
         <h2>Players in room:</h2>
         {#each player_list as plr}

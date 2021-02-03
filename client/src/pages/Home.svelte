@@ -68,6 +68,9 @@
 
 <main>
     <h1>Welcome to Mini Coup!</h1>
+    <p>Select an option below to either join or start a game.</p>
+    <p>If a friend of yours has already created a room, they can simply send you a link to it; otherwise, you can join by entering the room's number.</p>
+    <br><br><br><br>
     <button on:click={createLobby}>Create New Room</button>
     <button on:click={joinLobby_popup}>Join Existing Room</button>
 </main>
@@ -80,6 +83,11 @@
 		padding: 1em;
 		margin: 0 auto;
 	}
+
+    p {
+        width: 50%;
+        margin: auto;
+    }
 
     button {
         color: darkslateblue;
