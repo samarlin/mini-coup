@@ -54,7 +54,7 @@
     }
 
     function checkName() {
-        $connections.connection.send(JSON.stringify({type: 'JOIN_ROOM', name: player_name}))
+        $connections.connection.send(JSON.stringify({type: 'JOIN_ROOM', room: $player.room, name: player_name}))
     }
     
     $: if(player_name) {
