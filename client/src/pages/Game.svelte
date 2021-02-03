@@ -249,6 +249,7 @@
 	}
 
 	function trigger_alert(message, next_action) {
+		popup_attr = popup.initialData();
 		popup_attr.message = message;
 		popup_attr.alert = true;
 		popup_attr.onSubmit = () => {next_action(); popup_attr = popup.initialData();};
