@@ -18,7 +18,8 @@
 	let secondary_action = '';
 	let target_name = '';
 	let reveal = {};
-	let selected_cards = '';
+    let selected_cards = '';
+    let popup;
 	
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -90,7 +91,7 @@
 	function take_primary_action() {
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Enter move:";
-		popup_attr.onSubmit = (input_move) => {primary_action = input_move; default_popup();};
+		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
 
@@ -137,7 +138,7 @@
 	function take_secondary_action(primary_action, involved_players, valid_actions) {
 		popup_attr.message = 'Select secondary action in response to ' + primary_action + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
 		popup_attr.items = valid_actions;
-		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; default_popup();};
+		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
 
@@ -152,7 +153,7 @@
 	function choose_player(text) {
 		popup_attr.message = 'Enter player name to ' + text;
 		popup_attr.items = [];
-		popup_attr.onSubmit = (input_name) => {target_name = input_name; default_popup();};
+		popup_attr.onSubmit = (input_name) => {target_name = input_name; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
 
@@ -184,12 +185,12 @@
 			popup_attr.message = 'Select two cards from below to keep';
 			popup_attr.items = cards;
 			popup_attr.multi = multi;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards; default_popup();};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup.initialData();};
 			popup_attr.display = true;
 		} else {
 			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal' : 'to keep');
 			popup_attr.items = cards;
-			popup_attr.onSubmit = (cards) => {selected_cards = cards; default_popup();};
+			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup.initialData();};
 			popup_attr.display = true;
 		}
 	}
@@ -221,7 +222,7 @@
 	function trigger_alert(message, next_action) {
 		popup_attr.message = message;
 		popup_attr.alert = true;
-		popup_attr.onSubmit = () => {next_action(); default_popup();};
+		popup_attr.onSubmit = () => {next_action(); popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
 
@@ -317,7 +318,7 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
-<svelte:component this={Popup} attr={popup_attr}/>
+<Popup bind:this={popup} attr={popup_attr}/>
 
 <main>
 	<h1>Hello {$player.name}!</h1>
