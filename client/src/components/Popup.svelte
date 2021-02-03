@@ -84,7 +84,7 @@
         border: thin solid darkslateblue;
     }
 
-    button {
+    button, input[type=text] {
         color: darkslateblue;
         margin: 2.5px;
         background-color: rgb(250, 245, 250);
