@@ -72,7 +72,7 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('close', function() {
-    if(ws.hasOwnProperty('room') && ws.hasOwnProperty('name')) {
+    if(ws.hasOwnProperty('room') && ws.hasOwnProperty('name') && ws.name in rooms[ws.room]) {
       console.log(ws.room, ws.name, Object.keys(rooms), Object.keys(rooms[ws.room].players)); // debugging...
       let wasAdmin = rooms[ws.room].players[ws.name].admin;
       if(rooms[ws.room].game !== null && Object.keys(rooms[ws.room].players).length > 1) {
@@ -91,7 +91,7 @@ wss.on('connection', function connection(ws) {
           Object.keys(rooms[ws.room].players).forEach(player => {
             rooms[ws.room].players[player].connection.send(JSON.stringify({type: 'PLAYER_LEFT', name: ws.name, updated_admin: rooms[ws.room].players[player].admin}));
           });
-          if(Object.keys(rooms[ws.room].players.length !== 6))
+          if(Object.keys(rooms[ws.room].players.length < 6))
             rooms[ws.room].open = true;
         } 
       }
