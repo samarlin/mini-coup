@@ -30,6 +30,7 @@
     }
 
     onMount(async () => {
+        page_params.curr_players = [];
         if($player.room && params.id !== $player.room) {
             $connections.router("/rooms/" + $player.room);
         } else if (!$player.room) {
