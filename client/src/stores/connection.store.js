@@ -5,7 +5,8 @@ export const connections = writable({
     connectionState: 'NotJoined',
     connection: null,
     current_message: null, 
-    router: null
+    router: null,
+    other_connections: []
 });
 
 export async function createRoom(){

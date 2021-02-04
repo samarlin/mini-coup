@@ -6,7 +6,7 @@
     import { player } from "../stores/player.store.js";
     import { connections, joinRoom } from "../stores/connection.store.js";
     export let params;
-    let page, page_params = {}, interval;
+    let page, interval;
     let HOST = location.origin.replace(/^http/, 'ws');
     
     function onOpen() {
@@ -30,7 +30,6 @@
     }
 
     onMount(async () => {
-        page_params.curr_players = [];
         if($player.room && params.id !== $player.room) {
             $connections.router("/rooms/" + $player.room);
         } else if (!$player.room) {
@@ -38,7 +37,7 @@
             let result = await joinRoom(params.id)
             if (result.status === 'ok' && (result.exists && result.open)) {
                 $player.room = params.id;
-                page_params.curr_players = result.curr_players;
+                $connections.other_connections = result.curr_players;
             } else {
                 $connections.connectionState = "Failed";
                 $connections.router("/");
@@ -54,4 +53,4 @@
     });
 </script>
 
-<svelte:component this={page} params={page_params} on:message={handleMessage}/>
+<svelte:component this={page} on:message={handleMessage}/>

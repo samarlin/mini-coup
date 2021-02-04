@@ -5,7 +5,6 @@
     import { player } from "../stores/player.store.js";
     import { connections } from "../stores/connection.store.js";
 
-    export let params;
     let popup, popup_attr = {
             message: '',
             display: false,
@@ -36,25 +35,25 @@
             case 'PLAYER_LEFT':
                 $player.admin = message.updated_admin;
                 // remove player from player list
-                let idx = params.curr_players.indexOf(message.name);
+                let idx = $connections.other_connections.indexOf(message.name);
                 if (idx > -1) {
-                    let local = [...params.curr_players];
+                    let local = [...$connections.other_connections];
                     local.splice(idx, 1);
-                    params.curr_players = [...local];
-                    console.log(params.curr_players);
+                    $connections.other_connections = [...local];
+                    console.log($connections.other_connections);
                 }
 
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
                 $player.admin = message.admin;
                 $player.name = player_name;
-                params.curr_players = message.players;
+                $connections.other_connections = message.players;
                 $connections.connectionState = 'Joined';
                 break;
             
             case 'PLAYER_JOINED':
-                params.curr_players.push(message.name);
-                params.curr_players = params.curr_players;
+                $connections.other_connections.push(message.name);
+                $connections.other_connections = $connections.other_connections;
                 break;
 
             case 'GAME_STARTED':
@@ -97,13 +96,13 @@
     <h2>You're in Room {$player.room}</h2>
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
     <h2 class="h2nhalf">Players in room:</h2>
-    {#if params.curr_players.length !== 0}
-        {#each params.curr_players.length as plr}
+    {#if $connections.other_connections.length !== 0}
+        {#each $connections.other_connections.length as plr}
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
     <br><br>
-	{#if ($player.admin && params.curr_players.length > 2)}
+	{#if ($player.admin && $connections.other_connections.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
 </main>
