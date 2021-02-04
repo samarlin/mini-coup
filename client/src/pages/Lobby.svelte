@@ -37,11 +37,11 @@
                 // remove player from player list
                 let idx = $connections.other_connections.indexOf(message.name);
                 if (idx > -1) {
-                    let local = [...$connections.other_connections];
-                    local.splice(idx, 1);
-                    $connections.other_connections = [...local];
-                    console.log($connections.other_connections);
+                    $connections.other_connections.splice(idx, 1);
+                    $connections.other_connections = $connections.other_connections;
+                    console.log($connections.other_connections, $connections.other_connections.length);
                 }
+                break;
 
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
@@ -73,6 +73,7 @@
 		popup_attr.message = (error) ? "Name already in use, try again:" : "Enter your name:";
 		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup.initialData();};
         popup_attr.display = true;
+        popup_attr = popup.popup_attr;
     }
 
     function checkName() {
@@ -85,7 +86,6 @@
 
     onMount(() => {
         gatherName();
-        popup_attr = popup_attr;
     });
 </script>
 
