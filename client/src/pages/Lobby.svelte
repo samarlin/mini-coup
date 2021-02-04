@@ -39,8 +39,8 @@
                 let idx = player_list.indexOf(message.name);
                 if (idx > -1) {
                     player_list.splice(idx, 1);
+                    player_list = [...player_list];
                     console.log(player_list);
-                    player_list = player_list;
                 }
 
             case 'ROOM_JOINED':
