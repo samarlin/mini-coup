@@ -19,7 +19,7 @@
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name = '', player_list = [];
+    let player_name = '';
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -36,24 +36,25 @@
             case 'PLAYER_LEFT':
                 $player.admin = message.updated_admin;
                 // remove player from player list
-                let idx = player_list.indexOf(message.name);
+                let idx = params.curr_players.indexOf(message.name);
                 if (idx > -1) {
-                    player_list.splice(idx, 1);
-                    player_list = [...player_list];
-                    console.log(player_list);
+                    let local = [...params.curr_players];
+                    local.splice(idx, 1);
+                    params.curr_players = [...local];
+                    console.log(params.curr_players);
                 }
 
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
                 $player.admin = message.admin;
                 $player.name = player_name;
-                player_list = message.players;
+                params.curr_players = message.players;
                 $connections.connectionState = 'Joined';
                 break;
             
             case 'PLAYER_JOINED':
-                player_list.push(message.name);
-                player_list = player_list;
+                params.curr_players.push(message.name);
+                params.curr_players = params.curr_players;
                 break;
 
             case 'GAME_STARTED':
@@ -70,12 +71,9 @@
     }
 
     function gatherName(error = false) {
-        console.log('gathering name');
 		popup_attr.message = (error) ? "Name already in use, try again:" : "Enter your name:";
 		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup.initialData();};
         popup_attr.display = true;
-        popup_attr = popup_attr;
-        popup.attr = popup_attr;
     }
 
     function checkName() {
@@ -89,9 +87,6 @@
     onMount(() => {
         gatherName();
         popup_attr = popup_attr;
-        player_list = params.curr_players;
-        console.log(params.curr_players)
-        console.log(player_list)
     });
 </script>
 
@@ -102,13 +97,13 @@
     <h2>You're in Room {$player.room}</h2>
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
     <h2 class="h2nhalf">Players in room:</h2>
-    {#if player_list.length !== 0}
-        {#each player_list as plr}
+    {#if params.curr_players.length !== 0}
+        {#each params.curr_players.length as plr}
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
     <br><br>
-	{#if ($player.admin && player_list.length > 2)}
+	{#if ($player.admin && params.curr_players.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
 </main>
