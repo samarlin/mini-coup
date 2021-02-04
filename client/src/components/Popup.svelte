@@ -89,12 +89,17 @@
         border: thin solid darkslateblue;
     }
 
-    button, input[type=text] {
+    button, input[type=text], select {
         color: darkslateblue;
         margin: 2.5px;
         background-color: white;
         border: thin solid darkslateblue;
 		border-radius: 25px;
         outline: none;
+    }
+
+    select {
+        text-align: center;
+        width: 100%;
     }
 </style>

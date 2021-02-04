@@ -249,7 +249,7 @@
 	}
 
 	function trigger_alert(message, next_action) {
-		popup_attr = popup.initialData();
+		popup_attr.items = [];
 		popup_attr.message = message;
 		popup_attr.alert = true;
 		popup_attr.onSubmit = () => {next_action(); popup_attr = popup.initialData();};
@@ -274,6 +274,9 @@
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
 				if(msg.player !== $player.name) {
+					if(msg.reason === "BLUFF") {
+						popup_attr = popup.initialData();
+					}
 					$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
 				}
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
