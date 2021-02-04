@@ -90,7 +90,7 @@
 
 	function take_primary_action() {
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
-		popup_attr.message = "Enter move:";
+		popup_attr.message = "Select move:";
 		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}

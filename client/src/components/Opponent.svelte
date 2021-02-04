@@ -27,8 +27,8 @@
                 {$opponents[name].pending_action.type}{/if}</span>
             {#if $opponents[name].pending_action.reason}
                 <span>{#if $opponents[name].pending_action.reason in $move_mappings}
-                    {$move_mappings[$opponents[name].pending_action.type]}{:else}
-                    {$opponents[name].pending_action.type}{/if}.</span>
+                    {$move_mappings[$opponents[name].pending_action.reason]}{:else}
+                    {$opponents[name].pending_action.reason}{/if}</span>
             {/if}
             <br>
         {/if}
@@ -42,7 +42,7 @@
                 {$move_mappings[$opponents[name].last_action.type]}{:else}
                 {$opponents[name].last_action.type}{/if} </span>
             {#if $opponents[name].last_action.target}
-                <span>{$opponents[name].last_action.target}.</span>
+                <span>{$opponents[name].last_action.target}</span>
             {/if}
         {/if}
     {/if}
