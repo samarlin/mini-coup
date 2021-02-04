@@ -139,7 +139,10 @@ app.post("/create-room", (req, res) => {
         delete rooms[room];
       }
     });
-  }, 30000);
+    if(Object.keys(rooms).length === 0) {
+      clearInterval(interval);
+    }
+  }, 300000);
   res.json({room: id})
 });
 
