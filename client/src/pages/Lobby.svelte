@@ -37,8 +37,10 @@
                 $player.admin = message.updated_admin;
                 // remove player from player list
                 let idx = player_list.indexOf(message.name);
-                if (idx > -1)
+                if (idx > -1) {
                     player_list.splice(idx, 1);
+                    player_list = player_list;
+                }
 
             case 'ROOM_JOINED':
                 // {type: "ROOM_JOINED", admin: isAdmin, room: message.room, players: Object.keys(rooms[message.room].players)}
