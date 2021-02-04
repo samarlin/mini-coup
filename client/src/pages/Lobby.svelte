@@ -14,7 +14,6 @@
             alert: false,
             onSubmit: () => {}
         };
-    let HOST = location.origin.replace(/^http/, 'ws');
 
     const dispatch = createEventDispatcher();
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
@@ -68,6 +67,7 @@
     }
 
     function gatherName(error = false) {
+        console.log('gathering name');
 		popup_attr.message = (error) ? "Name already in use, try again:" : "Enter your name:";
 		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup.initialData();};
 		popup_attr.display = true;
@@ -82,6 +82,9 @@
     }
 
     gatherName();
+    console.log(popup_attr);
+
+    popup_attr.display = true;
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
