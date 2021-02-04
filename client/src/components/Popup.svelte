@@ -77,7 +77,7 @@
     #popup {
         border-radius: 25px;
 
-        position: absolute;
+        position: fixed;
         top: 50%;
         left: 50%;
 
