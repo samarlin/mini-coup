@@ -355,11 +355,13 @@
 <Popup bind:this={popup} attr={popup_attr}/>
 
 <main>
-	<h1>{$player.name}!</h1>
-	<h2>You have {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
-	{#each $player.cards as card} 
-		<img src="/assets/cards/{card}.png" alt="{card}" width="300">
-	{/each}
+	<h1>{$player.name}</h1>
+	{#if $player.alive} 
+		<h2>You have {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
+		{#each $player.cards as card} 
+			<img src="/assets/cards/{card}.png" alt="{card}" width="300">
+		{/each}
+	{/if}
 
 	<h2>Your opponents are:</h2>
 	{#each Object.keys($opponents) as op}
