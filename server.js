@@ -78,7 +78,7 @@ wss.on('connection', function connection(ws) {
         rooms[ws.room].game.playerLeft(ws.name);
       }
 
-      if(ws.name in rooms[ws.room]) {
+      if(ws.name in rooms[ws.room].players) {
         let wasAdmin = rooms[ws.room].players[ws.name].admin;
         delete rooms[ws.room].players[ws.name];
 
