@@ -97,7 +97,7 @@
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
     <h2 class="h2nhalf">Players in room:</h2>
     {#if $connections.other_connections.length !== 0}
-        {#each $connections.other_connections.length as plr}
+        {#each $connections.other_connections as plr}
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
