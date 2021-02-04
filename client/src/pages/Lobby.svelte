@@ -39,6 +39,7 @@
                 let idx = player_list.indexOf(message.name);
                 if (idx > -1) {
                     player_list.splice(idx, 1);
+                    console.log(player_list);
                     player_list = player_list;
                 }
 
@@ -89,6 +90,8 @@
         gatherName();
         popup_attr = popup_attr;
         player_list = params.curr_players;
+        console.log(params.curr_players)
+        console.log(player_list)
     });
 </script>
 
