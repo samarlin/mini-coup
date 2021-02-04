@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher } from "svelte";
     import Popup from '../components/Popup.svelte';
     import Opponent from '../components/Opponent.svelte';
     import { player } from "../stores/player.store.js";
@@ -81,7 +81,7 @@
         checkName();
     }
 
-    onMount(() => {console.log('mounted'); gatherName();});
+    gatherName();
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
