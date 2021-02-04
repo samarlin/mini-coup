@@ -6,7 +6,7 @@
     import { player } from "../stores/player.store.js";
     import { connections, joinRoom } from "../stores/connection.store.js";
     export let params;
-    let page, page_params, interval;
+    let page, page_params = {}, interval;
     let HOST = location.origin.replace(/^http/, 'ws');
     
     function onOpen() {
