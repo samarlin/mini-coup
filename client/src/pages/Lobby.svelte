@@ -87,6 +87,10 @@
         gatherName();
         popup_attr = popup_attr;
         popup.attr = popup_attr;
+
+        if(params.curr_players) {
+            player_list = params.curr_players;
+        }
     });
 </script>
 

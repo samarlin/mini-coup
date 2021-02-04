@@ -37,6 +37,7 @@
             let result = await joinRoom(params.id)
             if (result.status === 'ok' && (result.exists && result.open)) {
                 $player.room = params.id;
+                page_params.curr_players = result.curr_players;
             } else {
                 $connections.connectionState = "Failed";
                 $connections.router("/");

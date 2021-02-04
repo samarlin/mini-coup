@@ -146,7 +146,7 @@ app.post("/create-room", (req, res) => {
 app.post("/join-room", (req, res) => {
   let body = req.body;
   if(body.room in rooms) {
-    res.json({exists: true, open: rooms[body.room].open});
+    res.json({exists: true, open: rooms[body.room].open, curr_players: Object.keys(rooms[body.room].players)});
   } else {
     res.json({exists: false});
   }

@@ -28,7 +28,7 @@ export async function joinRoom(room){
 
     if (response.ok) {
         let result = await response.json();
-        return {exists: result.exists, open: result.open, status: 'ok'};
+        return {exists: result.exists, open: result.open, curr_players: result.curr_players, status: 'ok'};
     } else {
         return {status: response.status};
     }
