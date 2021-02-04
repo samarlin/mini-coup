@@ -95,6 +95,7 @@
 	};
 
 	function take_primary_action() {
+		console.log('take primary');
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Select move:";
 		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup.initialData();};
@@ -258,7 +259,7 @@
 		popup_attr.items = [];
 		popup_attr.message = message;
 		popup_attr.alert = true;
-		popup_attr.onSubmit = () => {next_action(); popup_attr = popup.initialData();};
+		popup_attr.onSubmit = () => {popup_attr = popup.initialData(); next_action();};
 		popup_attr.display = true;
 	}
 

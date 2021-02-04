@@ -39,7 +39,6 @@
                 if (idx > -1) {
                     $connections.other_connections.splice(idx, 1);
                     $connections.other_connections = $connections.other_connections;
-                    console.log($connections.other_connections, $connections.other_connections.length);
                 }
                 break;
 
@@ -86,7 +85,6 @@
 
     onMount(() => {
         gatherName();
-        console.log(popup_attr, popup.attr);
     });
 </script>
 
