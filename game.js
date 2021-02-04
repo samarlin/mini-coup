@@ -349,7 +349,7 @@ class Game {
                 this.players[message.player].cards.push(new_card);
                 this.deck.replaceCards(message.card);
 
-                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards, result: "REPLACED"}));
                 this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "REPLACED"}});
 
                 // the challenging player now loses a card:
@@ -363,7 +363,7 @@ class Game {
                 // or, they've been assassinated/couped
                 let idx = this.players[message.player].cards.findIndex(card => { return card === message.card; });
                 this.players[message.player].cards.splice(idx, 1);
-                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards}));
+                this.players[message.player].connection.send(JSON.stringify({type: 'CHANGE_CARDS', cards: this.players[message.player].cards, result: "LOST"}));
                 this.sendUpdate(message.player, {type: 'UPDATE', msg: {player: message.player, type: 'CHANGE_CARDS', cards: this.players[message.player].cards.length, revealed: message.card, result: "LOST"}});
 
                 if (message.player === this.current_player.name) {

@@ -13,7 +13,7 @@
             multi: false,
             alert: false,
             onSubmit: () => {}
-    };
+        };
     let HOST = location.origin.replace(/^http/, 'ws');
 
     const dispatch = createEventDispatcher();
@@ -81,7 +81,7 @@
         checkName();
     }
 
-    onMount(() => {gatherName();});
+    onMount(() => {console.log('mounted'); gatherName();});
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>

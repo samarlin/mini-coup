@@ -75,7 +75,9 @@
 				// player has been couped/assassinated, and selected a card to lose
 				// OR player has called bluff incorrectly, and selected a card to lose
 				$player.cards = message.cards;
-				$player.lost_cards.push(selected_cards);
+				if (message.result === 'LOST') {
+					$player.lost_cards.push(selected_cards);
+				}
 				if($player.cards.length === 0) {
 					$player.alive = false;
 				}

@@ -76,6 +76,7 @@
 <style>
     #popup {
         border-radius: 25px;
+        z-index: 2;
 
         position: fixed;
         top: 50%;
