@@ -75,6 +75,10 @@
 				// player has been couped/assassinated, and selected a card to lose
 				// OR player has called bluff incorrectly, and selected a card to lose
 				$player.cards = message.cards;
+				$player.lost_cards.push(selected_cards);
+				if($player.cards.length === 0) {
+					$player.alive = false;
+				}
 				break;
 			case 'CHOOSE_PLAYER':
 				// player must choose a target to coup as a result of having
@@ -356,12 +360,13 @@
 
 <main>
 	<h1>{$player.name}</h1>
-	{#if $player.alive} 
-		<h2>You have {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
-		{#each $player.cards as card} 
-			<img src="/assets/cards/{card}.png" alt="{card}" width="300">
-		{/each}
-	{/if}
+	<h2>You {#if $player.alive}have{:else}had{/if} {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
+	{#each $player.cards as card} 
+		<img src="/assets/cards/{card}.png" alt="{card}" width="300">
+	{/each}
+	{#each $player.lost_cards as card} 
+		<img src="/assets/cards/{card}.png" alt="{card}" width="300">
+	{/each}
 
 	<h2>Your opponents are:</h2>
 	{#each Object.keys($opponents) as op}

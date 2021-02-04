@@ -7,7 +7,8 @@ export const player = writable({
     alive: true,
     room: null,
     coins: 0,
-    cards: []
+    cards: [],
+    lost_cards: []
 });
 
 export const opponents = writable({});

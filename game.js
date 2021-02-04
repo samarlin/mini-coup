@@ -203,14 +203,16 @@ class Game {
 
   playerLeft(name) {
     // figure out what else to do here
-    let len = this.players[name].cards.length;
-    this.players[name].cards.forEach(card => {
-      len--;
-      this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
-    });
-    this.players[name].cards = [];
-    if(this.current_player.name === name) {
-      this.onMessage({type: 'END_TURN'});
+    if (name in this.players) {
+      let len = this.players[name].cards.length;
+      this.players[name].cards.forEach(card => {
+        len--;
+        this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
+      });
+      this.players[name].cards = [];
+      if(this.current_player.name === name) {
+        this.onMessage({type: 'END_TURN'});
+      }
     }
   }
 
