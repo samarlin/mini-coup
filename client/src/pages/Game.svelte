@@ -365,10 +365,10 @@
 	<h1>{$player.name}</h1>
 	<h2>You {#if $player.alive}have{:else}had{/if} {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
 	{#each $player.cards as card} 
-		<img src="/assets/cards/{card}.png" alt="{card}" width="300">
+		<img src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
 	{/each}
 	{#each $player.lost_cards as card} 
-		<img src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5;" width="300">
+		<img src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
 	{/each}
 
 	<h2>Your opponents are:</h2>

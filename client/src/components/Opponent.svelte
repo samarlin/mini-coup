@@ -34,7 +34,6 @@
         {/if}
         
         {#if Object.keys($opponents[name].last_action).length !== 0}
-            <br>
             <span>Recently 
                 {#if $opponents[name].last_action.type in $tenses}
                 {$tenses[$opponents[name].last_action.type]}
@@ -53,29 +52,40 @@
         text-align: center;
         vertical-align: top;
 
-        padding: 1em;
-        margin: 1em;
-
-        width: 300px;
-
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
         border-radius: 25px;
 
         display: inline-block;
+        margin: 1vw;
     }
 
     .in_game {
-        height: 370px;
+        height: 40vw;
+        max-height: 325px;
+
+        padding: 1vw;
+
+        width: 25vw;
+        max-width: 300px;
     }
 
     .in_lobby {
-        height: 70px;
+        height: fit-content;
+        width: fit-content;
+        padding-top: .5vw;
+        padding-bottom: .5vw;
+        padding-left: 3vw;
+        padding-right: 3vw;
+    }
+
+    h2, h4 {
+        margin: .5vw;
     }
 
     img {
-        padding: .5em;
-        max-width: calc(200px / var(--num-images));
+        padding: .5vw;
+        max-width: calc(20vw / var(--num-images));
         max-height: 170px;
     }
 </style>
