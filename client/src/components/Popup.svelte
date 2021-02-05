@@ -39,8 +39,7 @@
 
 {#if attr.display}
     <div id="popup">
-        <span>{attr.message}</span>
-        <br><br>
+        <p>{attr.message}</p>
         {#if attr.items.length !== 0 && !attr.multi}
             {#each attr.items as item}
                 <button on:click={() => {
@@ -86,7 +85,7 @@
         background-color: rgb(250, 245, 250);
         color: darkslateblue;
 
-        padding: 1.5em;
+        padding: 1em;
         min-width: 225px;
         text-align: center;
         border: thin solid darkslateblue;
@@ -94,11 +93,15 @@
 
     button, input[type=text], select {
         color: darkslateblue;
-        margin: 2.5px;
+        margin: .5em;
         background-color: white;
         border: thin solid darkslateblue;
 		border-radius: 25px;
         outline: none;
+    }
+
+    p {
+        margin: .5em;
     }
 
     select {
