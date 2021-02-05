@@ -87,6 +87,7 @@
 
         padding: 1em;
         min-width: 225px;
+        max-width: 30vw;
         text-align: center;
         border: thin solid darkslateblue;
     }
@@ -101,7 +102,10 @@
     }
 
     p {
-        margin: .5em;
+        margin-top: .5em;
+        margin-bottom: .5em;
+        margin-left: 2em;
+        margin-right: 2em;
     }
 
     select {

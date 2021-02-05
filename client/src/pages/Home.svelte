@@ -71,10 +71,8 @@
     <p>Select an option below to either join or start a game.</p><br>
     <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can also join it by entering the room's number.</p>
     <br><br>
-    <div>
-        <button on:click={createLobby}>Create New Room</button>
-        <button on:click={joinLobby_popup}>Join Existing Room</button>
-    </div>
+    <button on:click={createLobby}>Create New Room</button>
+    <button on:click={joinLobby_popup}>Join Existing Room</button>
 </main>
 
 <style>
@@ -93,11 +91,12 @@
 
     button {
         color: darkslateblue;
-        margin: 2.5px;
+        margin: .5em;
         background-color: rgb(250, 245, 250);
         border: thin solid darkslateblue;
 		border-radius: 25px;
         outline: none;
+        display: inline-block;
         font-size: 1.5em;
     }
 
