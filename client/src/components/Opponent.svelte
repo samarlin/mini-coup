@@ -29,7 +29,7 @@
                 <span>{#if $opponents[name].pending_action.reason in $move_mappings}
                     {$move_mappings[$opponents[name].pending_action.reason]}{:else}
                     {$opponents[name].pending_action.reason}{/if}</span>
-            {/if}
+            {/if}<span>.</span>
         {/if}
         
         {#if Object.keys($opponents[name].last_action).length !== 0}
@@ -39,10 +39,10 @@
                 {$tenses[$opponents[name].last_action.type]}
                 {:else if $opponents[name].last_action.type in $move_mappings}
                 {$move_mappings[$opponents[name].last_action.type]}{:else}
-                {$opponents[name].last_action.type}{/if} </span>
+                {$opponents[name].last_action.type}{/if}</span>
             {#if $opponents[name].last_action.target}
-                <span>{$opponents[name].last_action.target}</span>
-            {/if}
+                <span> {$opponents[name].last_action.target}</span>
+            {/if}<span>.</span>
         {/if}
     {/if}
 </div>

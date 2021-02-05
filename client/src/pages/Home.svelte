@@ -32,7 +32,7 @@
 
     function joinLobby_popup(event) {
         // enter room ID
-		popup_attr.message = "Enter room ID:";
+		popup_attr.message = "Enter room ID";
 		popup_attr.onSubmit = (id) => {lobby_id = id; popup_attr = popup.initialData();};
 		popup_attr.display = true;
     }

@@ -69,7 +69,7 @@
     }
 
     function gatherName(error = false) {
-		popup_attr.message = (error) ? "Name already in use, try again:" : "Enter your name:";
+		popup_attr.message = (error) ? "Name already in use, try again." : "Enter your name.";
 		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup.initialData();};
         popup_attr.display = true;
         popup_attr = popup_attr;

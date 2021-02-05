@@ -110,6 +110,8 @@
 
     select {
         text-align: center;
-        width: 100%;
+        width: fit-content;
+        padding-left: 2em;
+        padding-right: 2em;
     }
 </style>

@@ -97,7 +97,7 @@
 	function take_primary_action() {
 		console.log('take primary');
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
-		popup_attr.message = "Select move:";
+		popup_attr.message = "Select a action to take.";
 		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
@@ -164,7 +164,7 @@
 				valid_actions.splice(idx, 1);
 			}
 		}
-		popup_attr.message = 'Select action in response to ' + $reverse[primary_action] + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target : '');
+		popup_attr.message = 'Select an action in response to ' + $reverse[primary_action] + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target + '.' : '.');
 		popup_attr.items = valid_actions;
 		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup.initialData();};
 		popup_attr.display = true;
@@ -179,7 +179,7 @@
 	}
 
 	function choose_player(text) {
-		popup_attr.message = 'Choose player to ' + text;
+		popup_attr.message = 'Choose target player to ' + text + '.';
 		popup_attr.items = Object.keys($opponents).filter(player => $opponents[player].alive);
 		popup_attr.onSubmit = (input_name) => {target_name = input_name; popup_attr = popup.initialData();};
 		popup_attr.display = true;
@@ -218,13 +218,13 @@
 	function choose_cards(cards, multi) {
 		selected_cards = '';
 		if (multi) {
-			popup_attr.message = 'Select two cards from below to keep';
+			popup_attr.message = 'Select two cards from below to keep.';
 			popup_attr.items = cards;
 			popup_attr.multi = multi;
 			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup.initialData();};
 			popup_attr.display = true;
 		} else {
-			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal' : 'to keep');
+			popup_attr.message = 'Select a card from below ' + (reveal.revealing ? 'to reveal.' : 'to keep.');
 			popup_attr.items = cards;
 			popup_attr.onSubmit = (cards) => {selected_cards = cards; popup_attr = popup.initialData();};
 			popup_attr.display = true;
@@ -257,6 +257,7 @@
 
 	function trigger_alert(message, next_action) {
 		popup_attr.items = [];
+		popup_attr.multi = false;
 		popup_attr.message = message;
 		popup_attr.alert = true;
 		popup_attr.onSubmit = () => {popup_attr = popup.initialData(); next_action();};
