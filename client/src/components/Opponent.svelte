@@ -30,10 +30,10 @@
                     {$move_mappings[$opponents[name].pending_action.reason]}{:else}
                     {$opponents[name].pending_action.reason}{/if}</span>
             {/if}
-            <br>
         {/if}
         
         {#if Object.keys($opponents[name].last_action).length !== 0}
+            <hr>
             <span>Recently 
                 {#if $opponents[name].last_action.type in $tenses}
                 {$tenses[$opponents[name].last_action.type]}
@@ -82,6 +82,10 @@
 
     h2, h4 {
         margin: .5vw;
+    }
+
+    hr {
+        border: .5px solid darkslateblue;
     }
 
     img {

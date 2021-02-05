@@ -69,12 +69,11 @@
 <main>
     <h1>Mini Coup</h1>
     <p>Select an option below to either join or start a game.</p><br>
-    <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can also join it by entering the room's number.</p>
+    <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can alternatively join using the room's number.</p>
     <br><br>
-    <div id="buttons">
-        <button on:click={createLobby}>Create New Room</button>
-        <button on:click={joinLobby_popup}>Join Existing Room</button>
-    </div>
+    <button on:click={createLobby}>Create New Room</button>
+    <br>
+    <button on:click={joinLobby_popup}>Join Existing Room</button>
 </main>
 
 <style>
@@ -100,11 +99,6 @@
         outline: none;
         display: inline-block;
         font-size: 1.5em;
-    }
-
-    #buttons {
-        text-align: center;
-        display: block;
     }
 
 	h1 {
