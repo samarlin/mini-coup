@@ -63,6 +63,7 @@
     .in_game {
         height: 40vw;
         max-height: 325px;
+        min-height: fit-content;
 
         padding: 1vw;
 

@@ -398,7 +398,7 @@
 
 	img {
 		max-width: calc(50%/2);
-		padding: 1em;
+		padding: 1vw;
 	}
 
 	@media (min-width: 640px) {

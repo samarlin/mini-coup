@@ -86,7 +86,9 @@
         background-color: rgb(250, 245, 250);
         color: darkslateblue;
 
-        padding: 2em;
+        padding: 1.5em;
+        min-width: 225px;
+        text-align: center;
         border: thin solid darkslateblue;
     }
 
