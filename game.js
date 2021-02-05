@@ -212,7 +212,7 @@ class Game {
         this.sendUpdate(name, {type: 'UPDATE', msg: {player: name, type: 'CHANGE_CARDS', cards: len, revealed: card, result: "LOST"}});
       });
       this.players[name].cards = [];
-      if(this.current_player.name === name) {
+      if(this.current_player.name === name || Object.keys(this.players).length <= 2) {
         this.onMessage({type: 'END_TURN'});
       }
     }
@@ -236,7 +236,7 @@ class Game {
     if(message.type === 'END_TURN') {
       this.primary_success = false;
       this.awaiting_secondary = false;
-    }
+    } 
 
     let is_primary = message.type in PRIMARY_ACTIONS;
 
