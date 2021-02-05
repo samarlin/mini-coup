@@ -72,7 +72,7 @@
     <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can alternatively join using the room's number.</p>
     <br><br>
     <button on:click={createLobby}>Create New Room</button>
-    <br>
+    <hr>
     <button on:click={joinLobby_popup}>Join Existing Room</button>
 </main>
 
@@ -106,4 +106,9 @@
 		font-size: 4em;
 		font-weight: 100;
 	}
+
+    hr {
+        border: .5px solid darkslateblue;
+        width: 300px
+    }
 </style>
