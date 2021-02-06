@@ -3,10 +3,11 @@
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false;
     let h, w, curr_class = (game_active) ? "in_game" : "in_lobby";
-
+/*
     $: if(glow) {
         setTimeout(() => {disableGlow();}, 2500);
     }
+    */
 
     function disableGlow() {
         $opponents[name].just_moved = false;
