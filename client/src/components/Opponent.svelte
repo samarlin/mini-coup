@@ -1,7 +1,16 @@
 <script>
-    export let name, game_active = false;
+    import { fade } from 'svelte/transition';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
-    let curr_class = (game_active) ? "in_game" : "in_lobby";
+    export let name, glow = false, game_active = false;
+    let h, w, curr_class = (game_active) ? "in_game" : "in_lobby";
+
+    $: if(glow) {
+        setTimeout(() => {disableGlow();}, 2500);
+    }
+
+    function disableGlow() {
+        $opponents[name].just_moved = false;
+    }
 
     // Opponent format ref: 
     // {"Sam":{"name":"Sam","cards":2,"coins":2,"alive":true,"revealed_cards":[],
@@ -9,7 +18,7 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info" class="{curr_class}">
+<div id="opp_info" class="{curr_class}" bind:clientWidth={w} bind:clientHeight={h}>
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
@@ -20,7 +29,7 @@
         {/each}
         <h4>{$opponents[name].coins} {#if $opponents[name].coins === 1}coin{:else}coins{/if}</h4>
 
-        {#if Object.keys($opponents[name].pending_action).length !== 0}
+        {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
             <span>Awaiting selection of 
                 {#if $opponents[name].pending_action.type in $move_mappings}
                 {$move_mappings[$opponents[name].pending_action.type]}{:else}
@@ -47,6 +56,10 @@
     {/if}
 </div>
 
+{#if glow}
+    <div transition:fade id="background" style="--height: {h}; --width: {w}"></div>
+{/if}
+
 <style>
     #opp_info {
         text-align: center;
@@ -58,6 +71,13 @@
 
         display: inline-block;
         margin: 1vw;
+    }
+
+    #background {
+        height: --height;
+        width: --width;
+        box-shadow: 0px 0px 10px 0px darkslateblue;
+        z-index: -1;
     }
 
     .in_game {
@@ -81,6 +101,7 @@
     }
 
     h2, h4 {
+        overflow-wrap: break-word;
         margin: .5vw;
     }
 

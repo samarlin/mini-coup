@@ -113,5 +113,6 @@
         width: fit-content;
         padding-left: 2em;
         padding-right: 2em;
+        -webkit-appearance: none;
     }
 </style>

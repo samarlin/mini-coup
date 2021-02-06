@@ -290,15 +290,18 @@
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
 					$opponents[msg.instigator].pending_action = {};
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
+					$opponents[msg.instigator].just_moved = true;
 				}
 				break;
 			case 'APPROVED_MOVE':
+				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].last_action = {type: 'APPROVED_MOVE'};
 				$opponents[msg.player].pending_action = {};
 				break;
 			case 'CHANGE_CARDS':
 				// revealed: message.card, result: "REPLACED" || "LOST"
 				$opponents[msg.player].cards = msg.cards;
+				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].pending_action = {};
 
 				if(msg.result === "LOST") {
@@ -320,6 +323,7 @@
 				}
 				break;
 			case 'CARDS_CHOSEN':
+				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].cards = msg.cards;
 				$opponents[msg.player].last_action = {type: 'CARDS_CHOSEN'};
 				$opponents[msg.player].pending_action = {};
@@ -329,6 +333,7 @@
 				$opponents[msg.player].cards += 2;
 				break;
 			case 'CHOOSE_PLAYER':
+				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].last_action = {type: 'COUP_PLAYER'};
 				$opponents[msg.player].pending_action = {type: 'CHOOSE_PLAYER'}
 				break;
@@ -340,13 +345,15 @@
 				break;
 			case 'TAKE_SECONDARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
-					if(opponent !== msg.involved_players.origin)
+					if(opponent !== msg.involved_players.origin && $opponents[opponent].alive === true)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
 				});
 				$opponents[msg.involved_players.origin].pending_action = {};
+				$opponents[msg.involved_players.origin].just_moved = true;
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 			case 'PRIMARY_TAKEN':
+				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].pending_action = {};
 				$opponents[msg.player].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
@@ -374,7 +381,7 @@
 
 	<h2>Your opponents are:</h2>
 	{#each Object.keys($opponents) as op}
-		<Opponent name={op} game_active={true}/>
+		<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
 	{/each}
 </main>
 
