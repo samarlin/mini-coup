@@ -74,9 +74,10 @@
     }
 
     #background {
-        height: --height;
-        width: --width;
+        height: var(--height);
+        width: var(--width);
         box-shadow: 0px 0px 10px 0px darkslateblue;
+        border-radius: 25px;
         z-index: -1;
     }
 

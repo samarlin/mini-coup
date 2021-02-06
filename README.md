@@ -10,3 +10,5 @@ Speaking of which, here are the cards:
 ![cards for Coup](https://i.imgur.com/DvZJy5M.jpg)
 
 The server was built using Node (with Express for some routing & WS during gameplay), and the client using Svelte (with Page.js for client-side routing). The drawings were done in Procreate :) 
+
+**Note:** Since the project is currently running on a free Heroku instance, if it hasn't been used for a while you may need to wait a few seconds on initial load. 
