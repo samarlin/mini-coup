@@ -397,8 +397,10 @@ class Game {
           this.awaiting_secondary = false;
           break;
         case 'ASSASSINATE_PLAYER':
-          this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
-          this.sendUpdate(this.current_primary.target, {type: 'UPDATE', msg: {player: this.current_primary.target, type: 'REVEAL_CARD', reason: 'ASSASSINATION'}});
+					if(this.players[this.current_primary.target].cards.length !== 0) {
+						this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
+          	this.sendUpdate(this.current_primary.target, {type: 'UPDATE', msg: {player: this.current_primary.target, type: 'REVEAL_CARD', reason: 'ASSASSINATION'}});
+					}
           
           this.awaiting_secondary = true;
           break;
