@@ -69,6 +69,8 @@
         margin: 1vw;
 
         box-shadow: var(--glowing);
+        transition-property: box-shadow;
+        transition-duration: 0.5s;
     }
 
     .in_game {
