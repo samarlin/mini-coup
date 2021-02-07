@@ -54,7 +54,7 @@
                 {/each}
             </select>
             {#if selection.length === 2}
-                <br><br>
+                <br>
                 <button on:click={() => {
                     attr.onSubmit(selection);
                     selection = '';
