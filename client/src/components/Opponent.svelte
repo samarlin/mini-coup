@@ -1,13 +1,12 @@
 <script>
-    import { fade } from 'svelte/transition';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false;
-    let h, w, curr_class = (game_active) ? "in_game" : "in_lobby";
-/*
+    let curr_class = (game_active) ? "in_game" : "in_lobby";
+    $: glowing = (glow) ? "0px 0px 10px 0px darkslateblue" : "none";
+
     $: if(glow) {
         setTimeout(() => {disableGlow();}, 2500);
     }
-    */
 
     function disableGlow() {
         $opponents[name].just_moved = false;
@@ -19,7 +18,7 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info" class="{curr_class}" bind:clientWidth={w} bind:clientHeight={h}>
+<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}">
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
@@ -57,10 +56,6 @@
     {/if}
 </div>
 
-{#if glow}
-    <div transition:fade id="background" style="--height: {h}; --width: {w}"></div>
-{/if}
-
 <style>
     #opp_info {
         text-align: center;
@@ -72,14 +67,8 @@
 
         display: inline-block;
         margin: 1vw;
-    }
 
-    #background {
-        height: var(--height);
-        width: var(--width);
-        box-shadow: 0px 0px 10px 0px darkslateblue;
-        border-radius: 25px;
-        z-index: -1;
+        box-shadow: var(--glowing);
     }
 
     .in_game {
