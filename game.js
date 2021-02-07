@@ -400,9 +400,9 @@ class Game {
           if(this.players[this.current_primary.target].cards.length !== 0) {
             this.players[this.current_primary.target].connection.send(JSON.stringify({type: 'REVEAL_CARD', reason: 'ASSASSINATION'}));
             this.sendUpdate(this.current_primary.target, {type: 'UPDATE', msg: {player: this.current_primary.target, type: 'REVEAL_CARD', reason: 'ASSASSINATION'}});
-          }
           
-          this.awaiting_secondary = true;
+            this.awaiting_secondary = true;
+          }
           break;
         case 'TAKE_TAX':
           this.current_player.coins += 3;

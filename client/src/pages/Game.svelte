@@ -1,7 +1,7 @@
 <script>
 	import Popup from '../components/Popup.svelte';
 	import Opponent from '../components/Opponent.svelte';
-
+  import { fade } from 'svelte/transition';
 	import {connections} from '../stores/connection.store.js';
 	import {player, opponents, reverse} from '../stores/player.store.js';
 
@@ -373,10 +373,10 @@
 	<h1>{$player.name}</h1>
 	<h2>You {#if $player.alive}have{:else}had{/if} {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
 	{#each $player.cards as card} 
-		<img src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
+		<img transition:fade src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
 	{/each}
 	{#each $player.lost_cards as card} 
-		<img src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
+		<img transition:fade src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
 	{/each}
 
 	<h2>Your opponents are:</h2>

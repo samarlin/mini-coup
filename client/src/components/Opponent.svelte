@@ -1,4 +1,5 @@
 <script>
+    import { fade } from 'svelte/transition';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false;
     let curr_class = (game_active) ? "in_game" : "in_lobby";
@@ -22,10 +23,10 @@
     <h2>{name}</h2>
     {#if game_active}
         {#each Array($opponents[name].cards) as _, i}
-            <img src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+            <img transition:fade src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         {#each $opponents[name].revealed_cards as card}
-            <img src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+            <img transition:fade src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
         <h4>{$opponents[name].coins} {#if $opponents[name].coins === 1}coin{:else}coins{/if}</h4>
 
