@@ -1,15 +1,10 @@
 <script>
 	import Popup from '../components/Popup.svelte';
 	import Opponent from '../components/Opponent.svelte';
-  	import { fade, crossfade, scale } from 'svelte/transition';
+  	import { fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import {connections} from '../stores/connection.store.js';
 	import {player, opponents, reverse} from '../stores/player.store.js';
-
-	const [send, receive] = crossfade({
-		duration: 200,
-		fallback: scale
-	});
 
 	let popup_attr = {
 		message: '',
@@ -25,7 +20,7 @@
 	let target_name = '';
 	let reveal = {};
     let selected_cards = '';
-    let popup;
+    let popup, num_opps = 0;
 	
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -276,6 +271,7 @@
 		switch (msg.type) {
 			case 'INIT_GAME':
 				msg.players.forEach(opponent => {
+					num_opps += 1;
 					if(opponent !== $player.name)
 						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 				});
@@ -373,22 +369,27 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
-<Popup bind:this={popup} attr={popup_attr}/>
+<Popup style="grid-area: Options;" bind:this={popup} attr={popup_attr}/>
 
 <main>
-	<h1>{$player.name}</h1>
-	{#each $player.cards as card, i (i)} 
-		<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
-	{/each}
-	{#each $player.lost_cards as card, i (i)} 
-		<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
-	{/each}
-	<img class="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
+	<div class="board{num_opps}">
+		<div id="main_player">
+			<h2>{$player.name}</h2>
+			{#each $player.cards as card, i (i)} 
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
+			{/each}
+			{#each $player.lost_cards as card, i (i)} 
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
+			{/each}
+			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
+		</div>
 
-	<h2>Opponents</h2>
-	{#each Object.keys($opponents) as op}
-		<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
-	{/each}
+		{#each Object.keys($opponents) as op, i}
+			<div style="grid-area: OP{i};">
+				<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
+			</div>
+		{/each}
+	</div>
 </main>
 
 <style>	
@@ -397,7 +398,58 @@
 		padding: 1em;
         margin: 0 auto;
 
-        color: darkslateblue;
+        color: rgb(91, 91, 91);
+	}
+
+	#main_player {
+		margin: 1vw;
+		border-bottom: 3px solid rgba(193, 182, 159, 0.8);
+		display: inline-block;
+		border-radius: 25px;
+		grid-area: Player;
+		background-image: url("/assets/bgs/beige.jpg");
+		background-size: cover;
+	}
+
+	.board2 {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		gap: 0px 0px;
+		grid-template-areas:
+			"Player OP0 OP1"
+			"Player Options Options";
+	}
+
+	.board3 {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		gap: 0px 0px;
+		grid-template-areas:
+			"Player OP0 OP1"
+			"Player Options OP2";
+	}
+
+	.board4 {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+		gap: 0px 0px;
+		grid-template-areas:
+			"OP0 OP1 OP2"
+			"Player Options OP3"
+			"Player Options OP3";
+	}
+
+	.board5 {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+		gap: 0px 0px;
+		grid-template-areas: "OP0 OP1 OP2"
+							 "Player Options OP3"
+							 "Player Options OP4";
 	}
 
 	h1 {
@@ -407,24 +459,21 @@
 		margin: 0px;
 	}
 
-	.coins {
+	#coins {
         margin: auto;
-        width: 30%;
+        width: 60%;
         display: block;
     }
 
 	h2 {
+		color: rgb(91, 91, 91);
+		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
 		margin-bottom: 5px;
 	}
 
 	img {
-		max-width: calc(50%/2);
-		padding: 1vw;
+		max-width: calc(80%/2);
+		padding: .5vw;
 	}
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
 </style>

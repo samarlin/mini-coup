@@ -21,40 +21,48 @@
 </script>
 
 <div id="opp_info" class="{curr_class}" style="--glowing: {glowing}">
-    <h2>{name}</h2>
-    {#if game_active}
-        {#each Array($opponents[name].cards) as _, i (i)}
-            <img transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
-        {/each}
-        {#each $opponents[name].revealed_cards as card, i (i)}
-            <img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
-        {/each}
-        <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
+    {#if !game_active}
+        <h2>{name}</h2>
+    {:else}
+        <div style="display: flex;">
+            <div style="flex: 2;">
+                {#each Array($opponents[name].cards) as _, i (i)}
+                    <img transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+                {/each}
+                {#each $opponents[name].revealed_cards as card, i (i)}
+                    <img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+                {/each}
+                <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
+            </div>
 
-        {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
-            <span>Awaiting selection of 
-                {#if $opponents[name].pending_action.type in $move_mappings}
-                {$move_mappings[$opponents[name].pending_action.type]}{:else}
-                {$opponents[name].pending_action.type}{/if}</span>
-            {#if $opponents[name].pending_action.reason}
-                <span>{#if $opponents[name].pending_action.reason in $move_mappings}
-                    {$move_mappings[$opponents[name].pending_action.reason]}{:else}
-                    {$opponents[name].pending_action.reason}{/if}</span>
-            {/if}
-        {/if}
-        
-        {#if Object.keys($opponents[name].last_action).length !== 0}
-            <hr>
-            <span>Recently 
-                {#if $opponents[name].last_action.type in $tenses}
-                {$tenses[$opponents[name].last_action.type]}
-                {:else if $opponents[name].last_action.type in $move_mappings}
-                {$move_mappings[$opponents[name].last_action.type]}{:else}
-                {$opponents[name].last_action.type}{/if}</span>
-            {#if $opponents[name].last_action.target}
-                <span> {$opponents[name].last_action.target}</span>
-            {/if}
-        {/if}
+            <div style="flex: 1;">
+                <h2>{name}</h2>
+                {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
+                    <span>Awaiting selection of 
+                        {#if $opponents[name].pending_action.type in $move_mappings}
+                        {$move_mappings[$opponents[name].pending_action.type]}{:else}
+                        {$opponents[name].pending_action.type}{/if}</span>
+                    {#if $opponents[name].pending_action.reason}
+                        <span>{#if $opponents[name].pending_action.reason in $move_mappings}
+                            {$move_mappings[$opponents[name].pending_action.reason]}{:else}
+                            {$opponents[name].pending_action.reason}{/if}</span>
+                    {/if}
+                {/if}
+                
+                {#if Object.keys($opponents[name].last_action).length !== 0}
+                    <hr>
+                    <span>Recently 
+                        {#if $opponents[name].last_action.type in $tenses}
+                        {$tenses[$opponents[name].last_action.type]}
+                        {:else if $opponents[name].last_action.type in $move_mappings}
+                        {$move_mappings[$opponents[name].last_action.type]}{:else}
+                        {$opponents[name].last_action.type}{/if}</span>
+                    {#if $opponents[name].last_action.target}
+                        <span> {$opponents[name].last_action.target}</span>
+                    {/if}
+                {/if}
+            </div>
+        </div>
     {/if}
 </div>
 
@@ -63,8 +71,7 @@
         text-align: center;
         vertical-align: top;
 
-        background-color: rgb(250, 245, 250);
-        border: thin solid darkslateblue;
+        border-bottom: 2px solid rgba(152, 144, 129, 0.8);
         border-radius: 25px;
 
         display: inline-block;
@@ -73,17 +80,13 @@
         box-shadow: var(--glowing);
         transition-property: box-shadow;
         transition-duration: 0.5s;
+
+        background-image: url("/assets/bgs/white.jpg");
+        background-size: cover;
     }
 
     .in_game {
-        height: 40vw;
-        max-height: 325px;
-        min-height: fit-content;
-
         padding: 1vw;
-
-        width: 25vw;
-        max-width: 300px;
     }
 
     .in_lobby {
@@ -97,7 +100,7 @@
 
     .coins {
         margin: auto;
-        width: 70%;
+        width: 50%;
         display: block;
     }
 
@@ -107,12 +110,12 @@
     }
 
     hr {
-        border: .5px solid darkslateblue;
+        border: .5px solid rgb(91, 91, 91);
     }
 
     img {
         padding: .5vw;
-        max-width: calc(20vw / var(--num-images));
+        max-width: calc(80% / var(--num-images));
         max-height: 170px;
     }
 </style>
