@@ -145,6 +145,7 @@ app.post("/create-room", (req, res) => {
   res.json({room: id})
 });
 
+// return 404 if room doesn't exist
 app.post("/join-room", (req, res) => {
   let body = req.body;
   if(body.room in rooms) {

@@ -1,10 +1,15 @@
 <script>
 	import Popup from '../components/Popup.svelte';
 	import Opponent from '../components/Opponent.svelte';
-  	import { fade } from 'svelte/transition';
+  	import { fade, crossfade, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import {connections} from '../stores/connection.store.js';
 	import {player, opponents, reverse} from '../stores/player.store.js';
+
+	const [send, receive] = crossfade({
+		duration: 200,
+		fallback: scale
+	});
 
 	let popup_attr = {
 		message: '',
@@ -372,21 +377,21 @@
 
 <main>
 	<h1>{$player.name}</h1>
-	<h2>You {#if $player.alive}have{:else}had{/if} {$player.coins} {#if $player.coins !== 1}coins{:else}coin{/if} and these cards:</h2>
 	{#each $player.cards as card, i (i)} 
 		<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
 	{/each}
 	{#each $player.lost_cards as card, i (i)} 
 		<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
 	{/each}
+	<img class="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
-	<h2>Your opponents are:</h2>
+	<h2>Opponents</h2>
 	{#each Object.keys($opponents) as op}
 		<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
 	{/each}
 </main>
 
-<style>
+<style>	
 	main {
 		text-align: center;
 		padding: 1em;
@@ -401,6 +406,12 @@
 		font-weight: 100;
 		margin: 0px;
 	}
+
+	.coins {
+        margin: auto;
+        width: 30%;
+        display: block;
+    }
 
 	h2 {
 		margin-bottom: 5px;

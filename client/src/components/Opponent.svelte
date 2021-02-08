@@ -29,7 +29,7 @@
         {#each $opponents[name].revealed_cards as card, i (i)}
             <img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
         {/each}
-        <h4>{$opponents[name].coins} {#if $opponents[name].coins === 1}coin{:else}coins{/if}</h4>
+        <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
 
         {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
             <span>Awaiting selection of 
@@ -95,7 +95,13 @@
         padding-right: 3vw;
     }
 
-    h2, h4 {
+    .coins {
+        margin: auto;
+        width: 70%;
+        display: block;
+    }
+
+    h2 {
         overflow-wrap: break-word;
         margin: .5vw;
     }
