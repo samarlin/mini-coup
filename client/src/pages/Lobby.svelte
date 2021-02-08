@@ -7,7 +7,7 @@
 
     let popup, popup_attr = {
             message: '',
-            display: false,
+            display: true,
             items: [],
             multi: false,
             alert: false,

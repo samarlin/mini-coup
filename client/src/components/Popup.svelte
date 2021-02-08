@@ -1,5 +1,7 @@
 <script>
     import {reverse} from '../stores/player.store.js'
+    export let game_active = false;
+    let curr_class = (game_active) ? "in_game" : "not_in_game";
 
     export function initialData() {
         return {
@@ -25,7 +27,6 @@
 	}
 
     let selection = '', text, error = false;
-    $: forSubmitText = attr.onSubmit;
     function submitText() {
         if(text.checkValidity()) {
             attr.onSubmit(selection);
@@ -37,8 +38,8 @@
     }
 </script>
 
-{#if attr.display}
-    <div id="popup">
+{#if attr.display || game_active}
+    <div id="popup" class="{curr_class}">
         <p>{attr.message}</p>
         {#if attr.items.length !== 0 && !attr.multi}
             {#each attr.items as item}
@@ -75,6 +76,30 @@
 <style>
     #popup {
         border-radius: 25px;
+    
+        color: rgb(91, 91, 91);
+
+        padding: 1em;
+        text-align: center;
+
+        background-image: url("/assets/bgs/rose.jpg");
+        background-size: cover;
+        border-bottom: 3px solid rgba(119, 98, 131, 0.7);
+    }
+
+    .in_game {
+        font-size: 1.2em;
+        margin: 1vw;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+    }
+
+    .not_in_game {
+        min-width: 225px;
+        max-width: 30vw;
+
         z-index: 2;
 
         position: fixed;
@@ -82,21 +107,13 @@
         left: 50%;
 
         transform: translateY(-50%) translateX(-50%);
-        background-color: rgb(250, 245, 250);
-        color: darkslateblue;
-
-        padding: 1em;
-        min-width: 225px;
-        max-width: 30vw;
-        text-align: center;
-        border: thin solid darkslateblue;
     }
 
     button, input[type=text], select {
-        color: darkslateblue;
+        color: rgb(91, 91, 91);
         margin: .5em;
         background-color: white;
-        border: thin solid darkslateblue;
+        border: 1px solid rgba(119, 98, 131, 0.7);;
 		border-radius: 25px;
         outline: none;
     }

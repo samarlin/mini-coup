@@ -271,9 +271,10 @@
 		switch (msg.type) {
 			case 'INIT_GAME':
 				msg.players.forEach(opponent => {
-					num_opps += 1;
-					if(opponent !== $player.name)
+					if(opponent !== $player.name) {
+						num_opps += 1;
 						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
+					}
 				});
 				break;
 			case 'RECEIVE_MONEY': 
@@ -369,12 +370,12 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
-<Popup style="grid-area: Options;" bind:this={popup} attr={popup_attr}/>
-
 <main>
+	<h1>Mini Coup</h1>
 	<div class="board{num_opps}">
+		<Popup style="grid-area: Options;" bind:this={popup} game_active={true} attr={popup_attr}/> 
 		<div id="main_player">
-			<h2>{$player.name}</h2>
+			<h1>{$player.name}</h1>
 			{#each $player.cards as card, i (i)} 
 				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
 			{/each}
@@ -453,10 +454,12 @@
 	}
 
 	h1 {
+		color: rgb(91, 91, 91);
+		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
-		margin: 0px;
+		margin: 5px;
 	}
 
 	#coins {
