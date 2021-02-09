@@ -61,11 +61,11 @@
                     selection = '';
                 }}>Submit</button>
             {/if}
-        {:else if !attr.alert}
+        {:else if !attr.alert && attr.display}
             <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autofocus>
             {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
             <button on:click={submitText}>Submit</button>
-        {:else}
+        {:else if attr.display}
             <button on:click={() => {
                 attr.onSubmit(selection);
             }}>OK</button>
@@ -88,7 +88,7 @@
     }
 
     .in_game {
-        font-size: 1.2em;
+        font-size: 1.5em;
         margin: 1vw;
         display: flex;
         justify-content: center;
@@ -113,7 +113,7 @@
         color: rgb(91, 91, 91);
         margin: .5em;
         background-color: white;
-        border: 1px solid rgba(119, 98, 131, 0.7);;
+        border-bottom: 2px solid rgba(119, 98, 131, 0.7);;
 		border-radius: 25px;
         outline: none;
     }

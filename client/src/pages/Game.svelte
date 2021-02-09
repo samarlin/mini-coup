@@ -373,9 +373,12 @@
 <main>
 	<h1>Mini Coup</h1>
 	<div class="board{num_opps}">
-		<Popup style="grid-area: Options;" bind:this={popup} game_active={true} attr={popup_attr}/> 
+		<div style="grid-area: Options;">
+			<Popup bind:this={popup} game_active={true} attr={popup_attr}/> 
+		</div>
 		<div id="main_player">
 			<h1>{$player.name}</h1>
+			<hr>
 			{#each $player.cards as card, i (i)} 
 				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
 			{/each}
@@ -404,6 +407,7 @@
 
 	#main_player {
 		margin: 1vw;
+		padding-top: 1vw; 
 		border-bottom: 3px solid rgba(193, 182, 159, 0.8);
 		display: inline-block;
 		border-radius: 25px;
@@ -478,5 +482,9 @@
 		max-width: calc(80%/2);
 		padding: .5vw;
 	}
+
+	hr {
+        border: .5px solid rgb(91, 91, 91);
+    }
 
 </style>

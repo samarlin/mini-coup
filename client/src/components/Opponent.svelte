@@ -35,7 +35,7 @@
                 <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
             </div>
 
-            <div style="flex: 1;">
+            <div style="flex: 1; margin-top: 1vw;">
                 <h2>{name}</h2>
                 {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
                     <span>Awaiting selection of 
