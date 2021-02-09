@@ -384,7 +384,7 @@
 	<h1>Mini Coup</h1>
 	<div class="board{num_opps}">
 		<div style="grid-area: Options; display: flex;">
-			<Popup bind:this={popup} game_active={true} attr={popup_attr}/> 
+			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
 		</div>
 		<div id="main_player">
 			<h1>{$player.name}</h1>
@@ -456,8 +456,8 @@
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
 		grid-template-areas:
-			"OP0 OP1 OP2"
-			"Player Options OP3"
+			"OP0 OP1 ."
+			"Player Options OP2"
 			"Player Options OP3";
 	}
 

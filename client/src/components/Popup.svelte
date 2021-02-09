@@ -1,7 +1,9 @@
 <script>
     import {reverse} from '../stores/player.store.js'
-    export let game_active = false;
+    import {onMount} from 'svelte';
+    export let game_active = false, numopps = 3;
     let curr_class = (game_active) ? "in_game" : "not_in_game";
+    let size = (numopps === 3) ? 1.2 : 1.5;
 
     export function initialData() {
         return {
@@ -36,40 +38,46 @@
             error = true;
         }
     }
+
+    onMount(() => {
+        console.log(attr);
+    });
 </script>
 
 {#if attr.display || game_active}
-    <div id="popup" class="{curr_class}">
-        <p>{attr.message}</p>
-        {#if attr.items.length !== 0 && !attr.multi}
-            {#each attr.items as item}
-                <button on:click={() => {
-                    attr.onSubmit(item);
-                    selection = '';
-                }}>{#if item in $reverse}{$reverse[item]}{:else}{item}{/if}</button>
-            {/each}
-        {:else if attr.multi}
-            <select multiple bind:value={selection}>
-                {#each attr.items as item, i}
-                    <option value={i}>{item}</option>
+    <div id="popup" class="{curr_class}" style="--f_size: {size}em;">
+        <div style="height: fit-content;">
+            <p>{attr.message}</p>
+            {#if attr.items.length !== 0 && !attr.multi}
+                {#each attr.items as item}
+                    <button on:click={() => {
+                        attr.onSubmit(item);
+                        selection = '';
+                    }}>{#if item in $reverse}{$reverse[item]}{:else}{item}{/if}</button>
                 {/each}
-            </select>
-            {#if selection.length === 2}
-                <br>
+            {:else if attr.multi}
+                <select multiple bind:value={selection}>
+                    {#each attr.items as item, i}
+                        <option value={i}>{item}</option>
+                    {/each}
+                </select>
+                {#if selection.length === 2}
+                    <br>
+                    <button on:click={() => {
+                        attr.onSubmit(selection);
+                        selection = '';
+                    }}>Submit</button>
+                {/if}
+            {:else if !attr.alert && attr.display}
+                <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autofocus>
+                {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
+                <button on:click={submitText}>Submit</button>
+            {:else if attr.display}
                 <button on:click={() => {
                     attr.onSubmit(selection);
-                    selection = '';
-                }}>Submit</button>
+                }}>OK</button>
             {/if}
-        {:else if !attr.alert && attr.display}
-            <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autofocus>
-            {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
-            <button on:click={submitText}>Submit</button>
-        {:else if attr.display}
-            <button on:click={() => {
-                attr.onSubmit(selection);
-            }}>OK</button>
-        {/if}
+        </div>
     </div>
 {/if}
 
@@ -88,9 +96,13 @@
     }
 
     .in_game {
-        font-size: 1.2em;
+        font-size: var(--f_size);
         margin: 1vw;
         width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .not_in_game {
