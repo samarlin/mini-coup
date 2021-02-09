@@ -397,7 +397,9 @@
 			{/each}
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
-			<p>You just {recent_action}.</p>
+			{#if recent_action}
+				<p>You just {recent_action}.</p>
+			{/if}
 		</div>
 
 		{#each Object.keys($opponents) as op, i}
