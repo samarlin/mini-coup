@@ -287,12 +287,12 @@
 						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
-				game_ready = "grid";
 				break;
 			case 'RECEIVE_MONEY': 
 				// should I differentiate between the different RECEIVE_MONEY cases?
 				// eg: income, foreign aid, coup, forced coup, assassination, theft... probably
 				$opponents[msg.player].coins = msg.coins;
+				if(game_ready === "none") { game_ready = "grid"; }
 				break;
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
