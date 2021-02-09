@@ -71,7 +71,7 @@
         text-align: center;
         vertical-align: top;
 
-        border-bottom: 2px solid rgba(152, 144, 129, 0.8);
+        border-bottom: 3px solid rgba(152, 144, 129, 0.8);
         border-radius: 25px;
 
         display: inline-block;

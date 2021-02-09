@@ -84,11 +84,11 @@
 
         background-image: url("/assets/bgs/rose.jpg");
         background-size: cover;
-        border-bottom: 3px solid rgba(119, 98, 131, 0.7);
+        border-bottom: 3px solid rgba(152, 144, 129, 0.8);
     }
 
     .in_game {
-        font-size: 1.5em;
+        font-size: 1.2em;
         margin: 1vw;
         width: 100%;
     }
@@ -110,7 +110,7 @@
         color: rgb(91, 91, 91);
         margin: .5em;
         background-color: white;
-        border-bottom: 2px solid rgba(119, 98, 131, 0.7);;
+        border-bottom: 2px solid rgba(152, 144, 129, 0.8);
 		border-radius: 25px;
         outline: none;
     }

@@ -69,5 +69,5 @@ export const tenses = readable({
     BLOCK_AID: 'blocked attempt to take foreign aid by',
     BLOCK_STEAL: 'blocked attempted theft by',
     BLOCK_ASSASSINATE: 'blocked assassination attempt from',
-    APPROVE_MOVE: 'approved recent move from'
+    APPROVE_MOVE: 'approved a recent move by'
 });
