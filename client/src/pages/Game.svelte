@@ -404,7 +404,7 @@
 		</div>
 
 		{#each Object.keys($opponents) as op, i}
-			<div style="grid-area: OP{i}; display: flex;">
+			<div class="OP{i}" style="grid-area: OP{i}; display: flex;">
 				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} game_active={true} alive={$opponents[op].alive}/>
 			</div>
 		{/each}
@@ -481,7 +481,7 @@
 		.board2 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1.5fr 1fr;
+			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player Options"
@@ -491,18 +491,24 @@
 		.board3 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1.5fr 1fr 1fr;
+			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player Options"
 				"OP0 OP1"
 				"OP2 OP2";
 		}
+
+		.board3 > .OP2 {
+			margin-right: auto;
+			margin-left: auto;
+			width: 50%;
+		}
 		
 		.board4 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1.5fr 1fr 1fr;
+			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player Options"
@@ -514,13 +520,19 @@
 		.board5 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 2fr 1fr 1fr 1fr;
+			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player Options"
 				"OP0 OP1"
 				"OP2 OP3"
 				"OP4 OP4";
+		}
+
+		.board5 > .OP4 {
+			margin-right: auto;
+			margin-left: auto;
+			width: 50%;
 		}
 	}
 
