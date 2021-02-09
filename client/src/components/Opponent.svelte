@@ -27,7 +27,7 @@
         <h2>{name}</h2>
     {:else}
         <div style="display: flex;">
-            <div style="flex: 2;">
+            <div style="flex: 2; align-items: center; justify-content: center;">
                 {#each Array($opponents[name].cards) as _, i (i)}
                     <img transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
                 {/each}
@@ -71,7 +71,6 @@
 <style>
     #opp_info {
         text-align: center;
-        vertical-align: top;
 
         border: 1px solid rgba(193, 182, 159, 0.8);
         border-bottom: 3px solid rgba(152, 144, 129, 0.8);

@@ -477,7 +477,7 @@
 							 "Player Options OP4";
 	}
 
-	@media (max-aspect-ratio: 5/8) {
+	@media (orientation: portrait) {
 		.board2 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
