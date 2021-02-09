@@ -47,6 +47,7 @@
         if (result.status === 'ok') {
             if(result.exists && result.open) {
                 $player.room = lobby_id;
+                $connections.other_connections = result.curr_players;
                 // go to room
                 $connections.router("/rooms/" + lobby_id);
             } else {
