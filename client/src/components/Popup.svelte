@@ -14,7 +14,7 @@
         };
     }
 
-    export let attr = initialData();
+    export let attr;
     export function reset() {
         this.set(attr = initialData());
     }
