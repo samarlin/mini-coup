@@ -4,7 +4,7 @@
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false;
     let curr_class = (game_active) ? "in_game" : "in_lobby";
-    $: glowing = (glow) ? "0px 0px 10px 0px darkslateblue" : "none";
+    $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
 
     $: if(glow) {
         setTimeout(() => {disableGlow();}, 2500);

@@ -118,13 +118,14 @@
     button {
         color: rgb(91, 91, 91);
         margin: .5vw;
-        border-bottom: 2px solid rgba(119, 98, 131, 0.7);;
-		border-radius: 25px;
-        outline: none;
-        display: inline-block;
-        background-image: url("/assets/bgs/rose.jpg");
         background-size: cover;
         font-size: 1.5em;
+
+        border-bottom: 2px solid rgba(193, 182, 159, 0.8);
+        border-radius: 25px;
+        outline: none;
+        display: inline-block;
+        background-image: url("/assets/bgs/white.jpg");
     }
 
     p {

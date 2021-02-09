@@ -68,5 +68,6 @@ export const tenses = readable({
     DRAW_CARDS: 'exchanged cards with the deck',
     BLOCK_AID: 'blocked attempt to take foreign aid by',
     BLOCK_STEAL: 'blocked attempted theft by',
-    BLOCK_ASSASSINATE: 'blocked assassination attempt from'
+    BLOCK_ASSASSINATE: 'blocked assassination attempt from',
+    APPROVE_MOVE: 'approved recent move from'
 });

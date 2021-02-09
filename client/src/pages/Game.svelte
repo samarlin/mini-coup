@@ -4,7 +4,7 @@
   	import { fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import {connections} from '../stores/connection.store.js';
-	import {player, opponents, reverse} from '../stores/player.store.js';
+	import {player, opponents, reverse, tenses, move_mappings} from '../stores/player.store.js';
 
 	let popup_attr = {
 		message: '',
@@ -20,7 +20,7 @@
 	let target_name = '';
 	let reveal = {};
     let selected_cards = '';
-    let popup, num_opps = 0;
+    let popup, recent_action, num_opps = 0;
 	
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -77,9 +77,11 @@
 				// OR player has called bluff incorrectly, and selected a card to lose
 				$player.cards = message.cards;
 				if (message.result === 'LOST') {
+					recent_action = $move_mappings['LOST_CARD'];
 					$player.lost_cards.push(selected_cards);
 				}
 				if($player.cards.length === 0) {
+					recent_action = 'DIED';
 					$player.alive = false;
 				}
 				break;
@@ -113,6 +115,7 @@
 		let message;
 		switch(move) {
 			case 'TAKE_FOREIGN_AID':
+				recent_action = $tenses['TAKE_FOREIGN_AID'];
 				message = {type: 'TAKE_FOREIGN_AID', player: $player.name};
 				$connections.connection.send(JSON.stringify(message));
 				Object.keys($opponents).forEach(opponent => {
@@ -122,6 +125,7 @@
 				break;
 			case 'TAKE_INCOME':
 				message = {type: 'TAKE_INCOME', player: $player.name};
+				recent_action = $tenses['TAKE_INCOME'];
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'COUP_PLAYER':
@@ -134,6 +138,7 @@
 				break;
 			case 'TAKE_TAX':
 				message = {type: 'TAKE_TAX', player: $player.name};
+				recent_action = $tenses['TAKE_TAX'];
 				$connections.connection.send(JSON.stringify(message));
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
@@ -146,6 +151,7 @@
 				break;
 			case 'DRAW_CARDS':
 				message = {type: 'DRAW_CARDS', player: $player.name};
+				recent_action = "announced intent to " + $tenses['DRAW_CARDS'];
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
@@ -167,7 +173,7 @@
 		}
 		popup_attr.message = 'Select an action in response to ' + $reverse[primary_action] + ' by ' + involved_players.origin + (involved_players.target ? ' against ' + involved_players.target + '.' : '.');
 		popup_attr.items = valid_actions;
-		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; popup_attr = popup.initialData();};
+		popup_attr.onSubmit = (input_move) => {secondary_action = input_move; recent_action = $tenses[input_move] + ' ' + involved_players.origin; popup_attr = popup.initialData();};
 		popup_attr.display = true;
 	}
 
@@ -195,10 +201,12 @@
 		switch(primary_action) {
 			case 'COUP_PLAYER':
 				message = {type: 'COUP_PLAYER', target: target_name, player: $player.name};
+				recent_action = $tenses['COUP_PLAYER'] + ' ' + target_name;
 				$connections.connection.send(JSON.stringify(message));
 				break;
 			case 'ASSASSINATE_PLAYER':
 				message = {type: 'ASSASSINATE_PLAYER', target: target_name, player: $player.name};
+				recent_action = $tenses['ASSASSINATE_PLAYER'] + ' ' + target_name;
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
@@ -207,6 +215,7 @@
 				break;
 			case 'STEAL_FROM_PLAYER':
 				message = {type: 'STEAL_FROM_PLAYER', target: target_name, player: $player.name};
+				recent_action = $tenses['STEAL_FROM_PLAYER'] + ' ' + target_name;
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
@@ -251,6 +260,7 @@
 					reveal.cards.splice(idx, 1);
 				}
 			}
+			recent_action = $move_mappings['CARDS_CHOSEN'];
 			message = {type: 'CARDS_CHOSEN', player: $player.name, cards: $player.cards, discards: reveal.cards};
 		}
 		$connections.connection.send(JSON.stringify(message));
@@ -386,10 +396,12 @@
 				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
 			{/each}
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
+
+			<p>You just {recent_action}.</p>
 		</div>
 
 		{#each Object.keys($opponents) as op, i}
-			<div style="grid-area: OP{i};">
+			<div style="grid-area: OP{i}; display: flex;">
 				<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
 			</div>
 		{/each}
