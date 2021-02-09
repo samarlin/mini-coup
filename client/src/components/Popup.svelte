@@ -3,7 +3,7 @@
     import {onMount} from 'svelte';
     export let game_active = false, numopps = 3;
     let curr_class = (game_active) ? "in_game" : "not_in_game";
-    let size = (numopps === 3) ? 1.2 : 1.5;
+    $: size = (numopps === 3) ? 1.2 : 1.5;
 
     export function initialData() {
         return {
@@ -69,7 +69,7 @@
                     }}>Submit</button>
                 {/if}
             {:else if !attr.alert && attr.display}
-                <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autofocus>
+                <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autocomplete="off" autofocus>
                 {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
                 <button on:click={submitText}>Submit</button>
             {:else if attr.display}
