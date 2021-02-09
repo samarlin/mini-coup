@@ -118,7 +118,16 @@ app.get("/rooms/:id/events", (req, res) => {
 });
 */
 
-app.use(express.static(path.resolve(__dirname, 'client/public')));
+app.use(express.static(path.resolve(__dirname, 'client/public'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html') || path.endsWith('.js') || path.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    }
+  },
+}));
+
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'client/public', 'index.html'));
 });

@@ -136,7 +136,7 @@
         color: rgb(91, 91, 91);
         margin: .5em;
         background-color: white;
-        box-shadow: 0px 2px rgba(152, 144, 129, 0.8);
+        box-shadow: inset 0px 2px rgba(152, 144, 129, 0.8);
 		border-radius: 25px;
         outline: none;
     }
