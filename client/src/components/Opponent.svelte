@@ -2,9 +2,11 @@
     import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
-    export let name, glow = false, game_active = false;
+    export let name, glow = false, game_active = false, current_turn = false, alive = true;
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
+    $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
+    $: living = (alive) ? 1.0 : 0.5;
 
     $: if(glow) {
         setTimeout(() => {disableGlow();}, 2500);
@@ -20,7 +22,7 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}">
+<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}; --turn: url({turn}); --alive: {living};">
     {#if !game_active}
         <h2>{name}</h2>
     {:else}
@@ -81,8 +83,10 @@
         transition-property: box-shadow;
         transition-duration: 0.5s;
 
-        background-image: url("/assets/bgs/white.jpg");
+        background-image: var(--turn);
         background-size: cover;
+
+        opacity: var(--alive);
     }
 
     .in_game {

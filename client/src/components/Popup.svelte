@@ -3,7 +3,7 @@
     import {onMount} from 'svelte';
     export let game_active = false, numopps = 3;
     let curr_class = (game_active) ? "in_game" : "not_in_game";
-    $: size = (numopps === 3) ? 1.2 : 1.5;
+    $: size = (numopps === 3) ? 1.1 : 1.3;
 
     export function initialData() {
         return {
@@ -69,7 +69,7 @@
                     }}>Submit</button>
                 {/if}
             {:else if !attr.alert && attr.display}
-                <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autocomplete="off" autofocus>
+                <input type="text" bind:this={text} bind:value={selection} pattern={"([a-zA-Z0-9]){1,10}"} on:keyup={e=>e.key==='Enter' && submitText()} autocomplete="off">
                 {#if error}<br><span>10-character limit, alphanumerics only.</span><br>{/if}
                 <button on:click={submitText}>Submit</button>
             {:else if attr.display}
@@ -118,11 +118,25 @@
         transform: translateY(-50%) translateX(-50%);
     }
 
-    button, input[type=text], select {
+    button {
         color: rgb(91, 91, 91);
         margin: .5em;
         background-color: white;
         border-bottom: 2px solid rgba(152, 144, 129, 0.8);
+		border-radius: 25px;
+        outline: none;
+    }
+
+    button:focus{
+        border-bottom: 1px solid;
+    }
+
+    input[type=text], select {
+        -webkit-appearance: none;
+        color: rgb(91, 91, 91);
+        margin: .5em;
+        background-color: white;
+        box-shadow: 0px 2px rgba(152, 144, 129, 0.8);
 		border-radius: 25px;
         outline: none;
     }
@@ -139,6 +153,5 @@
         width: fit-content;
         padding-left: 2em;
         padding-right: 2em;
-        -webkit-appearance: none;
     }
 </style>

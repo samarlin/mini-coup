@@ -283,7 +283,7 @@
 				msg.players.forEach(opponent => {
 					if(opponent !== $player.name) {
 						num_opps += 1;
-						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
+						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
 				break;
@@ -352,8 +352,10 @@
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].turn_active = false;
 					$opponents[opponent].pending_action = {};
 				});
+				$opponents[msg.player].turn_active = true;
 				$opponents[msg.player].pending_action = {type: 'TAKE_PRIMARY_ACTION'};
 				break;
 			case 'TAKE_SECONDARY_ACTION':
@@ -387,13 +389,13 @@
 			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
 		</div>
 		<div id="main_player">
-			<h1>{$player.name}</h1>
+			<h2>{$player.name}</h2>
 			<hr>
 			{#each $player.cards as card, i (i)} 
-				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="min-width: 150px;">
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}">
 			{/each}
 			{#each $player.lost_cards as card, i (i)} 
-				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5; min-width: 150px;">
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5;">
 			{/each}
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
@@ -404,7 +406,7 @@
 
 		{#each Object.keys($opponents) as op, i}
 			<div style="grid-area: OP{i}; display: flex;">
-				<Opponent name={op} glow={$opponents[op].just_moved} game_active={true}/>
+				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} game_active={true} alive={$opponents[op].alive}/>
 			</div>
 		{/each}
 	</div>
@@ -473,11 +475,9 @@
 
 	h1 {
 		color: rgb(91, 91, 91);
-		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
-		margin: 5px;
 	}
 
 	#coins {
@@ -487,9 +487,10 @@
     }
 
 	h2 {
+		font-size: 2.2em;
 		color: rgb(91, 91, 91);
 		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
-		margin-bottom: 5px;
+		margin: .5em;
 	}
 
 	img {

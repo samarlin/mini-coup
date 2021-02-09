@@ -3,7 +3,7 @@
 
 An online adaptation of the card game Coup, built for my friends and I but available to anyone :)
 
-The current version allows multiple games to run concurrently; games can be joined via URL or by entering the game room's number from the home page. It's reasonably optimized for both mobile and desktop, though I have a proper interface, which matches the card art, planned. If you notice any bugs I haven't caught, I'd be glad if you let me know. 
+The current version allows multiple games to run concurrently; games can be joined via URL or by entering the game room's number from the home page. It's also reasonably optimized for both mobile and desktop. If you notice any bugs I haven't caught, I'd be glad if you let me know. 
 
 Speaking of which, here are the cards:
 
