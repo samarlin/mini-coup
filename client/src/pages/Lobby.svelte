@@ -92,8 +92,6 @@
         popup_attr = popup_attr;
         console.log(popup_attr, popup.attr);
     });
-
-    console.log(popup_attr, popup.attr);
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
