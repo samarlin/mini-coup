@@ -92,6 +92,7 @@
 
         background-image: url("/assets/bgs/rose.jpg");
         background-size: cover;
+        border: 1px solid rgba(193, 182, 159, 0.8);
         border-bottom: 3px solid rgba(152, 144, 129, 0.8);
     }
 

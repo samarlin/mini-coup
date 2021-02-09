@@ -20,7 +20,7 @@
 	let target_name = '';
 	let reveal = {};
     let selected_cards = '';
-    let popup, recent_action, num_opps = 0;
+    let popup, recent_action, num_opps = 0, game_ready = "none";
 	
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -38,6 +38,7 @@
 				// ASSASSINATE_PLAYER, TAKE_TAX, STEAL_FROM_PLAYER, DRAW_CARDS 
 				primary_action = '';
 				Object.keys($opponents).forEach(opponent => {
+					$opponents[opponent].turn_active = false;
 					$opponents[opponent].pending_action = {};
 				});
 				take_primary_action();
@@ -286,6 +287,7 @@
 						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
+				game_ready = "grid";
 				break;
 			case 'RECEIVE_MONEY': 
 				// should I differentiate between the different RECEIVE_MONEY cases?
@@ -384,10 +386,7 @@
 <!-- svelte-ignore non-top-level-reactive-declaration -->
 <main>
 	<h1>Mini Coup</h1>
-	<div class="board{num_opps}">
-		<div style="grid-area: Options; display: flex;">
-			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
-		</div>
+	<div class="board{num_opps}" style="--ready: {game_ready};">
 		<div id="main_player">
 			<h2>{$player.name}</h2>
 			<hr>
@@ -400,7 +399,7 @@
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
 			{#if recent_action}
-				<p>You just {recent_action}.</p>
+				<p>You last {recent_action}.</p>
 			{/if}
 		</div>
 
@@ -409,6 +408,10 @@
 				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} game_active={true} alive={$opponents[op].alive}/>
 			</div>
 		{/each}
+
+		<div style="grid-area: Options; display: flex;">
+			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
+		</div>
 	</div>
 </main>
 
@@ -424,6 +427,7 @@
 	#main_player {
 		margin: 1vw;
 		padding-top: 1vw; 
+		border: 1px solid rgba(193, 182, 159, 0.8);
 		border-bottom: 3px solid rgba(193, 182, 159, 0.8);
 		display: inline-block;
 		border-radius: 25px;
@@ -433,7 +437,7 @@
 	}
 
 	.board2 {
-		display: grid;
+		display: var(--ready);
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		gap: 0px 0px;
@@ -443,7 +447,7 @@
 	}
 
 	.board3 {
-		display: grid;
+		display: var(--ready);
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		gap: 0px 0px;
@@ -453,7 +457,7 @@
 	}
 
 	.board4 {
-		display: grid;
+		display: var(--ready);
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
@@ -464,7 +468,7 @@
 	}
 
 	.board5 {
-		display: grid;
+		display: var(--ready);
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
@@ -501,6 +505,7 @@
 	hr {
 		width: 90%;
         border: .5px solid rgb(91, 91, 91);
+		margin-bottom: 1em;
     }
 
 </style>
