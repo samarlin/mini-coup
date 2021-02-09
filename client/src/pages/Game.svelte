@@ -32,6 +32,7 @@
 				break;
 			case 'DEAL_CARDS': // initial dealing of cards
 				$player.cards = message.cards;
+				game_ready = "grid";
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
@@ -292,7 +293,6 @@
 				// should I differentiate between the different RECEIVE_MONEY cases?
 				// eg: income, foreign aid, coup, forced coup, assassination, theft... probably
 				$opponents[msg.player].coins = msg.coins;
-				if(game_ready === "none") { game_ready = "grid"; }
 				break;
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
