@@ -480,6 +480,15 @@
 		main {
 			font-size: 0.9em;
 		}
+
+		h1 {
+			margin: .1em;
+		}
+
+		h2 {
+			font-size: 2em;
+			margin: .3em;
+		}
 		
 		.board2 {
 			display: var(--ready);

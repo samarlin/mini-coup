@@ -152,4 +152,11 @@
         padding-left: 1em;
         padding-right: 1em;
     }
+
+    @media (orientation: portrait) {
+        button {
+            color: rgb(91, 91, 91);
+            margin: .2em;
+        }
+    }
 </style>
