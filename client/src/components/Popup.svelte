@@ -153,7 +153,7 @@
         padding-right: 1em;
     }
 
-    @media (orientation: portrait) {
+    @media (max-aspect-ratio: 6/8) {
         button {
             color: rgb(91, 91, 91);
             margin: .2em;

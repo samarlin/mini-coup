@@ -106,7 +106,7 @@
         margin-top: 1vw;
     }
 
-    @media (orientation: portrait) {
+    @media (max-aspect-ratio: 6/8) {
         #assets {
             flex: 1; 
             margin-top: auto; 

@@ -461,9 +461,9 @@
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
 		grid-template-areas:
-			"OP0 OP1 ."
+			"Player OP0 OP1"
 			"Player Options OP2"
-			"Player Options OP3";
+			". Options OP3";
 	}
 
 	.board5 {
@@ -476,7 +476,7 @@
 							 "Player Options OP4";
 	}
 
-	@media (orientation: portrait) {
+	@media (max-aspect-ratio: 6/8) {
 		main {
 			font-size: 0.9em;
 		}
@@ -496,8 +496,9 @@
 			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
-				"Player Options"
-				"OP0 OP1";
+				"Player OP0"
+				"Player OP1"
+				"Options Options";
 		}
 		
 		.board3 {
@@ -506,15 +507,12 @@
 			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
-				"Player Options"
-				"OP0 OP1"
-				"OP2 OP2";
-		}
-
-		.board3 > .OP2 {
-			margin-right: auto;
-			margin-left: auto;
-			width: 50%;
+				"Player OP0"
+				"Player OP0"
+				"Player OP1"
+				"Options OP1"
+				"Options OP2"
+				"Options OP2";
 		}
 		
 		.board4 {
@@ -523,10 +521,10 @@
 			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
-				"Player Options"
-				"OP0 OP1"
-				"OP2 OP3";
-
+				"Player OP0"
+				"Player OP1"
+				"Options OP2"
+				"Options OP3";
 		}
 		
 		.board5 {
@@ -535,16 +533,14 @@
 			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
-				"Player Options"
 				"OP0 OP1"
-				"OP2 OP3"
-				"OP4 OP4";
-		}
-
-		.board5 > .OP4 {
-			margin-right: auto;
-			margin-left: auto;
-			width: 50%;
+				"OP0 OP1"
+				"Player OP2"
+				"Player OP2"
+				"Player OP3"
+				"Options OP3"
+				"Options OP4"
+				"Options OP4";
 		}
 	}
 
