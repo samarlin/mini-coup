@@ -143,16 +143,13 @@
     }
 
     p {
-        margin-top: .5em;
-        margin-bottom: .5em;
-        margin-left: 2em;
-        margin-right: 2em;
+        margin: .5em;
     }
 
     select {
         text-align: center;
         width: fit-content;
-        padding-left: 2em;
-        padding-right: 2em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
 </style>

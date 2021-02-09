@@ -26,8 +26,8 @@
     {#if !game_active}
         <h2>{name}</h2>
     {:else}
-        <div style="display: flex;">
-            <div style="flex: 2; align-items: center; justify-content: center;">
+        <div id="container">
+            <div id="assets">
                 {#each Array($opponents[name].cards) as _, i (i)}
                     <img transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
                 {/each}
@@ -36,8 +36,8 @@
                 {/each}
                 <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
             </div>
-
-            <div style="flex: 1; margin-top: 1vw;">
+            
+            <div id="info">
                 <h2>{name}</h2>
                 {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
                     <span>Awaiting selection of 
@@ -87,6 +87,36 @@
         background-size: cover;
 
         opacity: var(--alive);
+    }
+
+    #container {
+        display: flex; 
+        flex-direction: row;
+        height: 100%;
+    }
+
+    #assets {
+        flex: 2; 
+        margin-top: auto; 
+        margin-bottom: auto;
+    }
+
+    #info {
+        flex: 1; 
+        margin-top: 1vw;
+    }
+
+    @media (orientation: portrait) {
+        #assets {
+            flex: 1; 
+            margin-top: auto; 
+            margin-bottom: auto;
+        }
+
+        #info {
+            flex: 1; 
+            margin-top: 1vw;
+        }
     }
 
     .in_game {

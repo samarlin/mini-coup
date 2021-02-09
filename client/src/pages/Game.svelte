@@ -418,7 +418,6 @@
 <style>	
 	main {
 		text-align: center;
-		padding: 1em;
         margin: 0 auto;
 
         color: rgb(91, 91, 91);
@@ -478,6 +477,10 @@
 	}
 
 	@media (orientation: portrait) {
+		main {
+			font-size: 0.9em;
+		}
+		
 		.board2 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
