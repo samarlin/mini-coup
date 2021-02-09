@@ -477,6 +477,53 @@
 							 "Player Options OP4";
 	}
 
+	@media (max-aspect-ratio: 5/8) {
+		.board2 {
+			display: var(--ready);
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1.5fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"Player Options"
+				"OP0 OP1";
+		}
+		
+		.board3 {
+			display: var(--ready);
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1.5fr 1fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"Player Options"
+				"OP0 OP1"
+				"OP2 OP2";
+		}
+		
+		.board4 {
+			display: var(--ready);
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1.5fr 1fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"Player Options"
+				"OP0 OP1"
+				"OP2 OP3";
+
+		}
+		
+		.board5 {
+			display: var(--ready);
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 2fr 1fr 1fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"Player Options"
+				"OP0 OP1"
+				"OP2 OP3"
+				"OP4 OP4";
+		}
+	}
+
 	h1 {
 		color: rgb(91, 91, 91);
 		text-transform: uppercase;
