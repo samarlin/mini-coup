@@ -78,7 +78,7 @@
 
 <style>
 	main {
-        color: darkslateblue;
+        color: rgb(91, 91, 91);
 
 		text-align: center;
 		padding: 1em;
@@ -91,13 +91,14 @@
     }
 
     button {
-        color: darkslateblue;
+        color: rgb(91, 91, 91);
         margin: .5vw;
-        background-color: rgb(250, 245, 250);
-        border: thin solid darkslateblue;
+        border-bottom: 2px solid rgba(119, 98, 131, 0.7);;
 		border-radius: 25px;
         outline: none;
         display: inline-block;
+        background-image: url("/assets/bgs/rose.jpg");
+        background-size: cover;
         font-size: 1.5em;
     }
 
@@ -108,7 +109,7 @@
 	}
 
     hr {
-        border: .5px solid darkslateblue;
+        border: .5px solid rgb(91, 91, 91);
         width: 300px
     }
 </style>

@@ -373,7 +373,7 @@
 <main>
 	<h1>Mini Coup</h1>
 	<div class="board{num_opps}">
-		<div style="grid-area: Options;">
+		<div style="grid-area: Options; display: flex;">
 			<Popup bind:this={popup} game_active={true} attr={popup_attr}/> 
 		</div>
 		<div id="main_player">
@@ -484,6 +484,7 @@
 	}
 
 	hr {
+		width: 90%;
         border: .5px solid rgb(91, 91, 91);
     }
 

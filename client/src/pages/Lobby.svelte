@@ -108,7 +108,7 @@
 
 <style>
 	main {
-        color: darkslateblue;
+        color: rgb(91, 91, 91);
 
 		text-align: center;
 		padding: 1em;
@@ -116,12 +116,15 @@
 	}
     
     button {
-        color: darkslateblue;
-        margin: 2.5px;
-        background-color: rgb(250, 245, 250);
-        border: thin solid darkslateblue;
+        color: rgb(91, 91, 91);
+        margin: .5vw;
+        border-bottom: 2px solid rgba(119, 98, 131, 0.7);;
 		border-radius: 25px;
         outline: none;
+        display: inline-block;
+        background-image: url("/assets/bgs/rose.jpg");
+        background-size: cover;
+        font-size: 1.5em;
     }
 
     p {

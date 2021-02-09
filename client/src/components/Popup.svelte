@@ -90,10 +90,7 @@
     .in_game {
         font-size: 1.5em;
         margin: 1vw;
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        flex-direction: column;
+        width: 100%;
     }
 
     .not_in_game {
