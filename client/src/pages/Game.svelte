@@ -434,6 +434,31 @@
         color: rgb(91, 91, 91);
 	}
 
+	h1 {
+		color: rgb(91, 91, 91);
+		text-transform: uppercase;
+		font-size: 4em;
+		font-weight: 100;
+	}
+
+	h2 {
+		font-size: 2.2em;
+		color: rgb(91, 91, 91);
+		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
+		margin: .5em;
+	}
+
+	img {
+		max-width: calc(80%/2);
+		padding: .5vw;
+	}
+
+	hr {
+		width: 90%;
+        border: .5px solid rgb(91, 91, 91);
+		margin-bottom: 1em;
+    }
+
 	p {
 		margin-left: 1em;
 		margin-right: 1em;
@@ -512,35 +537,14 @@
 							 "Player Options OP4";
 	}
 
-	h1 {
-		color: rgb(91, 91, 91);
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	.opponents2, .opponents3, .opponents4, .opponents5 { 
+		display: contents; 
 	}
 
 	#coins {
         margin: auto;
         width: 60%;
         display: block;
-    }
-
-	h2 {
-		font-size: 2.2em;
-		color: rgb(91, 91, 91);
-		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
-		margin: .5em;
-	}
-
-	img {
-		max-width: calc(80%/2);
-		padding: .5vw;
-	}
-
-	hr {
-		width: 90%;
-        border: .5px solid rgb(91, 91, 91);
-		margin-bottom: 1em;
     }
 
 	@media (max-aspect-ratio: 6/8) {
@@ -567,7 +571,7 @@
 				"Player OP1"
 				"Options Options";
 		}
-		
+
 		.board3 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
