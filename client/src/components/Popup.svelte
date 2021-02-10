@@ -112,7 +112,7 @@
 
         z-index: 2;
 
-        position: fixed;
+        position: absolute;
         top: 50%;
         left: 50%;
 

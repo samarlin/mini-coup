@@ -88,7 +88,9 @@
     });
 </script>
 
-<Popup bind:this={popup} attr={popup_attr}/>
+<div id="popup_adjust">
+    <Popup bind:this={popup} attr={popup_attr}/>
+</div>
 
 <main>
     <h1>Mini Coup</h1>
@@ -144,5 +146,13 @@
 		font-size: 3em;
 		font-weight: 100;
         margin-bottom: 10px;
+    }
+
+    #popup_adjust {
+        left: 50%;
+        top: 60%;
+        height: fit-content;
+        width: fit-content;
+        position: fixed;
     }
 </style>

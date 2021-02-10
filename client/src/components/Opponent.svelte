@@ -15,7 +15,7 @@
         setTimeout(() => {disableGlow();}, 3000);
     }
 
-    $: if(awaiting_move) {
+    $: if(!awaiting_move) {
         processAwait();
     }
 
