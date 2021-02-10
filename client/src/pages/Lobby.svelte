@@ -64,13 +64,13 @@
     function otherError() {
         $connections.connectionState = "Failed";
 		popup_attr.message = "Room does not exist.";
-		popup_attr.onSubmit = () => {$connections.router('/'); popup_attr = popup.initialData();};
+		popup_attr.onSubmit = () => {$connections.router('/'); popup.game_active = false; popup_attr = popup.initialData();};
 		popup_attr.display = true;
     }
 
     function gatherName(error = false) {
 		popup_attr.message = (error) ? "Name already in use, try again." : "Enter your name.";
-		popup_attr.onSubmit = (name) => {player_name = name; popup_attr = popup.initialData();};
+		popup_attr.onSubmit = (name) => {player_name = name; popup.game_active = false; popup_attr = popup.initialData();};
         popup_attr.display = true;
         popup_attr = popup_attr;
     }
@@ -88,10 +88,6 @@
     });
 </script>
 
-<div id="popup_adjust">
-    <Popup bind:this={popup} attr={popup_attr}/>
-</div>
-
 <main>
     <h1>Mini Coup</h1>
     <h2>You're in Room {$player.room}</h2>
@@ -102,7 +98,11 @@
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
-    <br><br>
+    <br>
+    <div id="popup_adjust">
+        <Popup bind:this={popup} attr={popup_attr} game_active={true}/>
+    </div>
+    <br>
 	{#if ($player.admin && $connections.other_connections.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
@@ -149,10 +149,10 @@
     }
 
     #popup_adjust {
-        left: 50%;
-        top: 60%;
+        display: flex;
+        margin-right: auto;
+        margin-left: auto;
         height: fit-content;
         width: fit-content;
-        position: fixed;
     }
 </style>

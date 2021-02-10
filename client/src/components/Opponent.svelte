@@ -6,7 +6,7 @@
     let recent = "hidden";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: awaiting = (awaiting_move) ? "active" : "hidden";
-    $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
+    $: glowing = (glow) ? "0px 0px 10px 0px rgba(227, 231, 227, 0.8)" : "none";
     $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
     $: living = (alive) ? 1.0 : 0.5;
 
@@ -33,7 +33,7 @@
     }
 
     function processAwait() {
-        if(awaiting_move === false) {
+        if(awaiting_move === false && typeof $opponents[name].pending_action !== 'undefined') {
             setTimeout(()=>{$opponents[name].pending_action = {};}, 1500);
         }
     }

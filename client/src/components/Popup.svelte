@@ -1,6 +1,5 @@
 <script>
     import {reverse} from '../stores/player.store.js'
-    import {onMount} from 'svelte';
     export let game_active = false, numopps = 3;
     let curr_class = (game_active) ? "in_game" : "not_in_game";
     $: size = (numopps === 3) ? 1.1 : 1.3;
@@ -38,10 +37,6 @@
             error = true;
         }
     }
-
-    onMount(() => {
-        console.log(attr);
-    });
 </script>
 
 {#if attr.display || game_active}

@@ -100,7 +100,6 @@
 	};
 
 	function take_primary_action() {
-		console.log('take primary');
 		popup_attr.items = ['TAKE_FOREIGN_AID', 'TAKE_INCOME', 'COUP_PLAYER', 'ASSASSINATE_PLAYER', 'TAKE_TAX', 'STEAL_FROM_PLAYER', 'DRAW_CARDS'];
 		popup_attr.message = "Select an action to take.";
 		popup_attr.onSubmit = (input_move) => {primary_action = input_move; popup_attr = popup.initialData();};
@@ -413,11 +412,13 @@
 			{/if}
 		</div>
 
-		{#each Object.keys($opponents) as op, i}
-			<div class="OP{i}" style="grid-area: OP{i}; display: flex;">
-				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} awaiting_move={$opponents[op].awaiting_move} game_active={true} alive={$opponents[op].alive}/>
-			</div>
-		{/each}
+		<div class="opponents{num_opps}">
+			{#each Object.keys($opponents) as op, i}
+				<div class="OP{i}" style="grid-area: OP{i}; display: flex;">
+					<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} awaiting_move={$opponents[op].awaiting_move} game_active={true} alive={$opponents[op].alive}/>
+				</div>
+			{/each}
+		</div>
 
 		<div style="grid-area: Options; display: flex;">
 			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
@@ -452,6 +453,11 @@
 
 	.board2 {
 		display: var(--ready);
+
+		max-width: calc(75vh * 1.8);
+		margin-left: auto;
+		margin-right: auto;
+
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		gap: 0px 0px;
@@ -462,6 +468,11 @@
 
 	.board3 {
 		display: var(--ready);
+
+		max-width: calc(75vh * 1.8);
+		margin-left: auto;
+		margin-right: auto;
+
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		gap: 0px 0px;
@@ -472,6 +483,11 @@
 
 	.board4 {
 		display: var(--ready);
+
+		max-width: calc(75vh * 1.43);
+		margin-left: auto;
+		margin-right: auto;
+
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
@@ -483,6 +499,11 @@
 
 	.board5 {
 		display: var(--ready);
+
+		max-width: calc(75vh * 1.43);
+		margin-left: auto;
+		margin-right: auto;
+
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 0px 0px;
@@ -553,18 +574,26 @@
 			grid-template-rows: auto;
 			gap: 0px 0px;
 			grid-template-areas:
-				"Player OP0"
-				"Player OP0"
-				"Player OP1"
-				"Options OP1"
-				"Options OP2"
-				"Options OP2";
+				"Player Opps"
+				"Options Opps";
+		}
+
+		.opponents3 {
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"OP0"
+				"OP1"
+				"OP2";
+			grid-area: Opps;
 		}
 		
 		.board4 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: auto;
+			grid-template-rows: 1fr 1fr 1fr 1fr;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player OP0"
@@ -576,17 +605,25 @@
 		.board5 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: auto;
+			grid-template-rows: 1fr 1fr;
 			gap: 0px 0px;
 			grid-template-areas:
-				"OP0 OP1"
-				"OP0 OP1"
-				"Player OP2"
-				"Player OP2"
-				"Player OP3"
-				"Options OP3"
-				"Options OP4"
-				"Options OP4";
+				"Player Opps"
+				"Options Opps";
+		}
+
+		.opponents5 {
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+			gap: 0px 0px;
+			grid-template-areas:
+				"OP0"
+				"OP1"
+				"OP2"
+				"OP3"
+				"OP4";
+			grid-area: Opps;
 		}
 	}
 </style>
