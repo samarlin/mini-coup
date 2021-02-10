@@ -80,7 +80,7 @@
 
                 {#if Object.keys($opponents[name].last_action).length !== 0}
                     <div id="recent_move" class="{recent}">
-                        <span>Recently 
+                        <span>Just 
                             {#if $opponents[name].last_action.type in $tenses}
                             {$tenses[$opponents[name].last_action.type]}
                             {:else if $opponents[name].last_action.type in $move_mappings}

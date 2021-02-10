@@ -164,7 +164,7 @@
 				break;
 			case 'DRAW_CARDS':
 				message = {type: 'DRAW_CARDS', player: $player.name};
-				recent_action = "announced intent to " + $tenses['DRAW_CARDS'];
+				recent_action = "tried to exchange cards with the deck";
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
@@ -419,7 +419,7 @@
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
 			{#if recent_action}
-				<p transition:fade>You most recently {recent_action}.</p>
+				<p transition:fade>You recently {recent_action}.</p>
 			{/if}
 		</div>
 
