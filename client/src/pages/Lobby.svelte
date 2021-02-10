@@ -18,7 +18,7 @@
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name = '';
+    let player_name = '', fixed_display = true;
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -64,13 +64,13 @@
     function otherError() {
         $connections.connectionState = "Failed";
 		popup_attr.message = "Room does not exist.";
-		popup_attr.onSubmit = () => {$connections.router('/'); popup.game_active = false; popup_attr = popup.initialData();};
+		popup_attr.onSubmit = () => {$connections.router('/'); fixed_display = false; popup_attr = popup.initialData();};
 		popup_attr.display = true;
     }
 
     function gatherName(error = false) {
 		popup_attr.message = (error) ? "Name already in use, try again." : "Enter your name.";
-		popup_attr.onSubmit = (name) => {player_name = name; popup.game_active = false; popup_attr = popup.initialData();};
+		popup_attr.onSubmit = (name) => {player_name = name; fixed_display = false; popup_attr = popup.initialData();};
         popup_attr.display = true;
         popup_attr = popup_attr;
     }
@@ -100,7 +100,7 @@
     {/if}
     <br>
     <div id="popup_adjust">
-        <Popup bind:this={popup} attr={popup_attr} game_active={true}/>
+        <Popup bind:this={popup} attr={popup_attr} game_active={fixed_display}/>
     </div>
     <br>
 	{#if ($player.admin && $connections.other_connections.length > 2)}
