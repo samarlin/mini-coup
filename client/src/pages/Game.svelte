@@ -399,7 +399,7 @@
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
 			{#if recent_action}
-				<p>You last {recent_action}.</p>
+				<p>You most recently {recent_action}.</p>
 			{/if}
 		</div>
 
@@ -421,6 +421,11 @@
         margin: 0 auto;
 
         color: rgb(91, 91, 91);
+	}
+
+	p {
+		margin-left: 1em;
+		margin-right: 1em;
 	}
 
 	#main_player {
@@ -475,6 +480,37 @@
 							 "Player Options OP3"
 							 "Player Options OP4";
 	}
+
+	h1 {
+		color: rgb(91, 91, 91);
+		text-transform: uppercase;
+		font-size: 4em;
+		font-weight: 100;
+	}
+
+	#coins {
+        margin: auto;
+        width: 60%;
+        display: block;
+    }
+
+	h2 {
+		font-size: 2.2em;
+		color: rgb(91, 91, 91);
+		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
+		margin: .5em;
+	}
+
+	img {
+		max-width: calc(80%/2);
+		padding: .5vw;
+	}
+
+	hr {
+		width: 90%;
+        border: .5px solid rgb(91, 91, 91);
+		margin-bottom: 1em;
+    }
 
 	@media (max-aspect-ratio: 6/8) {
 		main {
@@ -543,36 +579,4 @@
 				"Options OP4";
 		}
 	}
-
-	h1 {
-		color: rgb(91, 91, 91);
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	#coins {
-        margin: auto;
-        width: 60%;
-        display: block;
-    }
-
-	h2 {
-		font-size: 2.2em;
-		color: rgb(91, 91, 91);
-		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
-		margin: .5em;
-	}
-
-	img {
-		max-width: calc(80%/2);
-		padding: .5vw;
-	}
-
-	hr {
-		width: 90%;
-        border: .5px solid rgb(91, 91, 91);
-		margin-bottom: 1em;
-    }
-
 </style>

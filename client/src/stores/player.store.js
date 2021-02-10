@@ -21,7 +21,7 @@ export const move_mappings = readable({
     BLUFF: 'after being challenged',
     FAILED_BLUFF: 'after failing a challenge',
     ASSASSINATION: 'after being assassinated',
-    APPROVED_MOVE: 'approved the last move',
+    APPROVED_MOVE: 'approved a move',
     LOST_CARD: 'lost a card',
     //DIED: 'died', //leaving this one out on purpose tbh
     REVEALED_CARD: 'revealed a card and drew a new one',
@@ -69,5 +69,5 @@ export const tenses = readable({
     BLOCK_AID: 'blocked attempt to take foreign aid by',
     BLOCK_STEAL: 'blocked attempted theft by',
     BLOCK_ASSASSINATE: 'blocked assassination attempt from',
-    APPROVE_MOVE: 'approved a recent move by'
+    APPROVE_MOVE: 'approved a move by'
 });

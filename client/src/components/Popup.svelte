@@ -154,6 +154,9 @@
     }
 
     @media (max-aspect-ratio: 6/8) {
+        .in_game {
+            font-size: 1.1em;
+        }
         button {
             color: rgb(91, 91, 91);
             margin: .2em;

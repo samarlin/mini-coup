@@ -2,18 +2,29 @@
     import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
-    export let name, glow = false, game_active = false, current_turn = false, alive = true;
+    export let name, glow = false, game_active = false, current_turn = false, alive = true; 
+    let recent = "none";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
     $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
     $: living = (alive) ? 1.0 : 0.5;
 
     $: if(glow) {
-        setTimeout(() => {disableGlow();}, 2500);
+        processRecent();
+        setTimeout(() => {disableGlow();}, 3000);
     }
 
     function disableGlow() {
         $opponents[name].just_moved = false;
+    }
+
+    function processRecent() {
+        recent = "block";
+        if($opponents[name].last_action.type === "APPROVED_MOVE") {
+            setTimeout(() => {recent = "none";}, 6500);
+        } else {
+            setTimeout(() => {recent = "none";}, 15000);
+        }
     }
 
     // Opponent format ref: 
@@ -22,7 +33,7 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}; --turn: url({turn}); --alive: {living};">
+<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}; --turn: url({turn}); --alive: {living}; --recent: {recent};">
     {#if !game_active}
         <h2>{name}</h2>
     {:else}
@@ -51,17 +62,20 @@
                     {/if}
                 {/if}
                 
+                <hr>
+
                 {#if Object.keys($opponents[name].last_action).length !== 0}
-                    <hr>
-                    <span>Recently 
-                        {#if $opponents[name].last_action.type in $tenses}
-                        {$tenses[$opponents[name].last_action.type]}
-                        {:else if $opponents[name].last_action.type in $move_mappings}
-                        {$move_mappings[$opponents[name].last_action.type]}{:else}
-                        {$opponents[name].last_action.type}{/if}</span>
-                    {#if $opponents[name].last_action.target}
-                        <span> {$opponents[name].last_action.target}</span>
-                    {/if}
+                    <div id="recent_move">
+                        <span>Recently 
+                            {#if $opponents[name].last_action.type in $tenses}
+                            {$tenses[$opponents[name].last_action.type]}
+                            {:else if $opponents[name].last_action.type in $move_mappings}
+                            {$move_mappings[$opponents[name].last_action.type]}{:else}
+                            {$opponents[name].last_action.type}{/if}</span>
+                        {#if $opponents[name].last_action.target}
+                            <span> {$opponents[name].last_action.target}</span>
+                        {/if}
+                    </div>
                 {/if}
             </div>
         </div>
@@ -81,7 +95,7 @@
 
         box-shadow: var(--glowing);
         transition-property: box-shadow;
-        transition-duration: 0.5s;
+        transition-duration: 1s;
 
         background-image: var(--turn);
         background-size: cover;
@@ -106,17 +120,10 @@
         margin-top: 1vw;
     }
 
-    @media (max-aspect-ratio: 6/8) {
-        #assets {
-            flex: 1; 
-            margin-top: auto; 
-            margin-bottom: auto;
-        }
-
-        #info {
-            flex: 1; 
-            margin-top: 1vw;
-        }
+    #recent_move {
+        display: var(--recent);
+        transition-property: display;
+        transition-duration: 1s;
     }
 
     .in_game {
@@ -151,5 +158,18 @@
         padding: .5vw;
         max-width: calc(80% / var(--num-images));
         max-height: 170px;
+    }
+
+    @media (max-aspect-ratio: 6/8) {
+        #assets {
+            flex: 1; 
+            margin-top: auto; 
+            margin-bottom: auto;
+        }
+
+        #info {
+            flex: 1; 
+            margin-top: 1vw;
+        }
     }
 </style>
