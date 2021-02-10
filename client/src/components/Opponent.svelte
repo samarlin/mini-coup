@@ -33,7 +33,7 @@
     }
 
     function processAwait() {
-        if(awaiting_move === false && 'undefined' !== typeof($opponents[name].pending_action)) {
+        if(awaiting_move === false && game_active) {
             setTimeout(()=>{$opponents[name].pending_action = {};}, 1500);
         }
     }
