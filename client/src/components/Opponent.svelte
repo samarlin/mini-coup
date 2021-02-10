@@ -33,7 +33,7 @@
     }
 
     function processAwait() {
-        if(awaiting_move === false && typeof $opponents[name].pending_action !== 'undefined') {
+        if(awaiting_move === false && 'undefined' !== typeof($opponents[name].pending_action)) {
             setTimeout(()=>{$opponents[name].pending_action = {};}, 1500);
         }
     }
