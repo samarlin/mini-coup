@@ -3,7 +3,7 @@
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false, current_turn = false, alive = true; 
-    let recent = "none";
+    let recent = "hidden";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
     $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
@@ -19,11 +19,11 @@
     }
 
     function processRecent() {
-        recent = "block";
+        recent = "active";
         if($opponents[name].last_action.type === "APPROVED_MOVE") {
-            setTimeout(() => {recent = "none";}, 6500);
+            setTimeout(() => {recent = "hidden";}, 6500);
         } else {
-            setTimeout(() => {recent = "none";}, 15000);
+            setTimeout(() => {recent = "hidden";}, 15000);
         }
     }
 
@@ -33,7 +33,7 @@
     // "last_action":{"type":"ASSASSINATE_PLAYER","target":"Kevin"}}}
 </script>
 
-<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}; --turn: url({turn}); --alive: {living}; --recent: {recent};">
+<div id="opp_info" class="{curr_class}" style="--glowing: {glowing}; --turn: url({turn}); --alive: {living};">
     {#if !game_active}
         <h2>{name}</h2>
     {:else}
@@ -65,7 +65,7 @@
                 <hr>
 
                 {#if Object.keys($opponents[name].last_action).length !== 0}
-                    <div id="recent_move">
+                    <div id="recent_move" class="{recent}">
                         <span>Recently 
                             {#if $opponents[name].last_action.type in $tenses}
                             {$tenses[$opponents[name].last_action.type]}
@@ -121,9 +121,20 @@
     }
 
     #recent_move {
-        display: var(--recent);
-        transition-property: display;
+        transition-property: all;
         transition-duration: 1s;
+    }
+
+    .visible {
+        visibility: visible;
+        opacity: 1;
+        max-height: fit-content;
+    }
+
+    .hidden {
+        visibility: hidden;
+        opacity: 0;
+        max-height: 0px;
     }
 
     .in_game {
