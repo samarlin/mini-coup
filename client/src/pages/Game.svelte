@@ -28,6 +28,7 @@
 		popup_attr = popup.initialData();
 		popup_attr.message = "Connection to game lost."
 		popup_attr.onSubmit = () => {$connections.router("/"); popup_attr = popup.initialData();};
+		popup_attr.alert = true;
 		popup_attr.display = true;
 
 	};
