@@ -6,7 +6,7 @@
     let recent = "hidden";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: awaiting = (awaiting_move) ? "active" : "hidden";
-    $: glowing = (glow) ? "0px 0px 10px 0px rgba(227, 231, 227, 0.8)" : "none";
+    $: glowing = (glow) ? "0px 0px 10px 0px rgba(91, 91, 91, 0.8)" : "none";
     $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
     $: living = (alive) ? 1.0 : 0.5;
 
