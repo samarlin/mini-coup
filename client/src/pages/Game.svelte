@@ -42,7 +42,6 @@
 				break;
 			case 'DEAL_CARDS': // initial dealing of cards
 				$player.cards = message.cards;
-				game_ready = "grid";
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				// TAKE_FOREIGN_AID, TAKE_INCOME, COUP_PLAYER, 
@@ -303,6 +302,7 @@
 						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
+				setTimeout(() => {game_ready = "grid";}, 100);
 				break;
 			case 'RECEIVE_MONEY': 
 				// should I differentiate between the different RECEIVE_MONEY cases?
