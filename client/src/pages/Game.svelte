@@ -400,6 +400,7 @@
 	function game_over() {
 		// TODO: stuff...
 		console.log('game over~');
+		window.location.href = "/";
 	}
 </script>
 

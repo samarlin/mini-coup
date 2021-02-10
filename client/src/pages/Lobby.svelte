@@ -89,7 +89,7 @@
 </script>
 
 <main>
-    <h1>Mini Coup</h1>
+    <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <h2>You're in Room {$player.room}</h2>
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
     <h2 class="h2nhalf">Players in room:</h2>

@@ -78,7 +78,7 @@
 <Popup bind:this={popup} attr={popup_attr}/>
 
 <main>
-    <h1>Mini Coup</h1>
+    <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <p>Select an option below to either join or start a game.</p><br>
     <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can alternatively join using the room's number.</p>
     <br><br>
