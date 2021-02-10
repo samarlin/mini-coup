@@ -1,5 +1,5 @@
 # Mini Coup
-### [Click here to play!](https://mini-coup.herokuapp.com)
+### [Click here to play!](https://www.minicoup.io)
 
 An online adaptation of the card game Coup, built for my friends and I but available to anyone :)
 
@@ -9,9 +9,8 @@ Speaking of which, here are the cards:
 
 ![cards for Coup](https://i.imgur.com/DvZJy5M.jpg)
 
+
 And a screen-shot:
 ![Coup screen-shot](https://i.imgur.com/zAbYjSq.png)
 
-The server was built using Node (with Express for some routing & WS during gameplay), and the client using Svelte (with Page.js for client-side routing). The drawings were done in Procreate :) 
-
-**Note:** Since the project is currently running on a free Heroku instance, if it hasn't been used for a while you may need to wait a few seconds on initial load. 
+The server was built using Node (with Express for some routing & WS during gameplay), and the client using Svelte (with Page.js for client-side routing). All drawings were done in Procreate :) 
