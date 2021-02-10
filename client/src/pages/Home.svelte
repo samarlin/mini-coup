@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from 'svelte';
     import Popup from '../components/Popup.svelte';
     import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
@@ -63,6 +64,15 @@
             popup_attr.display = true;
         }
     }
+
+    onMount(() => {
+        if($connections.connectionState === "Failed") {
+            popup_attr.message = "Connection failure, please try again.";
+            popup_attr.alert = true;
+            popup_attr.onSubmit = () => {popup_attr = popup.initialData();};
+            popup_attr.display = true;
+        }
+    });
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>

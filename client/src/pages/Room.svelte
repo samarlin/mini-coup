@@ -16,7 +16,8 @@
     
 	function onClose(event) {
 		clearInterval(interval);
-		console.log("closed ", event.data);
+        $connections.connectionState = "Failed";
+        $connections.router("/");
     }
     
     function handleMessage(event) {
