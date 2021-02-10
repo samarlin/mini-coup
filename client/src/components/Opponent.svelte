@@ -51,10 +51,10 @@
         <div id="container">
             <div id="assets">
                 {#each Array($opponents[name].cards) as _, i (i)}
-                    <img class="card" transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+                    <img transition:fade animate:flip src="/assets/cards/back.png" alt="card back" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
                 {/each}
                 {#each $opponents[name].revealed_cards as card, i (i)}
-                    <img class="card" transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
+                    <img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="--num-images: {Array($opponents[name].cards).length + $opponents[name].revealed_cards.length};">
                 {/each}
                 <img class="coins" src="/assets/coins/{$opponents[name].coins}.png" alt="{$opponents[name].coins} coins">
             </div>
@@ -180,15 +180,9 @@
     }
 
     img {
-        margin: .5vw;
+        padding: .5vw;
         max-width: calc(80% / var(--num-images));
         max-height: 170px;
-    }
-
-    .card {
-        border-radius: 20px;
-        border: 1px solid rgba(181, 163, 149, 0.8);
-        border-bottom: 2px solid rgba(181, 163, 149, 0.8);
     }
 
     @media (max-aspect-ratio: 6/8) {

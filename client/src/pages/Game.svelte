@@ -411,10 +411,10 @@
 			<h2>{$player.name}</h2>
 			<hr>
 			{#each $player.cards as card, i (i)} 
-				<img class="card" transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}">
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}">
 			{/each}
 			{#each $player.lost_cards as card, i (i)} 
-				<img class="card" transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5;">
+				<img transition:fade animate:flip src="/assets/cards/{card}.png" alt="{card}" style="opacity: .5;">
 			{/each}
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
@@ -461,7 +461,7 @@
 
 	img {
 		max-width: calc(80%/2);
-		margin: .5vw;
+		padding: .5vw;
 	}
 
 	hr {
@@ -554,12 +554,6 @@
 
 	.opponents2, .opponents3, .opponents4, .opponents5 { 
 		display: contents; 
-	}
-
-	.card {
-		border-radius: 20px;
-		border: 1px solid rgba(181, 163, 149, 0.8);
-		border-bottom: 2px solid rgba(181, 163, 149, 0.8);
 	}
 
 	#coins {
