@@ -22,6 +22,15 @@
     let selected_cards = '';
     let popup, recent_action, num_opps = 0, game_ready = "none";
 	
+	$connections.connection.onclose = function(event) {
+		clearInterval($connections.interval);
+
+		popup_attr = popup.initialData();
+		popup_attr.message = "Connection to game lost."
+		popup_attr.onSubmit = () => {$connections.router("/"); popup_attr = popup.initialData();};
+		popup_attr.display = true;
+
+	};
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
 		let message = JSON.parse(event.data);

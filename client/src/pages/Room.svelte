@@ -11,6 +11,7 @@
     
     function onOpen() {
 		interval = setInterval(() => {$connections.connection.send(JSON.stringify({type: "PING"}));}, 20000);
+        $connections.interval = interval;
     }
     
 	function onClose(event) {
