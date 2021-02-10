@@ -40,7 +40,7 @@
 				primary_action = '';
 				Object.keys($opponents).forEach(opponent => {
 					$opponents[opponent].turn_active = false;
-					$opponents[opponent].pending_action = {};
+					$opponents[opponent].awaiting_move = false;
 				});
 				take_primary_action();
 				break;
@@ -123,6 +123,7 @@
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
 				break;
 			case 'TAKE_INCOME':
@@ -145,6 +146,7 @@
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
 				break;
 			case 'STEAL_FROM_PLAYER':
@@ -157,6 +159,7 @@
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
@@ -212,6 +215,7 @@
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
@@ -221,6 +225,7 @@
 				Object.keys($opponents).forEach(opponent => {
 					if($opponents[opponent].alive)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
 				$connections.connection.send(JSON.stringify(message));
 				break;
@@ -285,7 +290,7 @@
 				msg.players.forEach(opponent => {
 					if(opponent !== $player.name) {
 						num_opps += 1;
-						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
+						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
 				break;
@@ -301,9 +306,10 @@
 						popup_attr = popup.initialData();
 					}
 					$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
+					$opponents[msg.player].awaiting_move = true;
 				}
 				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
-					$opponents[msg.instigator].pending_action = {};
+					$opponents[msg.instigator].awaiting_move = false;
 					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
 					$opponents[msg.instigator].just_moved = true;
 				}
@@ -311,20 +317,20 @@
 			case 'APPROVED_MOVE':
 				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].last_action = {type: 'APPROVED_MOVE'};
-				$opponents[msg.player].pending_action = {};
+				$opponents[msg.player].awaiting_move = false;
 				break;
 			case 'CHANGE_CARDS':
 				// revealed: message.card, result: "REPLACED" || "LOST"
 				$opponents[msg.player].cards = msg.cards;
 				$opponents[msg.player].just_moved = true;
-				$opponents[msg.player].pending_action = {};
+				$opponents[msg.player].awaiting_move = false;
 
 				if(msg.result === "LOST") {
 					$opponents[msg.player].last_action = {type: 'LOST_CARD'};
 					$opponents[msg.player].revealed_cards.push(msg.revealed);
 					if($opponents[msg.player].cards === 0) {
 						$opponents[msg.player].alive = false;
-						$opponents[msg.player].pending_action = {};
+						$opponents[msg.player].awaiting_move = false;
 						$opponents[msg.player].last_action = {type: 'DIED'};
 					}
 				} else {
@@ -341,37 +347,41 @@
 				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].cards = msg.cards;
 				$opponents[msg.player].last_action = {type: 'CARDS_CHOSEN'};
-				$opponents[msg.player].pending_action = {};
+				$opponents[msg.player].awaiting_move = false;
 				break;
 			case 'RECEIVE_CARDS':
 				$opponents[msg.player].pending_action = {type: 'CHOOSE_CARDS'};
+				$opponents[msg.player].awaiting_move = true;
 				$opponents[msg.player].cards += 2;
 				break;
 			case 'CHOOSE_PLAYER':
 				$opponents[msg.player].just_moved = true;
 				$opponents[msg.player].last_action = {type: 'COUP_PLAYER'};
 				$opponents[msg.player].pending_action = {type: 'CHOOSE_PLAYER'}
+				$opponents[msg.player].awaiting_move = true;
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
 					$opponents[opponent].turn_active = false;
-					$opponents[opponent].pending_action = {};
+					$opponents[opponent].awaiting_move = false;
 				});
 				$opponents[msg.player].turn_active = true;
 				$opponents[msg.player].pending_action = {type: 'TAKE_PRIMARY_ACTION'};
+				$opponents[msg.player].awaiting_move = true;
 				break;
 			case 'TAKE_SECONDARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
 					if(opponent !== msg.involved_players.origin && $opponents[opponent].alive === true)
 						$opponents[opponent].pending_action = {type: 'TAKE_SECONDARY_ACTION'};
+						$opponents[opponent].awaiting_move = true;
 				});
-				$opponents[msg.involved_players.origin].pending_action = {};
+				$opponents[msg.involved_players.origin].awaiting_move = false;
 				$opponents[msg.involved_players.origin].just_moved = true;
 				$opponents[msg.involved_players.origin].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 			case 'PRIMARY_TAKEN':
 				$opponents[msg.player].just_moved = true;
-				$opponents[msg.player].pending_action = {};
+				$opponents[msg.player].awaiting_move = false;
 				$opponents[msg.player].last_action = {type: msg.primary, target: msg.involved_players.target};
 				break;
 		}
@@ -399,13 +409,13 @@
 			<img id="coins" src="/assets/coins/{$player.coins}.png" alt="{$player.coins} coins">
 
 			{#if recent_action}
-				<p>You most recently {recent_action}.</p>
+				<p transition:fade>You most recently {recent_action}.</p>
 			{/if}
 		</div>
 
 		{#each Object.keys($opponents) as op, i}
 			<div class="OP{i}" style="grid-area: OP{i}; display: flex;">
-				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} game_active={true} alive={$opponents[op].alive}/>
+				<Opponent name={op} glow={$opponents[op].just_moved} current_turn={$opponents[op].turn_active} awaiting_move={$opponents[op].awaiting_move} game_active={true} alive={$opponents[op].alive}/>
 			</div>
 		{/each}
 

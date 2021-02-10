@@ -2,9 +2,10 @@
     import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
-    export let name, glow = false, game_active = false, current_turn = false, alive = true; 
+    export let name, glow = false, game_active = false, awaiting_move = false, current_turn = false, alive = true; 
     let recent = "hidden";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
+    $: awaiting = (awaiting_move) ? "active" : "hidden";
     $: glowing = (glow) ? "0px 0px 10px 0px rgba(152, 144, 129, 0.8)" : "none";
     $: turn = (current_turn) ? "/assets/bgs/green.jpg" : "/assets/bgs/white.jpg";
     $: living = (alive) ? 1.0 : 0.5;
@@ -12,6 +13,10 @@
     $: if(glow) {
         processRecent();
         setTimeout(() => {disableGlow();}, 3000);
+    }
+
+    $: if(awaiting_move) {
+        processAwait();
     }
 
     function disableGlow() {
@@ -24,6 +29,12 @@
             setTimeout(() => {recent = "hidden";}, 6500);
         } else {
             setTimeout(() => {recent = "hidden";}, 15000);
+        }
+    }
+
+    function processAwait() {
+        if(awaiting_move === false) {
+            setTimeout(()=>{$opponents[name].pending_action = {};}, 1500);
         }
     }
 
@@ -51,15 +62,18 @@
             <div id="info">
                 <h2>{name}</h2>
                 {#if Object.keys($opponents[name].pending_action).length !== 0 && $opponents[name].alive}
-                    <span>Awaiting selection of 
-                        {#if $opponents[name].pending_action.type in $move_mappings}
-                        {$move_mappings[$opponents[name].pending_action.type]}{:else}
-                        {$opponents[name].pending_action.type}{/if}</span>
-                    {#if $opponents[name].pending_action.reason}
-                        <span>{#if $opponents[name].pending_action.reason in $move_mappings}
-                            {$move_mappings[$opponents[name].pending_action.reason]}{:else}
-                            {$opponents[name].pending_action.reason}{/if}</span>
-                    {/if}
+                    <div id="awaiting_move" class="{awaiting}">
+                        <hr>
+                        <span>Awaiting selection of 
+                            {#if $opponents[name].pending_action.type in $move_mappings}
+                            {$move_mappings[$opponents[name].pending_action.type]}{:else}
+                            {$opponents[name].pending_action.type}{/if}</span>
+                        {#if $opponents[name].pending_action.reason}
+                            <span>{#if $opponents[name].pending_action.reason in $move_mappings}
+                                {$move_mappings[$opponents[name].pending_action.reason]}{:else}
+                                {$opponents[name].pending_action.reason}{/if}</span>
+                        {/if}
+                    </div>
                 {/if}
                 
                 <hr>
@@ -120,7 +134,7 @@
         margin-top: 1vw;
     }
 
-    #recent_move {
+    #recent_move, #awaiting_move {
         transition-property: all;
         transition-duration: 1s;
     }
