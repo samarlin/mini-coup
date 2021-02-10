@@ -56,6 +56,7 @@
 				break;
 			case 'INVALID_MOVE':
 				// game found primary action to be invalid, player must chose another one
+				primary_action = '';
 				trigger_alert('Invalid move chosen, try again. Reason: ' + message.error, take_primary_action);
 				break;
 			case 'TAKE_SECONDARY_ACTION':
