@@ -13,7 +13,6 @@ const wss = new WebSocket.Server({ server: http });
 
 app.use(cors());
 app.use(express.json());
-app.use(forcessl);
 
 let rooms = {}, interval;
 
@@ -107,6 +106,7 @@ let forcessl = function (req, res, next) {
   }
   return next();
 };
+app.use(forcessl);
 
 app.use(express.static(path.resolve(__dirname, 'client/public'), {
   setHeaders: (res, path) => {
