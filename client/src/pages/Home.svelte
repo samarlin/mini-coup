@@ -5,7 +5,7 @@
     import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
     
-    let lobby_id, popup, display_rules = false;
+    let lobby_id, popup, rules;
     let popup_attr = {
 		message: '',
 		display: false,
@@ -77,7 +77,7 @@
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
-<Rules display_active={display_rules}/>
+<Rules bind:this={rules}/>
 
 <main>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
@@ -89,7 +89,8 @@
     <button on:click={joinLobby_popup}>Join Existing Room</button>
     <hr>
     <hr>
-    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
+    <hr>
+    <button id="rules_button" on:click={()=>{rules.display_active=true;}}>Rules</button>
 </main>
 
 <style>
