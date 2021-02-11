@@ -299,7 +299,7 @@
 				msg.players.forEach(opponent => {
 					if(opponent !== $player.name) {
 						num_opps += 1;
-						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: false, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
+						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 					}
 				});
 				game_ready = "grid";
