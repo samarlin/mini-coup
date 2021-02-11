@@ -372,8 +372,8 @@
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
-					if($opponents[msg.player].name !== msg.player) {
-						$opponents[opponent].turn_active = false;
+          $opponents[opponent].turn_active = false;
+			  	if($opponents[msg.player].name !== msg.player) {
 						$opponents[opponent].awaiting_move = false;
 					}
 				});
