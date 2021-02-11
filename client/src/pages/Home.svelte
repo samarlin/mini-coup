@@ -5,7 +5,7 @@
     import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
     
-    let lobby_id, popup, rules
+    let lobby_id, popup, rules, switching = "block";
     let popup_attr = {
 		message: '',
 		display: false,
@@ -22,6 +22,7 @@
                 $player.room = result.room;
                 
                 // go to room URL
+                switching = "none";
                 $connections.router("/rooms/" + result.room);
             } else {
                 popup_attr.message = "Connection failure, please try again.";
@@ -79,7 +80,7 @@
 <Popup bind:this={popup} attr={popup_attr}/>
 <Rules bind:this={rules}/>
 
-<main>
+<main style="--display: {switching}">
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <p>Select an option below to either join or start a game.</p><br>
     <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can alternatively join using the room's number.</p>
@@ -95,6 +96,7 @@
 
 <style>
 	main {
+        display: var(--display);
         color: rgb(91, 91, 91);
 
 		text-align: center;

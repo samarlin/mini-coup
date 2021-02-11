@@ -16,10 +16,10 @@
         };
 
     const dispatch = createEventDispatcher();
-    function startGame() { dispatch('message', {text: 'START_GAME'}); }
+    function startGame() { switching = "none"; dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name = '', fixed_display = true, rules;
+    let player_name = '', fixed_display = true, rules, switching = "block";
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -57,6 +57,7 @@
                 break;
 
             case 'GAME_STARTED':
+                switching = "none";
                 dispatch('message', {text: 'GAME_STARTED'});
                 break;
         } 
@@ -91,7 +92,7 @@
 
 <Rules bind:this={rules}/>
 
-<main>
+<main style="--display: {switching}">
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <h2>You're in Room {$player.room}</h2>
     <p>You'll need at least three and no more than six players to start the game.</p><br><br>
@@ -115,6 +116,7 @@
 
 <style>
 	main {
+        display: var(--display);
         color: rgb(91, 91, 91);
 
 		text-align: center;

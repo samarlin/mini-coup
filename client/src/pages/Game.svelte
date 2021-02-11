@@ -441,7 +441,6 @@
 			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
 		</div>
 	</div>
-	<hr>
     <button id="rules_button" on:click={()=>{rules.showRules();}}>Rules</button>
 </main>
 
@@ -571,6 +570,7 @@
     }
 
 	#rules_button {
+		margin-top: .8em;
         font-size: 1em;
         color: rgba(91, 91, 91, 0.7);
         display: block;
