@@ -36,7 +36,7 @@
 
 <style>
     #frame {
-        display: var(--display_style);
+        display: var(--display);
         margin: 3em;
         box-sizing: border-box;
         padding: 2em;
