@@ -2,11 +2,9 @@
     import { fade } from 'svelte/transition';
     let display_active = false;
     $: display_style = (display_active) ? "block" : "none";
-</script>
-
-<script context="module">
     export function showRules() {
         display_active = true;
+        console.log('showrules');
     }
 </script>
 
