@@ -155,4 +155,19 @@
         height: fit-content;
         width: fit-content;
     }
+
+    @media (max-aspect-ratio: 6/8) {
+		main {
+			font-size: 0.9em;
+		}
+
+		h1 {
+			margin: .1em;
+		}
+
+		h2 {
+			font-size: 2em;
+			margin: .3em;
+		}
+    }
 </style>

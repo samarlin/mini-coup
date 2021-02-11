@@ -124,4 +124,14 @@
         border: .5px solid rgba(91, 91, 91, .7);
         width: 300px
     }
+
+    @media (max-aspect-ratio: 6/8) {
+		main {
+			font-size: 0.9em;
+		}
+
+		h1 {
+			margin: .1em;
+		}
+    }
 </style>
