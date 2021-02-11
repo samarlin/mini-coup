@@ -14,7 +14,7 @@ export const player = writable({
 export const opponents = writable({});
 
 export const move_mappings = readable({
-    TAKE_SECONDARY_ACTION: 'a move in response',
+    TAKE_SECONDARY_ACTION: 'a response',
     TAKE_PRIMARY_ACTION: 'a move',
     REVEAL_CARD: 'card to reveal',
     COUP: 'after being couped',
@@ -25,8 +25,8 @@ export const move_mappings = readable({
     LOST_CARD: 'lost a card',
     //DIED: 'died', //leaving this one out on purpose tbh
     REVEALED_CARD: 'revealed a card and drew a new one',
-    CARDS_CHOSEN: 'exchanged cards with the deck',
-    CHOOSE_CARDS: 'cards to exchange with the deck',
+    CARDS_CHOSEN: 'exchanged cards',
+    CHOOSE_CARDS: 'cards to exchange',
     CHOOSE_PLAYER: 'a target'
 });
 
@@ -65,7 +65,7 @@ export const tenses = readable({
     ASSASSINATE_PLAYER: 'tried to assassinate',
     TAKE_TAX: 'attempted to draw tax',
     STEAL_FROM_PLAYER: 'tried to steal from',
-    DRAW_CARDS: 'attempted to exchange cards with the deck',
+    DRAW_CARDS: 'attempted to exchange cards',
     BLOCK_AID: 'blocked attempt to take foreign aid by',
     BLOCK_STEAL: 'blocked attempted theft by',
     BLOCK_ASSASSINATE: 'blocked assassination attempt from',
