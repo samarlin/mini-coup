@@ -58,7 +58,7 @@
     }
     
     #content {
-        height: calc(100vh - 10em);
+        height: calc(100% - 10em);
         overflow: scroll;
     }
 
