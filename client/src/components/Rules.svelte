@@ -58,7 +58,7 @@
     }
     
     #content {
-        height: calc(100% - 10em);
+        height: 100%;
         overflow: scroll;
     }
 
