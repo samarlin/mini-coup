@@ -1,11 +1,11 @@
 <script>
     import { onMount } from 'svelte';
     import Popup from '../components/Popup.svelte';
-    import Rules from '../components/Rules.svelte';
+    import Rules, {showRules} from '../components/Rules.svelte';
     import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
     
-    let lobby_id, popup, rules;
+    let lobby_id, popup;
     let popup_attr = {
 		message: '',
 		display: false,
@@ -77,7 +77,7 @@
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
-<Rules bind:this={rules}/>
+<Rules/>
 
 <main>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
@@ -90,7 +90,7 @@
     <hr>
     <hr>
     <hr>
-    <button id="rules_button" on:click={()=>{rules.display_active=true;}}>Rules</button>
+    <button id="rules_button" on:click={()=>{showRules();}}>Rules</button>
 </main>
 
 <style>

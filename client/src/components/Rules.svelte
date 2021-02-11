@@ -1,7 +1,13 @@
 <script>
     import { fade } from 'svelte/transition';
-    export let display_active = false;
+    let display_active = false;
     $: display_style = (display_active) ? "block" : "none";
+</script>
+
+<script context="module">
+    export function showRules() {
+        display_active = true;
+    }
 </script>
 
 <div transition:fade id="frame" style="--display: {display_style}" on:click={()=>{display_active = false;}}>
