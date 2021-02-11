@@ -43,7 +43,7 @@
         margin: 3em;
         box-sizing: border-box;
         padding: 2em;
-        height: calc(100vh - 6em);
+        height: calc(100% - 6em);
         width: calc(100vw - 6em);
         z-index: 2;
         position: absolute;
