@@ -133,5 +133,10 @@
 		h1 {
 			margin: .1em;
 		}
+    
+    p {
+        width: 300px;
+        margin: auto;
+    }
     }
 </style>
