@@ -1,10 +1,11 @@
 <script>
     import { onMount } from 'svelte';
     import Popup from '../components/Popup.svelte';
+    import Rules from '../components/Rules.svelte';
     import {connections, joinRoom, createRoom} from '../stores/connection.store.js';
     import {player} from '../stores/player.store.js';
     
-    let lobby_id, popup;
+    let lobby_id, popup, display_rules = false;
     let popup_attr = {
 		message: '',
 		display: false,
@@ -76,6 +77,7 @@
 </script>
 
 <Popup bind:this={popup} attr={popup_attr}/>
+<Rules display_active={display_rules}/>
 
 <main>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
@@ -85,6 +87,9 @@
     <button on:click={createLobby}>Create New Room</button>
     <hr>
     <button on:click={joinLobby_popup}>Join Existing Room</button>
+    <hr>
+    <hr>
+    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
 </main>
 
 <style>
@@ -122,7 +127,18 @@
 
     hr {
         border: .5px solid rgba(91, 91, 91, .7);
-        width: 300px
+        width: 300px;
+        visibility: hidden;
+    }
+
+    #rules_button {
+        font-size: 1em;
+        color: rgba(91, 91, 91, 0.7);
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-image: none;
+        background-color: white;
     }
 
     @media (max-aspect-ratio: 6/8) {
@@ -134,9 +150,9 @@
 			margin: .1em;
 		}
     
-    p {
-        width: 300px;
-        margin: auto;
-    }
+        p {
+            width: 300px;
+            margin: auto;
+        }
     }
 </style>

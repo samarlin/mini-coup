@@ -1,6 +1,7 @@
 <script>
 	import Popup from '../components/Popup.svelte';
 	import Opponent from '../components/Opponent.svelte';
+	import Rules from '../components/Rules.svelte';
   	import { fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import {connections} from '../stores/connection.store.js';
@@ -20,7 +21,7 @@
 	let target_name = '';
 	let reveal = {};
     let selected_cards = '';
-    let popup, recent_action, num_opps = 0, game_ready = "none";
+    let popup, recent_action, num_opps = 0, game_ready = "none", display_rules = false;
 	
 	$connections.connection.onclose = function(event) {
 		clearInterval($connections.interval);
@@ -407,6 +408,8 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
+<Rules display_active={display_rules}/>
+
 <main>
 	<h1>Mini Coup</h1>
 	<div class="board{num_opps}" style="--ready: {game_ready};">
@@ -438,6 +441,8 @@
 			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
 		</div>
 	</div>
+	<br>
+    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
 </main>
 
 <style>	
@@ -563,6 +568,16 @@
         margin: auto;
         width: 60%;
         display: block;
+    }
+
+	#rules_button {
+        font-size: 1em;
+        color: rgba(91, 91, 91, 0.7);
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-image: none;
+        background-color: white;
     }
 
 	@media (max-aspect-ratio: 6/8) {

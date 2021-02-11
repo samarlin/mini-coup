@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher, onMount } from "svelte";
     import Popup from '../components/Popup.svelte';
+    import Rules from '../components/Rules.svelte';
     import Opponent from '../components/Opponent.svelte';
     import { player } from "../stores/player.store.js";
     import { connections } from "../stores/connection.store.js";
@@ -18,7 +19,7 @@
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name = '', fixed_display = true;
+    let player_name = '', fixed_display = true, display_rules = false;
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -88,6 +89,8 @@
     });
 </script>
 
+<Rules display_active={display_rules}/>
+
 <main>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <h2>You're in Room {$player.room}</h2>
@@ -106,6 +109,8 @@
 	{#if ($player.admin && $connections.other_connections.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
+    <hr>
+    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
 </main>
 
 <style>
@@ -154,6 +159,22 @@
         margin-left: auto;
         height: fit-content;
         width: fit-content;
+    }
+
+    hr {
+        border: .5px solid rgba(91, 91, 91, .7);
+        width: 300px;
+        visibility: hidden;
+    }
+
+    #rules_button {
+        font-size: 1em;
+        color: rgba(91, 91, 91, 0.7);
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-image: none;
+        background-color: white;
     }
 
     @media (max-aspect-ratio: 6/8) {
