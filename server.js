@@ -13,6 +13,7 @@ const wss = new WebSocket.Server({ server: http });
 
 app.use(cors());
 app.use(express.json());
+app.use(forcessl);
 
 let rooms = {}, interval;
 
@@ -100,23 +101,12 @@ wss.on('connection', function connection(ws) {
   })
 });
 
-/*
-// rewrite for '/rooms/:id'?
-app.get("/rooms/:id/reset", (req, res) => {
-  if(req.params.id in rooms) {
-    rooms[id] = {game: null, room: id, open: true, players: {}};
-    res.send({reset: true});
-  } else {
-    res.send({reset: false});
+let forcessl = function (req, res, next) {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
-});
-
-app.get("/rooms/:id/events", (req, res) => {
-  if(req.params.id in rooms) {
-    res.json(rooms[req.params.id].game.event_log);
-  }
-});
-*/
+  return next();
+};
 
 app.use(express.static(path.resolve(__dirname, 'client/public'), {
   setHeaders: (res, path) => {
