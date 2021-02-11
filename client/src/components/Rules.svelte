@@ -1,5 +1,4 @@
 <script>
-    import { fade } from 'svelte/transition';
     let display_active = false;
     $: display_style = (display_active) ? "block" : "none";
     export function showRules() {
@@ -7,7 +6,7 @@
     }
 </script>
 
-<div transition:fade id="frame" style="--display: {display_style}" on:click={()=>{display_active = false;}}>
+<div id="frame" style="--display: {display_style}" on:click={()=>{display_active = false;}}>
     <div id="content">
         <h1>Rules</h1>
         <p><b>Objective:</b> To be the only player with any cards left.</p>
