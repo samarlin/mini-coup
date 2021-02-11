@@ -580,7 +580,7 @@
 		.board2 {
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: auto;
+			grid-template-rows: 1fr 1fr;
 			gap: 0px 0px;
 			grid-template-areas:
 				"Player OP0"

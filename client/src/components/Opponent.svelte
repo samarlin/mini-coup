@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
-    export let name, glow = false, game_active = false, awaiting_move = false, current_turn = false, alive = true; 
+    export let name, glow = false, game_active = false, awaiting_move = true, current_turn = false, alive = true; 
     let recent = "hidden";
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: awaiting = (awaiting_move) ? "active" : "hidden";
@@ -193,6 +193,7 @@
         }
 
         #info {
+            width: 50%;
             flex: 1; 
             margin-top: 1vw;
         }
