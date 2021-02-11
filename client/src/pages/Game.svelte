@@ -21,7 +21,7 @@
 	let target_name = '';
 	let reveal = {};
     let selected_cards = '';
-    let popup, recent_action, num_opps = 0, game_ready = "none", display_rules = false;
+    let popup, recent_action, num_opps = 0, game_ready = "none", rules;
 	
 	$connections.connection.onclose = function(event) {
 		clearInterval($connections.interval);
@@ -408,7 +408,7 @@
 </script>
 
 <!-- svelte-ignore non-top-level-reactive-declaration -->
-<Rules display_active={display_rules}/>
+<Rules bind:this={rules}/>
 
 <main>
 	<h1>Mini Coup</h1>
@@ -441,8 +441,8 @@
 			<Popup bind:this={popup} game_active={true} attr={popup_attr} numopps={num_opps}/> 
 		</div>
 	</div>
-	<br>
-    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
+	<hr>
+    <button id="rules_button" on:click={()=>{rules.showRules();}}>Rules</button>
 </main>
 
 <style>	
@@ -578,6 +578,9 @@
         margin-right: auto;
         background-image: none;
         background-color: white;
+
+		border-bottom: 2px solid rgba(193, 182, 159, 0.8);
+        border-radius: 25px;
     }
 
 	@media (max-aspect-ratio: 6/8) {

@@ -90,7 +90,7 @@
     <hr>
     <hr>
     <hr>
-    <button id="rules_button" on:click={()=>{rules.showRules(); console.log('onclick');}}>Rules</button>
+    <button id="rules_button" on:click={()=>{rules.showRules();}}>Rules</button>
 </main>
 
 <style>

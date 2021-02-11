@@ -4,7 +4,6 @@
     $: display_style = (display_active) ? "block" : "none";
     export function showRules() {
         display_active = true;
-        console.log('showrules');
     }
 </script>
 

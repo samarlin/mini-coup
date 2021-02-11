@@ -19,7 +19,7 @@
     function startGame() { dispatch('message', {text: 'START_GAME'}); }
     
     // get list of other players
-    let player_name = '', fixed_display = true, display_rules = false;
+    let player_name = '', fixed_display = true, rules;
 
     $connections.connection.onmessage = onMessage;
 	function onMessage(event) {
@@ -89,7 +89,7 @@
     });
 </script>
 
-<Rules display_active={display_rules}/>
+<Rules bind:this={rules}/>
 
 <main>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
@@ -101,16 +101,16 @@
             <Opponent name={plr} game_active={false}/>
         {/each}
     {/if}
-    <br>
+    <hr>
     <div id="popup_adjust">
         <Popup bind:this={popup} attr={popup_attr} game_active={fixed_display}/>
     </div>
-    <br>
+    <hr>
 	{#if ($player.admin && $connections.other_connections.length > 2)}
 		<button on:click={startGame}>Start Game</button>
 	{/if}
     <hr>
-    <button id="rules_button" on:click={()=>{display_rules=true;}}>Rules</button>
+    <button id="rules_button" on:click={()=>{rules.showRules();}}>Rules</button>
 </main>
 
 <style>
