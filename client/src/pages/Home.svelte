@@ -80,7 +80,7 @@
 <Popup bind:this={popup} attr={popup_attr}/>
 <Rules bind:this={rules}/>
 
-<main style="--display: {switching}">
+<main style="--display: {switching}" on:click={()=>{if(popup_attr.display === true){popup_attr.display = false;}}}>
     <h1 on:click={() => {window.location.href = "/";}}>Mini Coup</h1>
     <p>Select an option below to either join or start a game.</p><br>
     <p>If a friend of yours has already created a game room, they can simply send you a link to it; you can alternatively join using the room's number.</p>
