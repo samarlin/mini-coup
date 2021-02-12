@@ -7,11 +7,9 @@ The current version allows multiple games to run concurrently; games can be join
 
 The server was built using Node (with Express for some routing & WS during gameplay), and the client using Svelte (with Page.js for client-side routing). All drawings were done in Procreate :) 
 
-Now for some images. First, the cards:
+Now for some images:
 
 ![cards for Coup](https://i.imgur.com/DvZJy5M.jpg)
 
-
-And a few screen-shots:
-![desktop screen-shot](https://i.imgur.com/f42h8qW.png)
-![mobile screen-shots](https://i.imgur.com/rVphVGf.png)
+![desktop screen-shot](https://i.imgur.com/5d3UXyd.png)
+![mobile screen-shots](https://i.imgur.com/cdUBUgo.png)
