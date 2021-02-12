@@ -96,6 +96,7 @@
 
 <style>
 	main {
+        height: 95%;
         display: var(--display);
         color: rgb(91, 91, 91);
 
