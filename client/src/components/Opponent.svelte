@@ -3,7 +3,7 @@
     import { flip } from 'svelte/animate';
     import {opponents, move_mappings, tenses} from '../stores/player.store.js'
     export let name, glow = false, game_active = false, awaiting_move = true, current_turn = false, alive = true; 
-    let recent = "hidden";
+    let recent = "hidden", timeout;
     let curr_class = (game_active) ? "in_game" : "in_lobby";
     $: awaiting = (awaiting_move) ? "active" : "hidden";
     $: glowing = (glow) ? "0px 0px 10px 0px rgba(91, 91, 91, 0.8)" : "none";
@@ -15,7 +15,7 @@
         setTimeout(() => {disableGlow();}, 3000);
     }
 
-    $: if(!awaiting_move) {
+    $: if(!awaiting_move || awaiting_move) {
         processAwait();
     }
 
@@ -33,8 +33,10 @@
     }
 
     function processAwait() {
-        if(awaiting_move === false && game_active) {
-            setTimeout(()=>{$opponents[name].pending_action = {};}, 1500);
+        if(!awaiting_move && game_active) {
+            timeout = setTimeout(()=>{$opponents[name].pending_action = {}; timeout = 0;}, 1500);
+        } else if(awaiting_move && timeout !== 0) {
+            clearTimeout(timeout);
         }
     }
 
