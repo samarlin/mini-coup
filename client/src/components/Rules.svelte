@@ -25,7 +25,7 @@
                     <li><b>Income:</b> Take one coin from the bank. This cannot be Challenged or Blocked.</li>
                     <li><b>Foreign Aid:</b> Take two coins from the bank. This cannot be Challenged but it can be Blocked by the Duke.</li>
                     <li><b>Coup:</b> Costs seven coins, and causes a player to lose a card. Cannot be Challenged or Blocked. If you start your turn with 10 or more coins, you must take this action.</li>
-                    <li><b>Taxes (the Duke):</b> Take three coins from the bank. Can be Challenged, should another player suspect you of bluffing.</li>
+                    <li><b>Tax (the Duke):</b> Take three coins from the bank. Can be Challenged, should another player suspect you of bluffing.</li>
                     <li><b>Assassinate (the Assassin):</b> Costs three coins. Force one player to lose a card of their choice. Can be Challenged by any suspecting player, and Blocked by the Contessa.</li>
                     <li><b>Steal (the Captain):</b> Take two coins from another player. Can be Challenged. Can be Blocked by the Captain or an Ambassador.</li>
                     <li><b>Exchange Cards (the Ambassador):</b> Draw two cards from the deck and mix them with your current hand, then choose two cards to return to the deck. Can be Challenged, but cannot be Blocked.</li>
@@ -69,9 +69,5 @@
         width: fit-content;
         margin-right: auto;
         margin-left: auto;
-    }
-    
-    p {
-        text-align: justify;
     }
 </style>
