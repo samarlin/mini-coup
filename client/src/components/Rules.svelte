@@ -30,8 +30,8 @@
                     <li><b>Steal (the Captain):</b> Take two coins from another player. Can be Challenged. Can be Blocked by the Captain or an Ambassador.</li>
                     <li><b>Exchange Cards (the Ambassador):</b> Draw two cards from the deck and mix them with your current hand, then choose two cards to return to the deck. Can be Challenged, but cannot be Blocked.</li>
                 </ul>
-            <p><b>Blocking:</b> If another player takes an action that can be Blocked, any other player may Block it by claiming to have the appropriate card. If the Block is successful, the acting player cannot perform the action and takes no other action this turn. The acting player MAY choose to Challenge the Blocking player. If they win the Challenge, the action goes through as normal.</p>
-            <p><b>Challenging (Call Bluff):</b> When the acting player declares their action, any other player may attempt to call their bluff. The acting player now must prove they have the power to take the action or lose the Challenge. If they have the appropriate card, they reveal it and place the revealed card back in the deck, drawing a new one to replace it. In this case, the player who challenged them has lost the Challenge and must lose a card. However, if the challenge is successful, the player who was challenged loses a card, instead.</p>
+            <p><b>Blocking:</b> If another player takes an action that can be Blocked, any other player may Block it by claiming to have the appropriate card. If the Block is successful, the acting player cannot perform the action and takes no other action this turn. The acting player MAY choose to call the Blocking player's bluff. If they're correct, the action goes through as normal.</p>
+            <p><b>Challenging (Call Bluff):</b> When the acting player declares their action, any other player may attempt to call their bluff. The acting player must then prove they have the power to take the action or lose the challenge. If they have the appropriate card, they reveal it and place the revealed card back in the deck, drawing a new one to replace it. In this case, the player who tried to call their bluff them has lost the challenge and must lose a card. However, if the challenge is successful, the player who was bluffing loses a card, instead.</p>
             <p><i>A Special Note on Challenging:</i> Should you challenge a player attempting to assassinate you and <i>lose</i>, you will lose both your cards: one for the lost challenge, and another for the assassination. So -- be mindful!</p>
             <p><b>Lastly, be sure to note: <i>there is no second place.</i></b></p>
         </div>
@@ -69,5 +69,9 @@
         width: fit-content;
         margin-right: auto;
         margin-left: auto;
+    }
+    
+    p {
+        text-align: justify;
     }
 </style>
