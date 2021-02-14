@@ -63,6 +63,7 @@ wss.on('connection', function connection(ws) {
 
       case 'PING':
         // keeping connection alive for Heroku
+        ws.send(JSON.stringify({type: 'PONG'}));
         break;
       
       default:
