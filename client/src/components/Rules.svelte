@@ -11,7 +11,7 @@
         <div id="content">
             <h1>Rules</h1>
             <p><b>Objective:</b> To be the only player with any cards left.</p>
-            <p><b>Set-up:</b> The deck, which consists of 15 cards (three of each character), is shuffled. Each player is dealt two cards and receives two coins from an unlimited store. Players should not reveal which cards they have been dealt.</p>
+            <p><b>Set-up:</b> The standard game may be played with 3 to 6 players. The deck, which consists of 15 cards (three of each character), is shuffled. Each player is dealt two cards and receives two coins from an unlimited store. Players should not reveal which cards they have been dealt.</p>
             <p><b>Cards:</b> There are five different characters in the deck, each of which has one or more special abilities:</p>
                 <ul>
                     <li><b>the Duke</b> - can take tax and block foreign aid</li> 
@@ -25,15 +25,15 @@
                     <li><b>Income:</b> Take one coin from the bank. This cannot be Challenged or Blocked.</li>
                     <li><b>Foreign Aid:</b> Take two coins from the bank. This cannot be Challenged but it can be Blocked by the Duke.</li>
                     <li><b>Coup:</b> Costs seven coins, and causes a player to lose a card. Cannot be Challenged or Blocked. If you start your turn with 10 or more coins, you must take this action.</li>
-                    <li><b>Tax (the Duke):</b> Take three coins from the bank. Can be Challenged, should another player suspect you of bluffing.</li>
+                    <li><b>Tax (the Duke):</b> Take three coins from the bank. Can be Challenged, should another player suspect you of bluffing, but not Blocked.</li>
                     <li><b>Assassinate (the Assassin):</b> Costs three coins. Force one player to lose a card of their choice. Can be Challenged by any suspecting player, and Blocked by the Contessa.</li>
                     <li><b>Steal (the Captain):</b> Take two coins from another player. Can be Challenged. Can be Blocked by the Captain or an Ambassador.</li>
                     <li><b>Exchange Cards (the Ambassador):</b> Draw two cards from the deck and mix them with your current hand, then choose two cards to return to the deck. Can be Challenged, but cannot be Blocked.</li>
                 </ul>
-            <p><b>Blocking:</b> If another player takes an action that can be Blocked, any other player may Block it by claiming to have the appropriate card. If the Block is successful, the acting player cannot perform the action and takes no other action this turn. The acting player MAY choose to call the Blocking player's bluff. If they're correct, the action goes through as normal.</p>
-            <p><b>Challenging (Call Bluff):</b> When the acting player declares their action, any other player may attempt to call their bluff. The acting player must then prove they have the power to take the action or lose the challenge. If they have the appropriate card, they reveal it and place the revealed card back in the deck, drawing a new one to replace it. In this case, the player who tried to call their bluff them has lost the challenge and must lose a card. However, if the challenge is successful, the player who was bluffing loses a card, instead.</p>
-            <p><i>A Special Note on Challenging:</i> Should you challenge a player attempting to assassinate you and <i>lose</i>, you will lose both your cards: one for the lost challenge, and another for the assassination. So -- be mindful!</p>
-            <p><b>Lastly, be sure to note: <i>there is no second place.</i></b></p>
+            <p><b>Blocking:</b> If another player takes an action that can be Blocked, any other player may Block it by claiming to have the appropriate card. If the Block is successful, the acting player cannot perform the action and takes no other action this turn. The acting player MAY choose to Challenge the Blocking player. If they win the Challenge, the action goes through as normal.</p>
+            <p><b>Challenging:</b> When the acting player declares their action, any other player may attempt to Challenge it. The acting player must then prove they have the power to take the action or lose the Challenge. If they do have the appropriate card, they reveal it; the revealed card is then returned to the deck and a replacement is drawn. In this case, the player who Challenged them has lost the Challenge and must lose a card. However, if the Challenge is successful, the player who was Challenged loses a card, instead.</p>
+            <p><i>A Special Note on Challenging:</i> Should you Challenge a player attempting to Assassinate you and <i>lose</i>, you will lose both your cards: one for the lost Challenge, and another for the Assassination. So -- be mindful!</p>
+            <p><b>Finally, be sure to note: <i>there is no second place.</i></b></p>
         </div>
     </div>
 {/if}

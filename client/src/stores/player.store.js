@@ -37,7 +37,7 @@ export const reverse = readable({
     'Block Assassinate': 'BLOCK_ASSASSINATE',
     'Approve Move': 'APPROVE_MOVE',
     'Coup': 'COUP_PLAYER',
-    'Call Bluff': 'CALL_BLUFF',
+    'Challenge': 'CALL_BLUFF',
     'Steal': 'STEAL_FROM_PLAYER',
     'Tax': 'TAKE_TAX',
     'Assassinate': 'ASSASSINATE_PLAYER',
@@ -54,12 +54,12 @@ export const reverse = readable({
     'BLOCK_ASSASSINATE': 'Block Assassinate',
     'APPROVE_MOVE': 'Approve Move',
     'COUP_PLAYER': 'Coup',
-    'CALL_BLUFF': 'Call Bluff'
+    'CALL_BLUFF': 'Challenge'
 });
 
 export const tenses = readable({
     COUP_PLAYER: 'announced a coup against',
-    CALL_BLUFF: 'called the bluff of',
+    CALL_BLUFF: 'challenged',
     TAKE_FOREIGN_AID: 'attempted to take foreign aid',
     TAKE_INCOME: 'took income',
     ASSASSINATE_PLAYER: 'tried to assassinate',
