@@ -312,17 +312,25 @@
 				break;
 			case 'REVEAL_CARD':
 				// COUP, BLUFF, FAILED_BLUFF, ASSASSINATION
-				if(msg.player !== $player.name) {
-					if(msg.reason === "BLUFF") {
-						popup_attr = popup.initialData();
+				if(msg.reason === "BLUFF") { // bluff-specific logic
+					Object.keys($opponents).forEach(opponent => {
+						if(opponent !== msg.player) {
+							$opponents[opponent].awaiting_move = false;
+						}
+					});
+
+					if(msg.instigator !== $player.name) {
+						$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
+						$opponents[msg.instigator].just_moved = true;
 					}
+
+					if(msg.player !== $player.name)
+						popup_attr = popup.initialData();
+				}
+
+				if(msg.player !== $player.name) {
 					$opponents[msg.player].pending_action = {type: 'REVEAL_CARD', reason: msg.reason};
 					$opponents[msg.player].awaiting_move = true;
-				}
-				if(msg.reason === "BLUFF" && msg.instigator !== $player.name) {
-					$opponents[msg.instigator].awaiting_move = false;
-					$opponents[msg.instigator].last_action = {type: 'CALL_BLUFF', target: msg.player};
-					$opponents[msg.instigator].just_moved = true;
 				}
 				break;
 			case 'APPROVED_MOVE':
@@ -373,8 +381,8 @@
 				break;
 			case 'TAKE_PRIMARY_ACTION':
 				Object.keys($opponents).forEach(opponent => {
-          $opponents[opponent].turn_active = false;
-			  	if($opponents[msg.player].name !== msg.player) {
+          			$opponents[opponent].turn_active = false;
+			  		if($opponents[msg.player].name !== msg.player) {
 						$opponents[opponent].awaiting_move = false;
 					}
 				});
