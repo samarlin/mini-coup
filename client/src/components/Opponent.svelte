@@ -133,6 +133,7 @@
 
     #info {
         flex: 1; 
+        min-width: 0;
         margin-top: 1vw;
     }
 
@@ -173,7 +174,7 @@
     }
 
     h2 {
-        overflow-wrap: break-word;
+        word-break: break-all;
         margin: .5vw;
     }
 

@@ -509,7 +509,8 @@
 	.board2 {
 		display: var(--ready);
 
-		max-width: calc(75vh * 1.8);
+		max-width: 63vw;
+		min-width: 760px;
 		margin-left: auto;
 		margin-right: auto;
 
@@ -524,7 +525,8 @@
 	.board3 {
 		display: var(--ready);
 
-		max-width: calc(75vh * 1.8);
+		max-width: 63vw;
+		min-width: 760px;
 		margin-left: auto;
 		margin-right: auto;
 
@@ -539,7 +541,8 @@
 	.board4 {
 		display: var(--ready);
 
-		max-width: calc(75vh * 1.43);
+		max-width: 63vw;
+		min-width: 760px;
 		margin-left: auto;
 		margin-right: auto;
 
@@ -555,7 +558,8 @@
 	.board5 {
 		display: var(--ready);
 
-		max-width: calc(75vh * 1.43);
+		max-width: 63vw;
+		min-width: 760px;
 		margin-left: auto;
 		margin-right: auto;
 
