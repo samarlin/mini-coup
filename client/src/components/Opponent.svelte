@@ -134,7 +134,7 @@
     #info {
         flex: 1; 
         min-width: 0;
-        margin-top: 1vw;
+        margin-top: .5vw;
     }
 
     #recent_move, #awaiting_move {
@@ -174,6 +174,7 @@
     }
 
     h2 {
+        font-weight: 500;
         word-break: break-all;
         margin: .5vw;
     }

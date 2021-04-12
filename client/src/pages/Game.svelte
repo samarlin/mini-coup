@@ -471,7 +471,8 @@
 		font-size: 2.2em;
 		color: rgb(91, 91, 91);
 		text-shadow: 1px 1px rgba(255, 255, 255, 0.8);
-		margin: .5em;
+		margin: 1vw;
+		font-weight: 600;
 	}
 
 	img {
@@ -610,6 +611,9 @@
 		}
 		
 		.board2 {
+			min-width: unset;
+			max-width: unset;
+			
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr;
@@ -621,6 +625,9 @@
 		}
 
 		.board3 {
+			min-width: unset;
+			max-width: unset;
+			
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: auto;
@@ -643,6 +650,9 @@
 		}
 		
 		.board4 {
+			min-width: unset;
+			max-width: unset;
+			
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr 1fr 1fr;
@@ -655,6 +665,9 @@
 		}
 		
 		.board5 {
+			min-width: unset;
+			max-width: unset;
+			
 			display: var(--ready);
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr;
