@@ -297,11 +297,15 @@
 		// 		so that objects which modify interface can be updated appropriately
 		switch (msg.type) {
 			case 'INIT_GAME':
-				msg.players.forEach(opponent => {
-					if(opponent !== $player.name) {
-						num_opps += 1;
-						$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
-					}
+				// find index of player.name, move first half of list to end of list, drop player
+				// that way cycling through player turns looks sensible
+				let idx = msg.players.indexOf($player.name);
+				let beg = msg.players.slice(0, idx);
+				let end = msg.players.slice(idx+1);
+				let players = end.concat(beg);
+				players.forEach(opponent => {
+					num_opps += 1;
+					$opponents[opponent] = {name: opponent, cards: 2, coins: 2, alive: true, turn_active: false, just_moved: false, awaiting_move: true, current_reveal: "", revealed_cards: [], pending_action: {}, last_action: {}};
 				});
 				game_ready = "grid";
 				break;
